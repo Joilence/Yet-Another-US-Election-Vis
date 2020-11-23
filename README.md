@@ -2,4 +2,4 @@
 
 A project of Practical Data Visualization at the University of Konstanz
 
-[Mockup by Figma](https://www.figma.com/file/5VM726vfZhTJGFiP1cpjaE/Yet-Another-US-Election-Vis?node-id=0%3A1)
+[Documentation and Mockup in Google Docs](https://docs.google.com/document/d/1mBWqtUThv6KWUMb_xALQaJ7AtCdkuKxalBAraRp_SzU/edit?usp=sharing)
