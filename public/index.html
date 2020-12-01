@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Data Visualization: Advanced Topics - WS 20/21</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+        }
+
+        .dataviz-tooltip {
+            border: 1px solid black;
+            border-radius: 10px;
+            padding: 5px;
+            background: white;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+        }
+
+        .state:hover {
+            fill: red;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid" id="main-container">
+        <div class="row h-20" style="padding: 20px;">
+            <div class="card w-100" >
+                <div class="card-header">
+                  Featured
+                </div>
+                <div class="card-body">
+                    <h6 class="card-title">Time range</h6>
+                    <div class="row">
+                        <div class="col col-sm-4 col-lg-4">
+                            <div class="row" >
+                                    Symbol Data
+                            </div>
+                            <div class="row">
+                                <button type="button" class="btn btn-outline-primary btn-sm">Shift of Vote</button>
+                                <button type="button" class="btn btn-outline-primary btn-sm">Error of Polls</button>
+                            </div>
+                            <div class="row">
+                                Regional Data
+                        </div>
+                            <div class="row">
+                                <button type="button" class="btn btn-outline-primary btn-sm">GDP of Growth</button>
+                                <button type="button" class="btn btn-outline-primary btn-sm">Education index</button>
+                                <button type="button" class="btn btn-outline-primary btn-sm">Income</button>
+                            </div>
+                        </div>
+                        <div class="col col-sm-8 col-lg-8"></div>
+
+                    </div>
+                </div>
+              </div>
+            <!-- <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Time range</h5>
+                    <div class="row">
+                        <div class="col col-sm-4 col-lg-4">
+                            <div class="row">
+                                <button type="button" class="btn btn-outline-primary">Shift of Vote</button>
+                                <button type="button" class="btn btn-outline-primary">Error of Polls</button>
+                                <button type="button" class="btn btn-outline-primary">Primary</button>
+                            </div>
+                               
+                        </div>
+                        <div class="col col-sm-8 col-lg-8"></div>
+
+                    </div>
+                    
+                    
+                </div>
+            </div> -->
+        </div>
+        <div class="row">
+            <div class="col col-sm-4 col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Auxiliary</h5>
+                        <p class="card-text">Some quick example text to build on the panel title and make up the bulk of
+                            the panel's content.</p>
+                        <a class="card-link">Card link</a>
+                        <a class="card-link">Another link</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col col-sm-8 col-lg-9">
+                <div class="MapVisualization"></div>
+            </div>
+        </div>
+
+
+        <!-- <p class="dataviz-tooltip">
+            My Tooltip
+        </p> -->
+
+    </div>
+</body>
+
+</html>
