@@ -8,6 +8,8 @@ import 'bootstrap-slider/dist/css/bootstrap-slider.min.css';
 // import { loadDatasets, renderNode } from './tools/data-manager';
 import MapVisualization from './components/MapVisualization';
 
+$('#control-pane').load('../public/control-pane.html');
+
 const mapVis = new MapVisualization();
 mapVis.map_render();
 
