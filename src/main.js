@@ -7,8 +7,12 @@ import 'bootstrap-slider/dist/css/bootstrap-slider.min.css';
 // import { registerJQueryD3Click } from './tools/helpers';
 // import { loadDatasets, renderNode } from './tools/data-manager';
 import MapVisualization from './components/MapVisualization';
+import ControlPane from './components/ControlPane'
 
 $('#control-pane').load('../public/control-pane.html');
+
+const controlPane = new ControlPane();
+controlPane.controlPaneInit();
 
 const mapVis = new MapVisualization();
 mapVis.map_render();
