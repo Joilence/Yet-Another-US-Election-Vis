@@ -7,7 +7,11 @@ import 'bootstrap-slider/dist/css/bootstrap-slider.min.css';
 // import { registerJQueryD3Click } from './tools/helpers';
 // import { loadDatasets, renderNode } from './tools/data-manager';
 import MapVisualization from './components/MapVisualization';
+import ArrowVisualization from './components/ArrowVisualization'; 
 
 const mapVis = new MapVisualization();
+const arrowVis = new ArrowVisualization();
+
 mapVis.map_render();
+arrowVis.init_arrowVis();
 
