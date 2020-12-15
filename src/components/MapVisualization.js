@@ -29,6 +29,7 @@ export default class MapVisualzation {
                 .attr("class", 'state')
                 .attr("fill", "grey")
         })
+        return svg;
     }
     
 }

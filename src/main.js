@@ -8,10 +8,14 @@ import 'bootstrap-slider/dist/css/bootstrap-slider.min.css';
 // import { loadDatasets, renderNode } from './tools/data-manager';
 import MapVisualization from './components/MapVisualization';
 import ArrowVisualization from './components/ArrowVisualization'; 
+import { loadDatasets } from './tools/data-manager';
 
+const datasets = loadDatasets();
 const mapVis = new MapVisualization();
 const arrowVis = new ArrowVisualization();
 
-mapVis.map_render();
+
+console.log(datasets)
+const svgGraph = mapVis.map_render();
 arrowVis.init_arrowVis();
 
