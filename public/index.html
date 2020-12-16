@@ -33,32 +33,43 @@
 <body>
     <div class="container-fluid" id="main-container">
         <div class="row h-20" style="padding: 20px;">
-            <div class="card w-100">
+            <div id="control-pane" class="card w-100">
                 <div class="card-header">
-                    Featured
+                    Yet Another US Election Vis
                 </div>
                 <div class="card-body">
-                    <h6 class="card-title">Time range</h6>
-                    <div class="row">
+                    <div id="data-selection-container" class="row">
                         <div class="col col-sm-4 col-lg-4">
                             <div class="row">
                                 Symbol Data
                             </div>
-                            <div class="row">
-                                <button type="button" class="btn btn-outline-primary btn-sm">Shift of Vote</button>
-                                <button type="button" class="btn btn-outline-primary btn-sm">Error of Polls</button>
+                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                <label class="btn btn-outline-primary btn-sm active">
+                                    <input type="radio" name="options" id="shift-of-vote" checked> Shift of Votes
+                                </label>
+                                <label class="btn btn-outline-primary btn-sm">
+                                    <input type="radio" name="options" id="error-of-poll" disabled> Error of Poll
+                                </label>
                             </div>
                             <div class="row">
                                 Regional Data
                             </div>
-                            <div class="row">
-                                <button type="button" class="btn btn-outline-primary btn-sm">GDP of Growth</button>
-                                <button type="button" class="btn btn-outline-primary btn-sm">Education index</button>
-                                <button type="button" class="btn btn-outline-primary btn-sm">Income</button>
+                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                <label class="btn btn-outline-primary btn-sm text-nowrap active">
+                                    <input type="radio" name="options" id="gdp-growth-rate" checked> GDP Growth Rate
+                                </label>
+                                <label class="btn btn-outline-primary btn-sm text-nowrap">
+                                    <input type="radio" name="options" id="education-index" disabled> Education Index
+                                </label>
+                                <label class="btn btn-outline-primary btn-sm text-nowrap">
+                                    <input type="radio" name="options" id="income" disabled> Income
+                                </label>
                             </div>
                         </div>
                         <div class="col col-sm-8 col-lg-8"></div>
-
+                    </div>
+                    <div id="year-selection-container">
+                        <svg id="year-selection"></svg>
                     </div>
                 </div>
             </div>
