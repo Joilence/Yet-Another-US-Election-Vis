@@ -18,7 +18,7 @@ const arrowVis = new ArrowVisualization();
 const auxiVis = new AuxiliaryVis();
 
 const controlPane = new ControlPane();
-const svgGraph = mapVis.map_render();
+
 controlPane.controlPaneInit();
 
 $('#datasets-dropdown a').each((index, item) => {
@@ -26,6 +26,7 @@ $('#datasets-dropdown a').each((index, item) => {
         const selectedDataset = datasets[event.target.text];
         $('#selected-dataset').text(event.target.text);
         auxiVis.load_dataset(selectedDataset, datasets['1976-2016-president_DP'])
+        const svgGraph = mapVis.map_render(selectedDataset);
     });
 })
 // arrowVis.init_arrowVis(svgGraph);

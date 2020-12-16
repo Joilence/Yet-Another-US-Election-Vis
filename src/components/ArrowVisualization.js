@@ -36,7 +36,7 @@ export default class ArrowVisualization {
 
     init_arrowVis(svg, x1, y1, x2, y2) {
         this.svg = svg;
-        console.log(this.arrow_color)
+        
         this.init_svg();
         this.init_marker("republican");
         this.init_marker("democratic");
@@ -45,7 +45,7 @@ export default class ArrowVisualization {
     }
 
     create_arrow(party_name, x1, y1, x2, y2) {
-        console.log(this.arrow_color)
+       
         this.svg.append('line')
         .attr("marker-end", "url(#" + party_name + ")")
         .attr("x1",x1)
