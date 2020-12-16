@@ -5,6 +5,7 @@ export default class ArrowVisualization {
         this.svg = {};
         this.defs = {};
         this.arrow_color = { "republican": "red", "democratic": "blue" };
+        this.arrow_max_length = 50;
     }
 
     init_svg() {
@@ -44,14 +45,20 @@ export default class ArrowVisualization {
         // this.create_arrow("democratic", 800/2, 50 + 500/2, 50 + 800/2, 500/2);
     }
 
-    create_arrow(party_name, x1, y1, x2, y2) {
-        console.log(this.arrow_color)
+    create_arrow(party_name, x, y, percentage) {
+        let x2;
+        if (party_name == "republican") {// right
+            x2 = x + percentage * this.arrow_max_length;
+        } else if (party_name == "democratic") { //left
+            x2 = x - percentage * this.arrow_max_length;
+        }
+        
         this.svg.append('line')
         .attr("marker-end", "url(#" + party_name + ")")
-        .attr("x1",x1)
+        .attr("x1",x)
         .attr("x2", x2)
-        .attr("y1", y1)
-        .attr("y2", y2)
+        .attr("y1", y)
+        .attr("y2", y - percentage * this.arrow_max_length)
         .attr("stroke", this.arrow_color[party_name])
         .attr("stroke-width", 4)
     }
