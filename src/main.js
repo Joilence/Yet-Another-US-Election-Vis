@@ -9,7 +9,6 @@ import 'bootstrap-slider/dist/css/bootstrap-slider.min.css';
 import MapVisualization from './components/MapVisualization';
 import ControlPane from './components/ControlPane'
 
-$('#control-pane').load('../public/control-pane.html');
 
 const controlPane = new ControlPane();
 controlPane.controlPaneInit();
