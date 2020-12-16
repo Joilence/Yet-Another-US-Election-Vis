@@ -97,26 +97,23 @@ export default class ControlPane {
           this.viewHeight - this.margins.bottom,
         ],
       ])
-      .on("start brush end", brushed);
+      .on("brush", brushed);
 
     yearVis.append("g").attr("class", "brush").call(brush);
-    // .call(brush.move, [
-    //   this.margins.left,
-    //   this.viewWidth - this.margins.right,
-    // ]);
 
     function brushed(event) {
-      // if not selected, select all years
+      // if not selected, set default selection
       // let extent = d3.event.selection;
       // if (extent === null)
       //   extent = [this.margins.left, this.viewWidth - this.margins.right];
 
-      console.log("d3.event.type", d3.event.type);
+      // console.log("d3.event.type", d3.event.type);
       // console.log("d3.event.sourceEvent.type", d3.event.sourceEvent.type);
       // console.log('d3.event.selection', d3.event.selection);
 
-      // if during brush, do not calculate
-      if (d3.event.type === "brush") return;
+      // if during brush or bursh event not trigger by brush but brush.move, do not calculate
+      if (d3.event.sourceEvent.type === "brush") return;
+      if (d3.event.selection === null) return;
       const d0 = d3.event.selection.map(xYearScaler.invert);
       const interval = d3.timeYear.every(4);
       const d1 = d0.map(interval.round);
@@ -127,13 +124,8 @@ export default class ControlPane {
         d1[1] = interval.offset(d1[0]);
       }
 
-      console.log("d3.select(this)", d3.select(this));
-      console.log(
-        "d3.brushSelection(d3.select(this))",
-        d3.brushSelection(d3.select(this))
-      );
-      console.log("d1.map(xYearScaler)", d1.map(xYearScaler));
-      // d3.select(this).call(brush.move, d1.map(xYearScaler));
+      // console.log("d3.select(this)", d3.select(this));
+      d3.select(this).call(brush.move, d1.map(xYearScaler));
 
       if (d3.event.type === "end") {
         const startYear = 0;
