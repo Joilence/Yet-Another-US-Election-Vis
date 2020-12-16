@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 export default class AuxiliaryVis {
-    AuxiliaryVis() {
+    constructor() {
         this.dataset = [];
         this.time_range = [];
         this.dataset_elec = [];
