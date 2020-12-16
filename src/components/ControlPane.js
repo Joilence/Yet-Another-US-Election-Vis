@@ -1,23 +1,22 @@
 import * as d3 from "d3";
+import * as $ from 'jquery';
 
 export default class ControlPane {
   constructor() {}
-  controlPaneInit() {
-    var dateParser = d3.timeParse("%Y");
-    var data = [
-      { year: dateParser(2000), regionalData: 12 },
-      { year: dateParser(2004), regionalData: 15 },
-      { year: dateParser(2008), regionalData: 25 },
-      { year: dateParser(2012), regionalData: 11 },
-      { year: dateParser(2016), regionalData: 5 },
-      { year: dateParser(2020), regionalData: 8 },
-    ];
-    this.yearSelectionRender(data);
-  }
-  yearSelectionRender(data) {
+  yearSelectionRender() {
     /*
     Render the year selection bar as the symbol data / regional data changed.
     */
+
+   var dateParser = d3.timeParse("%Y");
+   var data = [
+     { year: dateParser(2000), regionalData: 12 },
+     { year: dateParser(2004), regionalData: 15 },
+     { year: dateParser(2008), regionalData: 25 },
+     { year: dateParser(2012), regionalData: 11 },
+     { year: dateParser(2016), regionalData: 5 },
+     { year: dateParser(2020), regionalData: 8 },
+   ];
 
     // console.log("raw data:", data);
 
@@ -122,7 +121,6 @@ export default class ControlPane {
       // if during brush or bursh event not trigger by brush but brush.move, do not calculate
       if (d3.event.sourceEvent != null && d3.event.sourceEvent.type === "brush") return;
 
-      console.log('processing')
       const d0 = d3.event.selection.map(xYearScaler.invert);
       const d1 = d0.map(interval.round);
 
@@ -135,12 +133,6 @@ export default class ControlPane {
       // console.log("d3.select(this)", d3.select(this));
       // console.log('snap brush')
       d3.select(this).call(brush.move, d1.map(xYearScaler));
-
-      if (d3.event.type === "end") {
-        const startYear = 0;
-        const endYear = 0;
-        //TODO: invoke visualization refresh
-      }
     }
 
     function brushed(event) {
@@ -150,6 +142,9 @@ export default class ControlPane {
       const formatTime = d3.timeFormat('%Y');
       const [startYear, endYear] = selection.map(invert).map(formatTime);
       // console.log(startYear, endYear);
+      yearVis.property('range', [startYear, endYear]);
+      $('#year-selection').trigger('change');
+      // console.log('html range', yearVis.property('range'))
     }
   }
 }
