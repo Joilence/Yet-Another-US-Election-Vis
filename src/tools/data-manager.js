@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 
 export function loadDatasets() {
-    const datasets = {};
+    let datasets = {};
     const filenames = ['1976-2016-president_DP', 'gdp_data'];
 
     for (let i = 0; i < filenames.length; i++) {
@@ -9,6 +9,6 @@ export function loadDatasets() {
             datasets[filenames[i]] = data;
         });
     }
-
+    
     return datasets;
 }

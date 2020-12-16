@@ -9,13 +9,21 @@ import 'bootstrap-slider/dist/css/bootstrap-slider.min.css';
 import MapVisualization from './components/MapVisualization';
 import ArrowVisualization from './components/ArrowVisualization'; 
 import { loadDatasets } from './tools/data-manager';
+import AuxiliaryVis from './components/AuxiliaryVis';
 
 const datasets = loadDatasets();
 const mapVis = new MapVisualization();
 const arrowVis = new ArrowVisualization();
+const auxiVis = new AuxiliaryVis();
 
-
-console.log(datasets)
 const svgGraph = mapVis.map_render();
-arrowVis.init_arrowVis();
 
+// arrowVis.init_arrowVis();
+
+$('#datasets-dropdown a').each((index, item) => {
+    $(item).click((event) => {
+        const selectedDataset = datasets[event.target.text];
+        $('#selected-dataset').text(event.target.text);
+        auxiVis.load_dataset(selectedDataset, datasets['1976-2016-president_DP'])
+    });
+})

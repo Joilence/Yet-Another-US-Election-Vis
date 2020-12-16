@@ -87,10 +87,19 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Auxiliary</h5>
-                        <p class="card-text">Some quick example text to build on the panel title and make up the bulk of
-                            the panel's content.</p>
-                        <a class="card-link">Card link</a>
-                        <a class="card-link">Another link</a>
+                        <div class="col-2" id="AuxiliaryArea">
+                            <div style="margin-top: 10px" class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="selected-dataset"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    select dataset
+                                </button>
+                                <div id="datasets-dropdown" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item" href="#">gdp_data</a>
+                                    <!-- <a class="dropdown-item" href="#">1976-2016-president_DP</a> -->
+                                </div>
+                            </div>
+                            <div class="AuxiliaryGraph"></div>
+                        </div>
                     </div>
                 </div>
             </div>
