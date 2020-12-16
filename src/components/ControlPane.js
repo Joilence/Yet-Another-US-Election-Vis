@@ -144,11 +144,12 @@ export default class ControlPane {
     }
 
     function brushed(event) {
-      console.log('update vis')
-      console.log('brush.extent:', brush.extent())
-      const startYear = 0;
-      const endYear = 0;
-      //TODO: invoke visualization refresh
+      // console.log(d3.event.selection);
+      const selection = d3.event.selection;
+      const invert = xYearScaler.invert;
+      const formatTime = d3.timeFormat('%Y');
+      const [startYear, endYear] = selection.map(invert).map(formatTime);
+      // console.log(startYear, endYear);
     }
   }
 }
