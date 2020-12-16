@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 
 export default class ControlPane {
-  ControlPane() {}
+  constructor() {}
   controlPaneInit() {
     var dateParser = d3.timeParse("%Y");
     var data = [
@@ -15,6 +15,10 @@ export default class ControlPane {
     this.yearSelectionRender(data);
   }
   yearSelectionRender(data) {
+    /*
+    Render the year selection bar as the symbol data / regional data changed.
+    */
+
     console.log("raw data:", data);
 
     // init vis size and margin
@@ -73,18 +77,19 @@ export default class ControlPane {
       .style("fill", "#69b3a2");
 
     // line generator
-    var curve = d3.curveMonotoneX;
-    var GDPGrowthLine = d3
+    const GDPGrowthLine = d3
       .line()
-      .x((d) => d.year)
-      .y((d) => d.regionalData)
-      .curve(curve);
+      .x((d) => xYearScaler(d.year))
+      .y((d) => yRegionalDataScaler(d.regionalData));
 
     // draw line
     yearVis
       .append("path")
       .datum(data)
       .attr("class", "line line-gdp")
+      .attr("fill", "none")
+      .attr("stroke", "black")
+      .attr("stroke-width", 2)
       .attr("d", GDPGrowthLine);
 
     // brush
