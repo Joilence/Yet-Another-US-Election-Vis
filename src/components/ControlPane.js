@@ -39,6 +39,8 @@ export default class ControlPane {
       .attr("width", this.viewWidth)
       .attr("height", this.viewHeight)
       .attr("viewbox", [0, 0, this.viewWidth, this.viewHeight]);
+    
+    d3.selectAll('#year-selection > *').remove()
 
     // data axis scaler
     var xYearScaler = d3
