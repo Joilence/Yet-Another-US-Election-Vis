@@ -1,23 +1,16 @@
-import * as d3 from 'd3';
+// import * as d3 from 'd3';
 
 export default class ArrowVisualization {
-    constructor() {
+    constructor(election_data) {
         this.svg = {};
         this.defs = {};
         this.arrow_color = { "republican": "red", "democratic": "blue" };
         this.arrow_max_length = 50;
-    }
-
-    init_svg() {
-
-        // this.svg = d3.select("#main-container")
-        //         .append("svg").attr("width", window.innerWidth)
-        //         .attr("height", window.innerHeight);
-        // this.defs = this.svg.append("defs");
+        this.time_range = [];
+        this.election_data = election_data;
     }
 
     init_marker(party_name) {
-
         // this.svg = d3.select("#main-container")
         //     .append("svg").attr("width", window.innerWidth)
         //     .attr("height", window.innerHeight);
@@ -32,13 +25,10 @@ export default class ArrowVisualization {
             .append("path")
             .attr("d", "M0,-5L10,0L0,5")
             .attr("class", "arrowHead");
-
     }
 
-    init_arrowVis(svg, x1, y1, x2, y2) {
+    init_arrowVis(svg) {
         this.svg = svg;
-        console.log(this.arrow_color)
-        this.init_svg();
         this.init_marker("republican");
         this.init_marker("democratic");
         // this.create_arrow("republican", 50 + 800 / 2, 50 + 500 / 2, 800 / 2, 500 / 2);
@@ -65,6 +55,6 @@ export default class ArrowVisualization {
     }
 }
 
-// init_arrowVis()
+// init_arrowVis(svg)
 // create_arrow("republican", 50 + 800/2, 50 + 500/2, 800/2, 500/2);
 // create_arrow("democratic", 800/2, 50 + 500/2, 50 + 800/2, 500/2);

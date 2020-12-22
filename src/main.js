@@ -8,15 +8,24 @@ import 'bootstrap-slider/dist/css/bootstrap-slider.min.css';
 // import { loadDatasets, renderNode } from './tools/data-manager';
 import MapVisualization from './components/MapVisualization';
 import ArrowVisualization from './components/ArrowVisualization'; 
-import { loadDatasets, getRegionalDataName, getSymbolDataName, getYearRange } from './tools/data-manager';
+import { loadDatasets, getRegionalDataName, getSymbolDataName, getYearRange, getGDPRate, getOverallShift } from './tools/data-manager';
 import ControlPane from './components/ControlPane'
 import AuxiliaryVis from './components/AuxiliaryVis';
 
 const datasets = loadDatasets();
-const mapVis = new MapVisualization();
-const arrowVis = new ArrowVisualization();
-const auxiVis = new AuxiliaryVis();
 
+setTimeout(()=>{
+    const { election_data, gdp_data } = datasets;
+    getOverallShift(election_data, 2000, 2016);
+    getGDPRate(gdp_data, 2000, 2016);
+
+}, 1000);
+
+
+    
+const mapVis = new MapVisualization();
+const auxiVis = new AuxiliaryVis();
+const arrowVis = new ArrowVisualization();
 const controlPane = new ControlPane();
 controlPane.yearSelectionRender();
 
@@ -24,17 +33,19 @@ $('#datasets-dropdown a').each((index, item) => {
     $(item).click((event) => {
         const selectedDataset = datasets[event.target.text];
         $('#selected-dataset').text(event.target.text);
-        auxiVis.load_dataset(selectedDataset, datasets['1976-2016-president_DP'])
+        auxiVis.load_dataset(selectedDataset, datasets['election_data'])
         const svgGraph = mapVis.map_render(selectedDataset);
     });
 })
+
+
 // arrowVis.init_arrowVis(svgGraph);
 
 // Current Data Option
 let dataOption = {
     /* Year Range: [ , ]
-       First element as startYear, second as endYear.
-       eg. [2004, 2008]
+    First element as startYear, second as endYear.
+    eg. [2004, 2008]
     */
     yearRange: getYearRange(),
     symbolDataName: getSymbolDataName(),
@@ -73,3 +84,4 @@ $('#year-selection').on('change', e => {
         dataOption.yearRange = yearRange;
     }
 })
+
