@@ -4,8 +4,10 @@ export default class AuxiliaryVis {
         this.dataset = [];
         this.time_range = [];
         this.dataset_elec = [];
+        this.dataset_name = ['gdp-value', 'gdp-growth-rate'];
+        this.data_option = 0;
     }
-    render_auxiliary(stateName) {
+    render(axis_name, stateName) {
         // load data
         let data_points = [];
         let year = [];
@@ -18,9 +20,9 @@ export default class AuxiliaryVis {
         for (let va in selectedState) {
             if (parseInt(va) >= this.time_range[0] && parseInt(va) <= this.time_range[1]) {
                 const value = selectedState[va].replace(/[\(\)']+/g, '')
-                data_points.push(parseFloat(value.split(',')[0]));
+                data_points.push(parseFloat(value.split(',')[this.data_option]));
                 year.push(parseInt(va));
-                data.push({ 'y': parseFloat(value.split(',')[0]), 'x': parseInt(va) })
+                data.push({ 'y': parseFloat(value.split(',')[this.data_option]), 'x': parseInt(va) })
             }
         }
         let selectedState_elec = this.dataset_elec.filter(obj => {
@@ -40,8 +42,8 @@ export default class AuxiliaryVis {
                 data_elec_rep.push({ 'y': value_rep, 'x': parseInt(selectedState_elec[va].year) })
             }
         }
-        console.log(data_elec_dem)
-        console.log(data_elec_rep)
+        // console.log(data_elec_dem)
+        // console.log(data_elec_rep)
         // console.log(data_points);
         // console.log(year);
         const margin = {
@@ -106,10 +108,10 @@ export default class AuxiliaryVis {
         svg.append("text")
             .attr("transform",
                 "translate(" + (width / 2) + " ," +
-                (height + margin.bottom) + ")")
+                (height + 50) + ")")
             .style("text-anchor", "middle")
             .style("font-size", "12px")
-            .text("Year");
+            .text("year");
 
         // add text label for the y axis left
         svg.append("text")
@@ -119,7 +121,7 @@ export default class AuxiliaryVis {
             .attr("dy", "1em")
             .style("font-size", "12px")
             .style("text-anchor", "middle")
-            .text("GDP");
+            .text(axis_name);
 
         // add text label for the y axis right
         svg.append("text")
@@ -129,7 +131,7 @@ export default class AuxiliaryVis {
             .attr("dy", "1em")
             .style("font-size", "12px")
             .style("text-anchor", "middle")
-            .text("Vote percentage");
+            .text("vote-percentage");
 
         // d3's line generator for GPD data
         var line = d3.line()
@@ -198,7 +200,7 @@ export default class AuxiliaryVis {
             .attr("r", 2)
             .style('fill', 'red');
 
-        var legend_keys = ["GDP", "Democratic Pers", "Republicant Pers"]
+        var legend_keys = [axis_name, "Democratic Pers", "Republicant Pers"]
         var legend_colors = ["green", "blue", "red"]
 
         var lineLegend = svg.selectAll(".lineLegend").data(legend_keys)
@@ -216,14 +218,21 @@ export default class AuxiliaryVis {
             .attr("fill", function (d, i) { return legend_colors[i] })
             .attr("width", 10).attr("height", 10);
     }
-    load_dataset(dataset, dataset_elec, time_range) {
-        this.dataset = dataset;
-        this.dataset_elec = dataset_elec
-        this.time_range = time_range;
-        this.render_auxiliary("new-york");
-        this.render_auxiliary("ohio");
-        this.render_auxiliary("texas");
 
+    render_auxiliary(data_option, time_range, selected_states){
+        d3.select(".AuxiliaryGraph").html('');
+        this.time_range = time_range;
+        this.data_option = this.dataset_name.indexOf(data_option);
+        selected_states.forEach(element => {
+            this.render(data_option, element);
+        });
+        // this.render(data_option, "new-york");
+        // this.render(data_option, "ohio");
+        // this.render(data_option, "texas");
+    }
+    load_dataset(dataset, dataset_elec) {
+        this.dataset = dataset;
+        this.dataset_elec = dataset_elec;
 
     }
 

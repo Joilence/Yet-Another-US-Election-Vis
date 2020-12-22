@@ -3,11 +3,7 @@ import * as $ from 'jquery';
 
 export function loadDatasets() {
     let datasets = {};
-<<<<<<< HEAD
-    const filenames = ['1976-2016-president_DP', 'gdp_data', '1976-2016-president_DP_Percentage', '1976-2016-president_DP2.0'];
-=======
     const filenames = ['election_data', 'gdp_data'];
->>>>>>> 130397871ca1215f9884870408f514cb4cbcc819
 
     for (let i = 0; i < filenames.length; i++) {
         d3.csv(`/datasets/${filenames[i]}.csv`).then((data) => {
