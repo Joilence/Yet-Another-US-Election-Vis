@@ -64,6 +64,8 @@ export function getGDPRate(gpd_data, beginYear, endYear) {
 }
 
 export function getOverallShift(election_data, beginYear, endYear) {
+    /* election_data: d3.csv(file)*/
+    
     let states_election = {};
     
     // convert data into dictionary format
