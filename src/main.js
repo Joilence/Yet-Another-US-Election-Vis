@@ -8,20 +8,15 @@ import 'bootstrap-slider/dist/css/bootstrap-slider.min.css';
 // import { loadDatasets, renderNode } from './tools/data-manager';
 import MapVisualization from './components/MapVisualization';
 import ArrowVisualization from './components/ArrowVisualization'; 
-import { loadDatasets, getRegionalDataName, getSymbolDataName, getYearRange, getGDPRate, getOverallShift } from './tools/data-manager';
+import { loadDatasets, getRegionalDataName, getSymbolDataName, getYearRange, getGDPRate, getOverallShift, getDataFilename } from './tools/data-manager';
 import ControlPane from './components/ControlPane'
 import AuxiliaryVis from './components/AuxiliaryVis';
 
 // Initialize Interface
 const datasets = loadDatasets();
+
 const controlPane = new ControlPane();
 controlPane.yearSelectionRender();
-const mapVis = new MapVisualization();
-// TODO: render map visualization
-// mapVis.render();
-const auxiVis = new AuxiliaryVis();
-// TODO: render auxiliary vis
-// auxiVis.render();
 
 // Current Data Option
 let dataOption = {
@@ -32,8 +27,24 @@ let dataOption = {
     yearRange: getYearRange(),
     symbolDataName: getSymbolDataName(),
     regionalDataName: getRegionalDataName(),
-    selectedStates: ["alabama", "alaska"],
+    selectedStates: ["alabama", "alaska", "new-york"],
 }
+
+const mapVis = new MapVisualization();
+// TODO: render map visualization
+// mapVis.render();
+
+const auxiVis = new AuxiliaryVis();
+// TODO: render auxiliary vis
+// auxiVis.render();
+setTimeout(() => {
+    const { election_data, gdp_data } = datasets;
+    // load dataset to auxiliary component
+    auxiVis.load_dataset(gdp_data, election_data);
+    // render auxiliary with three parameter 
+    // (data_option, time_range, selected states to present in auxiliary)
+    auxiVis.render_auxiliary(getRegionalDataName(), getYearRange(), dataOption.selectedStates);
+}, 1000);
 
 // Detect Data Selection
 // TODO: detect change of selected states
@@ -57,6 +68,7 @@ $('#regional-data-selection input:radio').on('click', e => {
     if (dataOption.regionalDataName !== regionalDataName) {
         dataOption.regionalDataName = regionalDataName;
         controlPane.yearSelectionRender();
+        auxiVis.render_auxiliary(regionalDataName, getYearRange(), dataOption.selectedStates);
     }
 })
 
@@ -67,16 +79,6 @@ $('#year-selection').on('change', e => {
     // update vis if data changed
     if (dataOption.yearRange !== yearRange) {
         dataOption.yearRange = yearRange;
+        auxiVis.render_auxiliary(getRegionalDataName(), yearRange, dataOption.selectedStates);
     }
-})
-
-
-// Auxiliary Visualization From Dang
-$('#datasets-dropdown a').each((index, item) => {
-    $(item).click((event) => {
-        const selectedDataset = datasets[event.target.text];
-        $('#selected-dataset').text(event.target.text);
-        auxiVis.load_dataset(selectedDataset, datasets['1976-2016-president_DP'])
-        const svgGraph = mapVis.map_render(selectedDataset);
-    });
 })
