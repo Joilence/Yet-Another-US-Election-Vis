@@ -46,6 +46,8 @@ export default class AuxiliaryVis {
         // console.log(data_elec_rep)
         // console.log(data_points);
         // console.log(year);
+
+        // define SVG for auxiliary part
         const margin = {
             top: 80, right: 60, bottom: 60, left: 60,
         };
@@ -200,6 +202,7 @@ export default class AuxiliaryVis {
             .attr("r", 2)
             .style('fill', 'red');
 
+        // Add legend for the graph
         var legend_keys = [axis_name, "Democratic Pers", "Republicant Pers"]
         var legend_colors = ["green", "blue", "red"]
 
@@ -218,7 +221,7 @@ export default class AuxiliaryVis {
             .attr("fill", function (d, i) { return legend_colors[i] })
             .attr("width", 10).attr("height", 10);
     }
-
+    // render auxiliary graphs
     render_auxiliary(data_option, time_range, selected_states){
         d3.select(".AuxiliaryGraph").html('');
         this.time_range = time_range;
@@ -230,6 +233,7 @@ export default class AuxiliaryVis {
         // this.render(data_option, "ohio");
         // this.render(data_option, "texas");
     }
+    // load datasets to the component
     load_dataset(dataset, dataset_elec) {
         this.dataset = dataset;
         this.dataset_elec = dataset_elec;

@@ -39,23 +39,13 @@ function main(datasets) {
 
     // Display Map
     // Display Auxiliary
+    // load dataset to auxiliary component
     auxiVis.load_dataset(gdp_data, election_data);
+    // render auxiliary with three parameter 
+    // (data_option, time_range, selected states to present in auxiliary)
     auxiVis.render_auxiliary(getRegionalDataName(), getYearRange(), dataOption.selectedStates);
-    // $('#datasets-dropdown a').each((index, item) => {
-    //     $(item).click((event) => {
-    //         const selectedDataset = datasets[event.target.text];
-            
-    //         $('#selected-dataset').text(event.target.text);
-    //         auxiVis.load_dataset(selectedDataset, election_data);
-    //         console.log(election_data)
-    //         auxiVis.render_auxiliary('gdp-growth-rate', [2000, 2016]);
-    //         const svgGraph = mapVis.map_render(selectedDataset);
-    //     });
-    // })
-    
     // Auxiliary Selection
     
-
     // Data Selection
     $('#symbol-data-selection input:radio').on('click', e => {
         let symbolDataName = getSymbolDataName();
