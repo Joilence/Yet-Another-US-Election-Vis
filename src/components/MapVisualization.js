@@ -1,88 +1,174 @@
-import * as d3 from 'd3';
-import ArrowVisualization from './ArrowVisualization';
+import * as d3 from "d3";
+import {
+  getYearRange,
+  getSymbolDataName,
+  getRegionalDataName,
+} from "../tools/data-manager";
+import ArrowVisualization from "./ArrowVisualization";
 // import * as $ from 'jquery';
 
 export default class MapVisualzation {
-    constructor() {
-        // this.arrowVis = new ArrowVisualization();
-        this.usaMap = {}
-        this.dataset = []
-    }
-    convert_growthRate(stateName, first_year, second_year) {
-        let data_points = [];
-        let first_point = 0;
-        let second_point = 0;
+  constructor() {
+    // this.arrowVis = new ArrowVisualization();
+    this.usaMap = {};
+    this.dataset = [];
+    // TODO:store US State names offline
+    this.USStateNames = [];
+    this.USStates = [];
+    d3.json(
+      "https://gist.githubusercontent.com/Bradleykingz/3aa5206b6819a3c38b5d73cb814ed470/raw/a476b9098ba0244718b496697c5b350460d32f99/us-states.json"
+    ).then((data) => {
+      this.USStates = data.features;
+      // get us states names
+      this.USStates.forEach((e) => {
+        let name = e.properties.name.toLowerCase();
+        if (name.split(" ").length > 1) name = name.split(" ").join("-");
+        // console.log(name);
+        this.USStateNames.push(name);
+      });
+      // console.log(this.USStateNames);
+    });
+    // data option
+    this.symbolDataName = "";
+    this.regionalDataName = "";
+    this.yearRange = [2000, 2008];
+    // datasets
+    this.symbolData = [];
+    this.regionalData = [];
+  }
+  mapVisRender() {
+    // update data on demand
 
-        let selectedState = this.dataset.filter(obj => {
-            return obj.state === stateName
-        });
-        selectedState = selectedState[0]
-        if (selectedState == undefined){
-            console.log(stateName);
-            return 0;
-        }
-        for (let va in selectedState) {
-            if (parseInt(va) === first_year) {
-                const value = selectedState[va].replace(/[\(\)']+/g, '')
-                first_point = parseFloat(value.split(',')[0]);
-            }
-            else if (parseInt(va) === second_year) {
-                const value = selectedState[va].replace(/[\(\)']+/g, '')
-                second_point = parseFloat(value.split(',')[0]);
-            }
-        }
-        
-        return (second_point - first_point) / first_point
-    }
-    map_render(dataset) {
-        this.dataset = dataset;
-        const width = 900;
-        const height = 600;
-        const svg = d3.select(".MapVisualization").append("svg")
-            .attr("width", width)
-            .attr("height", height);
+    // TODO: solve async problem of year range
+    // if (getYearRange() !== this.yearRange) {
+    //   this.yearRange = getYearRange()
+    //   console.log('mapVisRender: Year range', this.yearRange);
+    // }
 
-        const projection = d3.geoAlbersUsa()
-            .translate([width / 2, height / 2]) // translate to center of screen
-            .scale([1000]); // scale things down so see entire US
-
-        const path = d3.geoPath().projection(projection);
-        d3.json("https://gist.githubusercontent.com/Bradleykingz/3aa5206b6819a3c38b5d73cb814ed470/raw/a476b9098ba0244718b496697c5b350460d32f99/us-states.json")
-            .then((uState) => {
-                let growth_arr = []
-                uState.features.forEach(element => {
-                    let name = element.properties.name.toLowerCase();
-                    if (name.split(' ').length > 1) {
-                        name = name.split(' ')
-                        name = name.join('-')
-                    }
-                    growth_arr.push(this.convert_growthRate(name, 1998, 2018));
-
+    if (getRegionalDataName() !== this.regionalDataName) {
+      this.regionalDataName = getRegionalDataName();
+      switch (this.regionalDataName) {
+        case "gdp-growth-rate":
+          d3.csv(`/datasets/gdp_data.csv`)
+            .then((data) => this.preprocessGDPGrowthRate(data))
+            .then((data) => {
+              this.regionalData = data;
+              this._mapVisRegionRender(data);
             });
-        const colorScale = d3.scaleLinear()
-            .domain(d3.extent(growth_arr))
-            .range(['white', 'green']);
-        
-        this.usaMap = svg.selectAll('path')
-            .data(uState.features)
-            .enter()
-            .append('path')
-            .attr("d", path)
-            .attr('id', function (d) { return d.properties.name })
-            .attr("class", 'state')
-            .attr("fill", function(d,i){
-                return colorScale(growth_arr[i])
+          break;
+        case "gdp-value":
+          break;
+        default:
+          break;
+      }
+    }
+
+    if (getSymbolDataName() !== this.symbolDataName) {
+      this.symbolDataName = getSymbolDataName();
+      switch (this.symbolDataName) {
+        case "shift-of-votes":
+          d3.csv("/datasets/election_data.csv")
+            .then((data) => data)
+            .then((data) => {
+              this.symbolData = data;
+              this._mapVisSymbolRender(data);
             });
-        // console.log(d3.select('#ohio'))
-        console.log(this.usaMap)
-        this.arrowVis.init_arrowVis(svg);
-        this.arrowVis.create_arrow("republican", 50 + 400, 50 + 250, 0.2);
-        this.arrowVis.create_arrow("republican", 30 + 160, 50 + 250, 0.5);
-        this.arrowVis.create_arrow("democratic", 300, 50 + 250, 1);
-        this.arrowVis.create_arrow("democratic", 100, 30 + 250, 0.8);
-        return svg;
-    })
+          break;
+        default:
+          break;
+      }
+    }
+  }
+  _mapVisRegionRender(data) {
+    // TODO: confirm overall correctness (hawaii?)
+    // draw regional data vis
+    // console.log("data for region render: ", data);
+    const width = 900;
+    const height = 600;
+    const mapVis = d3
+      .select("#map-visualization")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
 
-}
+    const projection = d3
+      .geoAlbersUsa()
+      .translate([width / 2, height / 2]) // translate to center of screen
+      .scale([1000]); // scale things down so see entire US
 
+    const path = d3.geoPath().projection(projection);
+
+    const colorScale = d3
+      .scaleLinear()
+      .domain(d3.extent(Object.values(data)))
+      .range(["white", "green"]);
+
+    this.usaMap = mapVis
+      .selectAll("path")
+      // TODO: figure out why use US States data here for path
+      .data(this.USStates)
+      .enter()
+      .append("path")
+      .attr("d", path)
+      .attr("id", function (d) {
+        // TODO: name conversion
+        let name = d.properties.name.toLowerCase();
+        if (name.split(" ").length > 1) name = name.split(" ").join("-");
+        // console.log('state: ', name);
+        return name;
+      })
+      .attr("class", "state")
+      .attr("fill", function (d) {
+        let name = d.properties.name.toLowerCase();
+        if (name.split(" ").length > 1) name = name.split(" ").join("-");
+        let value = data[name];
+        // console.log(name, value, colorScale(value));
+        return colorScale(value);
+      });
+  }
+  _mapVisSymbolRender(data) {
+    // draw symbol data vis
+    console.log("data for symbol render: ", data);
+  }
+  preprocessGDPGrowthRate(data) {
+    function calGrowthRate(stateName, startYear, endYear) {
+      let startGDP = 0;
+      let endGDP = 0;
+
+      let selectedState = data.filter((obj) => {
+        return obj.state === stateName;
+      });
+      selectedState = selectedState[0];
+      if (selectedState == undefined) {
+        console.log("calculate growthRate: state not found: ", stateName);
+        return 0;
+      }
+
+      for (let year in selectedState) {
+        if (parseInt(year) === startYear) {
+          const value = selectedState[year].replace(/[\(\)']+/g, "");
+          startGDP = parseFloat(value.split(",")[0]);
+        } else if (parseInt(year) === endYear) {
+          const value = selectedState[year].replace(/[\(\)']+/g, "");
+          endGDP = parseFloat(value.split(",")[0]);
+        }
+      }
+
+      return (endGDP - startGDP) / startGDP;
+    }
+
+    // console.log("Preprocess GDP Growth Rate\n Raw Data: ", data);
+    let stateGDPGrowthRates = {};
+    let [startYear, endYear] = this.yearRange;
+    this.USStates.forEach((e) => {
+      let name = e.properties.name.toLowerCase();
+      if (name.split(" ").length > 1) name = name.split(" ").join("-");
+      // stateGDPGrowthRates.push({
+      //   stateName: name,
+      //   regionalData: calGrowthRate(name, startYear, endYear),
+      // });
+      stateGDPGrowthRates[name] = calGrowthRate(name, startYear, endYear);
+    });
+    return stateGDPGrowthRates;
+  }
 }

@@ -18,7 +18,7 @@ const controlPane = new ControlPane();
 controlPane.yearSelectionRender();
 const mapVis = new MapVisualization();
 // TODO: render map visualization
-// mapVis.render();
+mapVis.mapVisRender();
 const auxiVis = new AuxiliaryVis();
 // TODO: render auxiliary vis
 // auxiVis.render();
@@ -75,8 +75,8 @@ $('#year-selection').on('change', e => {
 $('#datasets-dropdown a').each((index, item) => {
     $(item).click((event) => {
         const selectedDataset = datasets[event.target.text];
+        console.log(selectedDataset);
         $('#selected-dataset').text(event.target.text);
         auxiVis.load_dataset(selectedDataset, datasets['1976-2016-president_DP'])
-        const svgGraph = mapVis.map_render(selectedDataset);
     });
 })
