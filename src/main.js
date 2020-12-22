@@ -12,11 +12,16 @@ import { loadDatasets, getRegionalDataName, getSymbolDataName, getYearRange, get
 import ControlPane from './components/ControlPane'
 import AuxiliaryVis from './components/AuxiliaryVis';
 
+// Initialize Interface
 const datasets = loadDatasets();
 const controlPane = new ControlPane();
-const mapVis = new MapVisualization();
-const auxiVis = new AuxiliaryVis();
 controlPane.yearSelectionRender();
+const mapVis = new MapVisualization();
+// TODO: render map visualization
+// mapVis.render();
+const auxiVis = new AuxiliaryVis();
+// TODO: render auxiliary vis
+// auxiVis.render();
 
 // Current Data Option
 let dataOption = {
@@ -30,65 +35,48 @@ let dataOption = {
     selectedStates: ["alabama", "alaska"],
 }
 
-setTimeout(()=>{
-    main(datasets);
-}, 1000);
+// Detect Data Selection
+// TODO: detect change of selected states
 
-function main(datasets) {
-    const { election_data, gdp_data } = datasets;
+$('#symbol-data-selection input:radio').on('click', e => {
+    let symbolDataName = getSymbolDataName();
+    console.log('current symbol data name:', symbolDataName);
 
-    // Display Map
+    // update vis if data changed
+    if (dataOption.symbolDataName !== symbolDataName) {
+        dataOption.symbolDataName = symbolDataName;      
+        controlPane.yearSelectionRender();
+    }
+})
 
-    // Display Auxiliary
+$('#regional-data-selection input:radio').on('click', e => {
+    let regionalDataName = getRegionalDataName();
+    console.log('current regional data name:', regionalDataName);
 
-    $('#datasets-dropdown a').each((index, item) => {
-        $(item).click((event) => {
-            const selectedDataset = datasets[event.target.text];
-            $('#selected-dataset').text(event.target.text);
-            auxiVis.load_dataset(selectedDataset, datasets['election_data'])
-            const svgGraph = mapVis.map_render(selectedDataset);
-        });
-    })
-    
-    // Auxiliary Selection
-    
+    // update vis if data changed
+    if (dataOption.regionalDataName !== regionalDataName) {
+        dataOption.regionalDataName = regionalDataName;
+        controlPane.yearSelectionRender();
+    }
+})
 
-    // Data Selection
-    $('#symbol-data-selection input:radio').on('click', e => {
-        let symbolDataName = getSymbolDataName();
-        console.log('current symbol data name:', symbolDataName);
-    
-        // update vis if data changed
-        if (dataOption.symbolDataName !== symbolDataName) {
-            dataOption.symbolDataName = symbolDataName;      
-            controlPane.yearSelectionRender();
-        }
-    })
-    
-    $('#regional-data-selection input:radio').on('click', e => {
-        let regionalDataName = getRegionalDataName();
-        console.log('current regional data name:', regionalDataName);
-    
-        // update vis if data changed
-        if (dataOption.regionalDataName !== regionalDataName) {
-            dataOption.regionalDataName = regionalDataName;
-            controlPane.yearSelectionRender();
-        }
-    })
-    
-    $('#year-selection').on('change', e => {
-        let yearRange = getYearRange();
-        console.log('current year range:', yearRange);
-    
-        // update vis if data changed
-        if (dataOption.yearRange !== yearRange) {
-            dataOption.yearRange = yearRange;
-        }
-    })
+$('#year-selection').on('change', e => {
+    let yearRange = getYearRange();
+    console.log('current year range:', yearRange);
 
-}
-
-    
+    // update vis if data changed
+    if (dataOption.yearRange !== yearRange) {
+        dataOption.yearRange = yearRange;
+    }
+})
 
 
-
+// Auxiliary Visualization From Dang
+$('#datasets-dropdown a').each((index, item) => {
+    $(item).click((event) => {
+        const selectedDataset = datasets[event.target.text];
+        $('#selected-dataset').text(event.target.text);
+        auxiVis.load_dataset(selectedDataset, datasets['1976-2016-president_DP'])
+        const svgGraph = mapVis.map_render(selectedDataset);
+    });
+})
