@@ -4,7 +4,7 @@ import ArrowVisualization from './ArrowVisualization';
 
 export default class MapVisualzation {
     constructor() {
-        this.arrowVis = new ArrowVisualization();
+        // this.arrowVis = new ArrowVisualization();
         this.usaMap = {}
         this.dataset = []
     }
@@ -76,10 +76,10 @@ export default class MapVisualzation {
         // console.log(d3.select('#ohio'))
         console.log(this.usaMap)
         this.arrowVis.init_arrowVis(svg);
-        this.arrowVis.create_arrow("republican", 50 + 400, 50 + 250, 400, 250);
-        this.arrowVis.create_arrow("republican", 30 + 160, 50 + 250, 160, 250);
-        this.arrowVis.create_arrow("democratic", 300, 50 + 250, 50 + 300, 250);
-        this.arrowVis.create_arrow("democratic", 100, 30 + 250, 30 + 100, 250);
+        this.arrowVis.create_arrow("republican", 50 + 400, 50 + 250, 0.2);
+        this.arrowVis.create_arrow("republican", 30 + 160, 50 + 250, 0.5);
+        this.arrowVis.create_arrow("democratic", 300, 50 + 250, 1);
+        this.arrowVis.create_arrow("democratic", 100, 30 + 250, 0.8);
         return svg;
     })
 
