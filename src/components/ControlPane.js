@@ -3,7 +3,9 @@ import * as $ from "jquery";
 import { getSymbolDataName, getRegionalDataName } from "../tools/data-manager";
 
 export default class ControlPane {
-  constructor() {}
+  constructor(datasets) {
+    this.datasets = datasets;
+  }
   preprocessGDPGrowthRate(data) {
     // console.log('[Preprocess GDP Growth Rate]\n Raw Data: ',data);
 
