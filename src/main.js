@@ -24,7 +24,7 @@ $('#datasets-dropdown a').each((index, item) => {
     $(item).click((event) => {
         const selectedDataset = datasets[event.target.text];
         $('#selected-dataset').text(event.target.text);
-        auxiVis.load_dataset(selectedDataset, datasets['1976-2016-president_DP'])
+        auxiVis.load_dataset(selectedDataset, datasets['1976-2016-president_DP2.0'], [2000, 2016])
         const svgGraph = mapVis.map_render(selectedDataset);
     });
 })
