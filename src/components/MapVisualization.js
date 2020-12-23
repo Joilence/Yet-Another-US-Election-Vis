@@ -1,88 +1,123 @@
-import * as d3 from 'd3';
-import ArrowVisualization from './ArrowVisualization';
+import * as d3 from "d3";
+import { getOverallVotesShift, getGdpRate } from "../tools/data-manager";
+import ArrowVisualization from "./ArrowVisualization";
+import { UsMapGeoJson } from "./UsMapGeoJson";
+
 // import * as $ from 'jquery';
 
 export default class MapVisualzation {
-    constructor() {
-        // this.arrowVis = new ArrowVisualization();
-        this.usaMap = {}
-        this.dataset = []
+  constructor(datasets) {
+    this.arrowVis = new ArrowVisualization();
+    this.datasets = datasets;
+    this.usaMap = {};
+    this.dataset = [];
+    this.USStateNames = ["alabama", "alaska", "arizona", "arkansas", "california", "colorado", "connecticut"
+                      , "delaware", "district-of-columbia", "florida", "georgia", "idaho", "illinois", "indiana"
+                      , "iowa", "kansas", "kentucky", "louisiana", "maine", "maryland", "massachusetts", "michigan"
+                      , "minnesota", "mississippi", "missouri", "montana", "nebraska", "nevada", "new-hampshire"
+                      , "new-jersey", "new-mexico", "new-york", "north-carolina", "north-dakota", "ohio", "oklahoma"
+                      , "oregon", "pennsylvania", "rhode-island", "south-carolina", "south-dakota", "tennessee"
+                      , "texas", "utah", "vermont", "virginia", "washington", "west-virginia", "wisconsin", "wyoming", "hawaii"]; //puerto-rico
+
+    this.USStatesCoordinate = UsMapGeoJson.features;
+    this.USStatesCoordinate_Dict = {}; // {"name":[coordinates]}
+
+    this.USStatesCoordinate.forEach((row) => {
+      this.USStatesCoordinate_Dict[row.properties.name] = row.geometry.coordinates
+    });
+
+    this.symbolDataName = "";
+    this.regionalDataName = "";
+    this.yearRange = [];
+    this.selectedStates = [];
+
+    this.colorRange = ["white", "green"];
+    
+    this.map_width = 900;
+    this.map_height = 600;
+    this.mapVis = d3.select("#map-visualization")
+                    .append("svg")
+                    .attr("width", this.map_width)
+                    .attr("height", this.map_height);
+    this.arrowVis.svg = this.mapVis
+  }
+
+
+  mapVisRender(symbolDataName, regionalDataName, yearRange, selectedStates) {
+    // update data on demand
+    if (regionalDataName !== this.regionalDataName || yearRange !== this.yearRange) {
+      // console.log("-- map randers gdp rate --")
+      switch (regionalDataName) {
+        case "gdp-growth-rate":
+          let [regionalData, regionalDataYears] = getGdpRate(this.datasets["gdp_data"], yearRange);
+          this._mapVisRegionRender(regionalData);
+          break;
+        case "gdp-value":
+          break;
+        default:
+          break;
+      }
     }
-    convert_growthRate(stateName, first_year, second_year) {
-        let data_points = [];
-        let first_point = 0;
-        let second_point = 0;
+ 
+    if (symbolDataName !== this.symbolDataName || yearRange !== this.yearRange) {
+      // console.log("-- map randers election arrows --")
+      switch (symbolDataName) {
+        case "shift-of-votes":
+          this._mapVisSymbolRender(this.datasets["election_data"], yearRange)
+          break;
 
-        let selectedState = this.dataset.filter(obj => {
-            return obj.state === stateName
-        });
-        selectedState = selectedState[0]
-        if (selectedState == undefined){
-            console.log(stateName);
-            return 0;
-        }
-        for (let va in selectedState) {
-            if (parseInt(va) === first_year) {
-                const value = selectedState[va].replace(/[\(\)']+/g, '')
-                first_point = parseFloat(value.split(',')[0]);
-            }
-            else if (parseInt(va) === second_year) {
-                const value = selectedState[va].replace(/[\(\)']+/g, '')
-                second_point = parseFloat(value.split(',')[0]);
-            }
-        }
-        
-        return (second_point - first_point) / first_point
+        default:
+          break;
+      }
     }
-    map_render(dataset) {
-        this.dataset = dataset;
-        const width = 900;
-        const height = 600;
-        const svg = d3.select(".MapVisualization").append("svg")
-            .attr("width", width)
-            .attr("height", height);
 
-        const projection = d3.geoAlbersUsa()
-            .translate([width / 2, height / 2]) // translate to center of screen
-            .scale([1000]); // scale things down so see entire US
+    this.regionalDataName = regionalDataName;
+    this.symbolDataName = symbolDataName;
+    this.yearRange = yearRange;
+  }
 
-        const path = d3.geoPath().projection(projection);
-        d3.json("https://gist.githubusercontent.com/Bradleykingz/3aa5206b6819a3c38b5d73cb814ed470/raw/a476b9098ba0244718b496697c5b350460d32f99/us-states.json")
-            .then((uState) => {
-                let growth_arr = []
-                uState.features.forEach(element => {
-                    let name = element.properties.name.toLowerCase();
-                    if (name.split(' ').length > 1) {
-                        name = name.split(' ')
-                        name = name.join('-')
-                    }
-                    growth_arr.push(this.convert_growthRate(name, 1998, 2018));
+  _mapVisRegionRender(data) {
+    const projection = d3
+      .geoAlbersUsa()
+      .translate([this.map_width / 2, this.map_height / 2]) // translate to center of screen
+      .scale([1000]); // scale things down so see entire US
 
-            });
-        const colorScale = d3.scaleLinear()
-            .domain(d3.extent(growth_arr))
-            .range(['white', 'green']);
-        
-        this.usaMap = svg.selectAll('path')
-            .data(uState.features)
-            .enter()
-            .append('path')
-            .attr("d", path)
-            .attr('id', function (d) { return d.properties.name })
-            .attr("class", 'state')
-            .attr("fill", function(d,i){
-                return colorScale(growth_arr[i])
-            });
-        // console.log(d3.select('#ohio'))
-        console.log(this.usaMap)
-        this.arrowVis.init_arrowVis(svg);
-        this.arrowVis.create_arrow("republican", 50 + 400, 50 + 250, 0.2);
-        this.arrowVis.create_arrow("republican", 30 + 160, 50 + 250, 0.5);
-        this.arrowVis.create_arrow("democratic", 300, 50 + 250, 1);
-        this.arrowVis.create_arrow("democratic", 100, 30 + 250, 0.8);
-        return svg;
-    })
+    const path = d3.geoPath().projection(projection);
 
-}
+    const colorScale = d3
+      .scaleLinear()
+      .domain(d3.extent(Object.values(data)))
+      .range(this.colorRange);
+
+    this.usaMap = this.mapVis
+      .selectAll("path")
+      // TODO: figure out why use US States data here for path
+      .data(this.USStatesCoordinate)
+      .enter()
+      .append("path")
+      .attr("d", path)
+      .attr("id", function (d) {
+        let name = d.properties.name;
+        return name;
+      })
+      .attr("class", "state")
+      .attr("fill", function (d) {
+        let value = data[d.properties.name];
+        return colorScale(value);
+      });
+  }
+
+  _mapVisSymbolRender(data, yearRange) {
+    this.arrowVis.init_arrowVis();
+    // draw symbol data vis
+    let [states_overall_shift, states_all_years] = getOverallVotesShift(data, yearRange);
+    // // console.log("data for symbol render: ", states_overall_shift);
+
+    for (let state in states_overall_shift) {
+      // console.log(state, states_overall_shift[state]["direction"], states_overall_shift[state]["shift"], this.USStatesCoordinate_Dict[state])
+      // TODO:
+      this.arrowVis.create_arrow(states_overall_shift[state]["direction"], 300, 400, 20*states_overall_shift[state]["shift"]);
+    }
+  }
 
 }

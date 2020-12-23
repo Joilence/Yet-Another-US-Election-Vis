@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import { getOverallVotesShift, getGdpRate } from '../tools/data-manager';
 export default class AuxiliaryVis {
     constructor() {
         this.dataset = [];
@@ -46,9 +47,13 @@ export default class AuxiliaryVis {
         // console.log(data_points);
         // console.log(year);
 
+        // Calculate overal shift and gdp
+        const overall_gdp = getGdpRate(this.dataset, this.time_range)[0][stateName]
+        const overall_shift = getOverallVotesShift(this.dataset_elec, this.time_range)[0][stateName].shift
+        const shift_direction = getOverallVotesShift(this.dataset_elec, this.time_range)[0][stateName].direction
         // define SVG for auxiliary part
         const margin = {
-            top: 80, right: 60, bottom: 60, left: 60,
+            top: 60, right: 60, bottom: 60, left: 60,
         };
         const width = 300 - margin.left - margin.right;
         const height = 300 - margin.top - margin.bottom;
@@ -98,12 +103,78 @@ export default class AuxiliaryVis {
 
         // add title 
         svg.append("text")
-            .attr("x", (width / 2))
-            .attr("y", 0 - (margin.top / 8))
+            .attr("x", (width / 4))
+            .attr("y", 0 - (margin.top / 2))
             .attr("text-anchor", "middle")
             .style("font-size", "16px")
             .style("text-decoration", "underline")
             .text(stateName + " state");
+
+        // add overal gdp
+        svg.append("text")
+            .attr("x", (width * 0.7))
+            .attr("y", 0 - (margin.top / 2))
+            .attr("text-anchor", "middle")
+            .style("font-size", "12px")
+            .attr("font-weight", "bold")
+            .text(() => {
+                return overall_gdp
+            })
+            .style('fill', () => {
+                if (overall_gdp > 0) {
+                    return 'green';
+                }
+                else return 'red';
+            });
+        svg.append("text")
+            .attr("x", (width * 0.7))
+            .attr("y", 0 - (margin.top / 3))
+            .attr("text-anchor", "middle")
+            .style("font-size", "7px")
+            .text(() => {
+                return 'Overall'
+            });
+        svg.append("text")
+            .attr("x", (width * 0.7))
+            .attr("y", 0 - (margin.top / 5))
+            .attr("text-anchor", "middle")
+            .style("font-size", "7px")
+            .text(() => {
+                return axis_name
+            });
+
+        // add overal shift
+        svg.append("text")
+            .attr("x", (width))
+            .attr("y", 0 - (margin.top / 2))
+            .attr("text-anchor", "middle")
+            .style("font-size", "12px")
+            .attr("font-weight", "bold")
+            .text(() => {
+                return overall_shift
+            })
+            .style('fill', () => {
+                if (shift_direction == 'dem') {
+                    return 'blue';
+                }
+                else return 'red';
+            });
+        svg.append("text")
+            .attr("x", (width))
+            .attr("y", 0 - (margin.top / 3))
+            .attr("text-anchor", "middle")
+            .style("font-size", "7px")
+            .text(() => {
+                return 'Overall'
+            });
+        svg.append("text")
+            .attr("x", (width))
+            .attr("y", 0 - (margin.top / 5))
+            .attr("text-anchor", "middle")
+            .style("font-size", "7px")
+            .text(() => {
+                return 'shift ' + shift_direction
+            });
 
         // add text label for the x axis
         svg.append("text")
@@ -201,15 +272,30 @@ export default class AuxiliaryVis {
             .attr("r", 2)
             .style('fill', 'red');
 
+
+    }
+    render_legend(axis_name) {
+        // define SVG for auxiliary part
+        const margin = {
+            top: 10, right: 10, bottom: 0, left: 10,
+        };
+        const width = 300 - margin.left - margin.right;
+        const height = 80 - margin.top - margin.bottom;
+        const svg = d3.select(".AuxiliaryGraphLegend").append("svg")
+            .attr('width', width + margin.left + margin.right)
+            .attr('height', height + margin.top + margin.bottom)
+            .append('g')
+            .attr('transform',
+                `translate(${margin.left},${margin.top})`);
         // Add legend for the graph
-        var legend_keys = [axis_name, "Democratic Pers", "Republicant Pers"]
+        var legend_keys = [axis_name, "Democratic Percentages", "Republicant Percentages"]
         var legend_colors = ["green", "blue", "red"]
 
         var lineLegend = svg.selectAll(".lineLegend").data(legend_keys)
             .enter().append("g")
             .attr("class", "lineLegend")
             .attr("transform", function (d, i) {
-                return "translate(" + width * 3/4 + "," + -((i+2) * 20) + ")";
+                return "translate(" + 0 + "," + (i * 20) + ")";
             });
 
         lineLegend.append("text").text(function (d) { return d; })
@@ -219,10 +305,13 @@ export default class AuxiliaryVis {
         lineLegend.append("rect")
             .attr("fill", function (d, i) { return legend_colors[i] })
             .attr("width", 10).attr("height", 10);
+
     }
     // render auxiliary graphs
-    render_auxiliary(data_option, time_range, selected_states){
+    render_auxiliary(data_option, time_range, selected_states) {
         d3.select(".AuxiliaryGraph").html('');
+        d3.select(".AuxiliaryGraphLegend").html('');
+        this.render_legend(data_option);
         this.time_range = time_range;
         this.data_option = this.dataset_name.indexOf(data_option);
         selected_states.forEach(element => {
