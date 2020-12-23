@@ -26,8 +26,7 @@ export default class ArrowVisualization {
             .attr("class", "arrowHead");
     }
 
-    init_arrowVis(svg) {
-        this.svg = svg;
+    init_arrowVis() {
         this.init_marker("rep");
         this.init_marker("dem");
     }
@@ -37,7 +36,7 @@ export default class ArrowVisualization {
         let x2;
         if (party_name == "rep") {// right
             x2 = x + percentage * this.arrow_max_length;
-        } else if (party_name == "demo") { //left
+        } else if (party_name == "dem") { //left
             x2 = x - percentage * this.arrow_max_length;
         }
         
@@ -51,7 +50,3 @@ export default class ArrowVisualization {
         .attr("stroke-width", 4)
     }
 }
-
-// init_arrowVis(svg)
-// create_arrow("republican", 50 + 800/2, 50 + 500/2, 800/2, 500/2);
-// create_arrow("democratic", 800/2, 50 + 500/2, 50 + 800/2, 500/2);
