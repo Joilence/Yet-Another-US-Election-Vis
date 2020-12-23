@@ -45,7 +45,7 @@
                             </div>
                             <div id='symbol-data-selection' class="btn-group btn-group-toggle" data-toggle="buttons">
                                 <label class="btn btn-outline-primary btn-sm active">
-                                    <input type="radio" name="options" value="shift-of-vote" checked> Shift of Votes
+                                    <input type="radio" name="options" value="shift-of-votes" checked> Shift of Votes
                                 </label>
                                 <label class="btn btn-outline-primary btn-sm">
                                     <input type="radio" name="options" value="error-of-poll" disabled> Error of Poll
@@ -100,9 +100,11 @@
             </div>
         </div>
         <div class="row">
+            <div id="scatterplot-tooltip" width='800' height='800'></div>
             <div id="scatterplot-vis" class="card w-100">
                 <div class="card-body">
-                    <div id="scatterplot-container" class="row"></div>
+                    <div id="scatterplot-container" class="row">
+                    </div>
                 </div>
             </div>
         </div>

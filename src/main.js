@@ -9,6 +9,7 @@ import MapVisualization from './components/MapVisualization';
 import { getRegionalDataName, getSymbolDataName, getYearRange } from './tools/data-manager';
 import ControlPane from './components/ControlPane'
 import AuxiliaryVis from './components/AuxiliaryVis';
+import ScatterplotVis from './components/ScatterplotVis';
 
 const filenames = ['election_data', 'gdp_data'];
 const datanames = ['election_data', 'gdp_data'];
@@ -23,6 +24,7 @@ Promise.all(tasks).then(files => {
     auxiVis.load_dataset(datasets.gdp_data, datasets.election_data);
     const mapVis = new MapVisualization();
     // TODO: render map visualization
+    const scatterplotVis = new ScatterplotVis(datasets);
 
     // Current Data Option
     let dataOption = {
