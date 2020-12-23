@@ -61,6 +61,7 @@ Promise.all(tasks).then(files => {
             dataOption.regionalDataName = regionalDataName;
             controlPane.yearSelectionRender();
             auxiVis.render_auxiliary(regionalDataName, getYearRange(), dataOption.selectedStates);
+            scatterplotVis.scatterplotVisRender();
         }
     })
 
@@ -72,6 +73,7 @@ Promise.all(tasks).then(files => {
         if (dataOption.yearRange !== yearRange) {
             dataOption.yearRange = yearRange;
             auxiVis.render_auxiliary(getRegionalDataName(), yearRange, dataOption.selectedStates);
+            scatterplotVis.scatterplotVisRender();
         }
     })
 
