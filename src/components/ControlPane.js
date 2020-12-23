@@ -159,7 +159,6 @@ export default class ControlPane {
       .range([this.viewHeight - this.margins.bottom, this.margins.top]);
 
     // add axes
-    // TODO: reduce y axis ticks
     yearVis
       .append("g")
       .attr("class", "x axis")
@@ -173,7 +172,7 @@ export default class ControlPane {
       .append("g")
       .attr("class", "y axis")
       .attr("transform", `translate(${this.margins.left}, 0)`)
-      .call(d3.axisLeft(yRegionalDataScaler));
+      .call(d3.axisLeft(yRegionalDataScaler).ticks(5));
 
     // draw dot
     yearVis
