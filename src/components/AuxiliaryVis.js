@@ -51,18 +51,32 @@ export default class AuxiliaryVis {
         const overall_gdp = getGdpRate(this.dataset, this.time_range)[0][stateName]
         const overall_shift = getOverallVotesShift(this.dataset_elec, this.time_range)[0][stateName].shift
         const shift_direction = getOverallVotesShift(this.dataset_elec, this.time_range)[0][stateName].direction
+        var element = d3.select('.AuxiliaryGraph').node();
+        console.log(element.getBoundingClientRect().width)
+        console.log(element.getBoundingClientRect().height)
+       
+        let originalWidth = 300;
+        let scaleRatio = element.getBoundingClientRect().width / (originalWidth);
+        if (originalWidth < element.getBoundingClientRect().width) {
+            originalWidth = element.getBoundingClientRect().width;
+            scaleRatio = 0.9
+        }
+        
         // define SVG for auxiliary part
         const margin = {
-            top: 60, right: 60, bottom: 60, left: 60,
+            top: 60 , right: 60 , bottom: 60 , left: 60 ,
         };
-        const width = 300 - margin.left - margin.right;
-        const height = 300 - margin.top - margin.bottom;
+        const width = element.getBoundingClientRect().width - margin.left - margin.right;
+        const height = element.getBoundingClientRect().width - margin.top - margin.bottom;
+        // calculate scale ratio
+        
+        
         const svg = d3.select(".AuxiliaryGraph").append("svg")
             .attr('width', width + margin.left + margin.right)
             .attr('height', height + margin.top + margin.bottom)
             .append('g')
             .attr('transform',
-                `translate(${margin.left},${margin.top})`);
+                `scale(${scaleRatio}) translate(${margin.left},${margin.top})`);
         // X scale will use the index of our data
         const xScale = d3.scaleLinear()
             .domain(d3.extent(year))
@@ -103,7 +117,7 @@ export default class AuxiliaryVis {
 
         // add title 
         svg.append("text")
-            .attr("x", (width / 4))
+            .attr("x", 10)
             .attr("y", 0 - (margin.top / 2))
             .attr("text-anchor", "middle")
             .style("font-size", "16px")
@@ -288,7 +302,7 @@ export default class AuxiliaryVis {
             .attr('transform',
                 `translate(${margin.left},${margin.top})`);
         // Add legend for the graph
-        var legend_keys = [axis_name, "Democratic Percentages", "Republicant Percentages"]
+        var legend_keys = [axis_name, "democratic-percentages", "republicant-percentages"]
         var legend_colors = ["green", "blue", "red"]
 
         var lineLegend = svg.selectAll(".lineLegend").data(legend_keys)
