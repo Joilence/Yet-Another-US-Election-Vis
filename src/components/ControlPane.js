@@ -3,9 +3,22 @@ import * as $ from "jquery";
 import { getSymbolDataName, getRegionalDataName } from "../tools/data-manager";
 
 export default class ControlPane {
-  constructor() {}
+  constructor(datasets) {
+    this.datasets = datasets;
+  }
   preprocessGDPGrowthRate(data) {
     // console.log('[Preprocess GDP Growth Rate]\n Raw Data: ',data);
+
+    // Example Data
+    // let dateParser = d3.timeParse("%Y");
+    // let data = [
+    //   { year: dateParser(2000), regionalData: 12 },
+    //   { year: dateParser(2004), regionalData: 15 },
+    //   { year: dateParser(2008), regionalData: 25 },
+    //   { year: dateParser(2012), regionalData: 11 },
+    //   { year: dateParser(2016), regionalData: 5 },
+    //   { year: dateParser(2020), regionalData: 8 },
+    // ];
 
     // get years
     const re = /\d/;
@@ -96,30 +109,20 @@ export default class ControlPane {
 
     // Load data
     let regionalDataName = getRegionalDataName();
+    
+    // Preprocess data
+    let processedData = [];
     switch (regionalDataName) {
       case "gdp-growth-rate":
-        // Example Data
-        // let dateParser = d3.timeParse("%Y");
-        // let data = [
-        //   { year: dateParser(2000), regionalData: 12 },
-        //   { year: dateParser(2004), regionalData: 15 },
-        //   { year: dateParser(2008), regionalData: 25 },
-        //   { year: dateParser(2012), regionalData: 11 },
-        //   { year: dateParser(2016), regionalData: 5 },
-        //   { year: dateParser(2020), regionalData: 8 },
-        // ];
-        d3.csv(`/datasets/gdp_data.csv`)
-          .then((data) => this.preprocessGDPGrowthRate(data))
-          .then((data) => this._yearSelectionVisRender(data));
+        processedData = this.preprocessGDPGrowthRate(this.datasets.gdp_data);
         break;
       case "gdp-value":
-        d3.csv(`/datasets/gdp_data.csv`)
-          .then((data) => this.preprocessGDPValue(data))
-          .then((data) => this._yearSelectionVisRender(data));
+        processedData = this.preprocessGDPValue(this.datasets.gdp_data);
         break;
       default:
         break;
     }
+    this._yearSelectionVisRender(processedData);
   }
   _yearSelectionVisRender(data) {
     // console.log("vis data:", data);
