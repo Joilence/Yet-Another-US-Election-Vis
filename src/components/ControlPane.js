@@ -5,8 +5,12 @@ import { getSymbolDataName, getRegionalDataName } from "../tools/data-manager";
 export default class ControlPane {
   constructor(datasets) {
     this.datasets = datasets;
+    // processed data
+    this.yearlyGDPGrowthRate = undefined;
+    this.yearlyGDPValue = undefined;
   }
   preprocessGDPGrowthRate(data) {
+    if (this.yearlyGDPGrowthRate != undefined) return this.yearlyGDPGrowthRate;
     // console.log('[Preprocess GDP Growth Rate]\n Raw Data: ',data);
 
     // Example Data
@@ -63,11 +67,12 @@ export default class ControlPane {
       });
     }
     // console.log('yearly GDP Growth Rate: ', yearlyGDPGrowthRate);
+    this.yearlyGDPGrowthRate = yearlyGDPGrowthRate;
     return yearlyGDPGrowthRate;
   }
   preprocessGDPValue(data) {
+    if (this.yearlyGDPValue !== undefined) return this.yearlyGDPValue;
     // console.log('[Preprocess GDP Growth Rate]\n Raw Data: ',data);
-
     // get years
     const re = /\d/;
     const regex = new RegExp(re, "g");
@@ -100,6 +105,7 @@ export default class ControlPane {
       yearlyGDPValue.push({ year: dateParser(year), regionalData: yearValue });
     }
     // console.log('yearly GDP Value: ', yearlyGDPValue);
+    this.yearlyGDPValue = yearlyGDPValue;
     return yearlyGDPValue;
   }
   yearSelectionRender() {
@@ -109,7 +115,7 @@ export default class ControlPane {
 
     // Load data
     let regionalDataName = getRegionalDataName();
-    
+
     // Preprocess data
     let processedData = [];
     switch (regionalDataName) {
