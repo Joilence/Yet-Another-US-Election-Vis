@@ -13,7 +13,6 @@ export default class MapVisualzation {
     this.usaMap = {};
     this.dataset = [];
     // TODO:store US State names offline
-    this.USStateNames = [];
     this.USStates = [];
     d3.json(
       "https://gist.githubusercontent.com/Bradleykingz/3aa5206b6819a3c38b5d73cb814ed470/raw/a476b9098ba0244718b496697c5b350460d32f99/us-states.json"
@@ -24,9 +23,7 @@ export default class MapVisualzation {
         let name = e.properties.name.toLowerCase();
         if (name.split(" ").length > 1) name = name.split(" ").join("-");
         // console.log(name);
-        this.USStateNames.push(name);
       });
-      // console.log(this.USStateNames);
     });
     // data option
     this.symbolDataName = "";
