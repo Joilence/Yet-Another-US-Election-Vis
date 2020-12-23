@@ -23,7 +23,6 @@ Promise.all(tasks).then(files => {
     const auxiVis = new AuxiliaryVis();
     auxiVis.load_dataset(datasets.gdp_data, datasets.election_data);
     const mapVis = new MapVisualization(datasets);
-    
 
     // Current Data Option
     let dataOption = {
@@ -36,8 +35,6 @@ Promise.all(tasks).then(files => {
         regionalDataName: "gdp-growth-rate",
         selectedStates: ["alabama", "alaska", "new-york"],
     }
-
-    mapVis.mapVisRender(dataOption.symbolDataName, dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
 
     // Detect Data Selection
     // TODO: detect change of selected states
