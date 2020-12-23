@@ -64,7 +64,7 @@ export function getGdpRate(gpd_data, yearRange) {
     return [states_overall_shift, states_all_years];
 }
 
-export function getOverallShift(election_data, yearRange) {
+export function getOverallVotesShift(election_data, yearRange) {
     /* election_data: d3.csv(file)*/
     
     let states_all_years = {};
