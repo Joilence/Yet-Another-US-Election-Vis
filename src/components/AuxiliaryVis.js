@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import { getGDPRate, getOverallShift, getRegionalDataName } from '../tools/data-manager';
+import { getOverallVotesShift, getGdpRate } from '../tools/data-manager';
 export default class AuxiliaryVis {
     constructor() {
         this.dataset = [];
@@ -48,9 +48,9 @@ export default class AuxiliaryVis {
         // console.log(year);
 
         // Calculate overal shift and gdp
-        const overall_gdp = getGDPRate(this.dataset, this.time_range[0], this.time_range[1])[stateName].overall_growth
-        const overall_shift = getOverallShift(this.dataset_elec, this.time_range[0], this.time_range[1])[stateName].shift
-        const shift_direction = getOverallShift(this.dataset_elec, this.time_range[0], this.time_range[1])[stateName].direction
+        const overall_gdp = getGdpRate(this.dataset, this.time_range)[0][stateName]
+        const overall_shift = getOverallVotesShift(this.dataset_elec, this.time_range)[0][stateName].shift
+        const shift_direction = getOverallVotesShift(this.dataset_elec, this.time_range)[0][stateName].direction
         // define SVG for auxiliary part
         const margin = {
             top: 60, right: 60, bottom: 60, left: 60,
@@ -280,7 +280,7 @@ export default class AuxiliaryVis {
             top: 10, right: 10, bottom: 0, left: 10,
         };
         const width = 300 - margin.left - margin.right;
-        const height = 60 - margin.top - margin.bottom;
+        const height = 80 - margin.top - margin.bottom;
         const svg = d3.select(".AuxiliaryGraphLegend").append("svg")
             .attr('width', width + margin.left + margin.right)
             .attr('height', height + margin.top + margin.bottom)
@@ -288,7 +288,7 @@ export default class AuxiliaryVis {
             .attr('transform',
                 `translate(${margin.left},${margin.top})`);
         // Add legend for the graph
-        var legend_keys = [axis_name, "Democratic Pers", "Republicant Pers"]
+        var legend_keys = [axis_name, "Democratic Percentages", "Republicant Percentages"]
         var legend_colors = ["green", "blue", "red"]
 
         var lineLegend = svg.selectAll(".lineLegend").data(legend_keys)
