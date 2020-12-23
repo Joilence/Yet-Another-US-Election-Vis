@@ -45,7 +45,6 @@ export default class MapVisualzation {
 
   mapVisRender(symbolDataName, regionalDataName, yearRange, selectedStates) {
     // update data on demand
-    console.log(symbolDataName, yearRange)
     if (regionalDataName !== this.regionalDataName || yearRange !== this.yearRange) {
       // console.log("-- map randers gdp rate --")
       switch (regionalDataName) {
