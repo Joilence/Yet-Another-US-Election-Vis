@@ -59,7 +59,7 @@ Promise.all(tasks).then(files => {
         if (dataOption.regionalDataName !== regionalDataName) {
             dataOption.regionalDataName = regionalDataName;
             controlPane.yearSelectionRender();
-            auxiVis.render_auxiliary(regionalDataName, getYearRange(), dataOption.selectedStates);
+            auxiVis.render_auxiliary(dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
             mapVis.mapVisRender(dataOption.symbolDataName, dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
         }
     })
