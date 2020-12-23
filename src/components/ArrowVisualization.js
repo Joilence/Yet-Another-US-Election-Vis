@@ -1,13 +1,12 @@
 // import * as d3 from 'd3';
 
 export default class ArrowVisualization {
-    constructor(election_data) {
+    constructor() {
         this.svg = {};
         this.defs = {};
-        this.arrow_color = { "republican": "red", "democratic": "blue" };
+        this.arrow_color = { "rep": "red", "dem": "blue" };
         this.arrow_max_length = 50;
         this.time_range = [];
-        this.election_data = election_data;
     }
 
     init_marker(party_name) {
@@ -29,18 +28,16 @@ export default class ArrowVisualization {
 
     init_arrowVis(svg) {
         this.svg = svg;
-        this.init_marker("republican");
-        this.init_marker("democratic");
-        // this.create_arrow("republican", 50 + 800 / 2, 50 + 500 / 2, 800 / 2, 500 / 2);
-        // this.create_arrow("democratic", 800/2, 50 + 500/2, 50 + 800/2, 500/2);
+        this.init_marker("rep");
+        this.init_marker("dem");
     }
 
     create_arrow(party_name, x, y, percentage) {
         /* (x,y) is the coordination of the state */
         let x2;
-        if (party_name == "republican") {// right
+        if (party_name == "rep") {// right
             x2 = x + percentage * this.arrow_max_length;
-        } else if (party_name == "democratic") { //left
+        } else if (party_name == "demo") { //left
             x2 = x - percentage * this.arrow_max_length;
         }
         

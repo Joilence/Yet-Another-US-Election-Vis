@@ -3,38 +3,43 @@ import {
   getYearRange,
   getSymbolDataName,
   getRegionalDataName,
+  getOverallShift, 
 } from "../tools/data-manager";
 import ArrowVisualization from "./ArrowVisualization";
+import { UsMapGeoJson } from "./UsMapGeoJson";
+
 // import * as $ from 'jquery';
 
 export default class MapVisualzation {
-  constructor() {
-    // this.arrowVis = new ArrowVisualization();
+  constructor(datasets) {
+    this.arrowVis = new ArrowVisualization();
+    this.datasets = datasets;
     this.usaMap = {};
     this.dataset = [];
-    // TODO:store US State names offline
-    this.USStateNames = [];
-    this.USStates = [];
-    d3.json(
-      "https://gist.githubusercontent.com/Bradleykingz/3aa5206b6819a3c38b5d73cb814ed470/raw/a476b9098ba0244718b496697c5b350460d32f99/us-states.json"
-    ).then((data) => {
-      this.USStates = data.features;
-      // get us states names
-      this.USStates.forEach((e) => {
-        let name = e.properties.name.toLowerCase();
-        if (name.split(" ").length > 1) name = name.split(" ").join("-");
-        // console.log(name);
-        this.USStateNames.push(name);
-      });
-      // console.log(this.USStateNames);
+    this.USStateNames = ["alabama", "alaska", "arizona", "arkansas", "california", "colorado", "connecticut"
+                      , "delaware", "district-of-columbia", "florida", "georgia", "idaho", "illinois", "indiana"
+                      , "iowa", "kansas", "kentucky", "louisiana", "maine", "maryland", "massachusetts", "michigan"
+                      , "minnesota", "mississippi", "missouri", "montana", "nebraska", "nevada", "new-hampshire"
+                      , "new-jersey", "new-mexico", "new-york", "north-carolina", "north-dakota", "ohio", "oklahoma"
+                      , "oregon", "pennsylvania", "rhode-island", "south-carolina", "south-dakota", "tennessee"
+                      , "texas", "utah", "vermont", "virginia", "washington", "west-virginia", "wisconsin", "wyoming"] // hawaii, puerto-rico
+
+    this.USStatesCoordinate = UsMapGeoJson.features;
+    this.USStatesCoordinate_Dict = {}; // {"name":[coordinates]}
+
+    this.USStatesCoordinate.forEach((row) => {
+      this.USStatesCoordinate_Dict[row.properties.name] = row.geometry.coordinates
     });
+
     // data option
-    this.symbolDataName = "";
+    this.symbolDataName = "shift-of-votes";
     this.regionalDataName = "";
     this.yearRange = [2000, 2008];
     // datasets
     this.symbolData = [];
     this.regionalData = [];
+
+    this.colorRange = ["white", "green"];
   }
   mapVisRender() {
     // update data on demand
@@ -49,12 +54,8 @@ export default class MapVisualzation {
       this.regionalDataName = getRegionalDataName();
       switch (this.regionalDataName) {
         case "gdp-growth-rate":
-          d3.csv(`/datasets/gdp_data.csv`)
-            .then((data) => this.preprocessGDPGrowthRate(data))
-            .then((data) => {
-              this.regionalData = data;
-              this._mapVisRegionRender(data);
-            });
+          this.regionalData = this.preprocessGDPGrowthRate(this.datasets["gdp_data"]);
+          this._mapVisRegionRender(this.regionalData);
           break;
         case "gdp-value":
           break;
@@ -64,21 +65,18 @@ export default class MapVisualzation {
     }
 
     if (getSymbolDataName() !== this.symbolDataName) {
-      this.symbolDataName = getSymbolDataName();
+      // this.symbolDataName = getSymbolDataName();
       switch (this.symbolDataName) {
         case "shift-of-votes":
-          d3.csv("/datasets/election_data.csv")
-            .then((data) => data)
-            .then((data) => {
-              this.symbolData = data;
-              this._mapVisSymbolRender(data);
-            });
+          this._mapVisSymbolRender(this.datasets["election_data"])
           break;
+
         default:
           break;
       }
     }
   }
+
   _mapVisRegionRender(data) {
     // TODO: confirm overall correctness (hawaii?)
     // draw regional data vis
@@ -90,6 +88,8 @@ export default class MapVisualzation {
       .append("svg")
       .attr("width", width)
       .attr("height", height);
+    
+    this.arrowVis.init_arrowVis(mapVis);
 
     const projection = d3
       .geoAlbersUsa()
@@ -101,36 +101,48 @@ export default class MapVisualzation {
     const colorScale = d3
       .scaleLinear()
       .domain(d3.extent(Object.values(data)))
-      .range(["white", "green"]);
+      .range(this.colorRange);
 
     this.usaMap = mapVis
       .selectAll("path")
       // TODO: figure out why use US States data here for path
-      .data(this.USStates)
+      .data(this.USStatesCoordinate)
       .enter()
       .append("path")
       .attr("d", path)
       .attr("id", function (d) {
-        // TODO: name conversion
-        let name = d.properties.name.toLowerCase();
-        if (name.split(" ").length > 1) name = name.split(" ").join("-");
-        // console.log('state: ', name);
+        let name = d.properties.name;
         return name;
       })
       .attr("class", "state")
       .attr("fill", function (d) {
-        let name = d.properties.name.toLowerCase();
-        if (name.split(" ").length > 1) name = name.split(" ").join("-");
+        let name = d.properties.name;
         let value = data[name];
         // console.log(name, value, colorScale(value));
         return colorScale(value);
       });
   }
+
   _mapVisSymbolRender(data) {
     // draw symbol data vis
-    console.log("data for symbol render: ", data);
+    let states_overall_shift = getOverallShift(data, this.yearRange);
+    // console.log("data for symbol render: ", states_overall_shift);
+
+    for (let state in states_overall_shift) {
+      console.log(state, states_overall_shift[state]["direction"], states_overall_shift[state]["shift"], this.USStatesCoordinate_Dict[state])
+      this.arrowVis.create_arrow(states_overall_shift[state]["direction"], 500, 600, states_overall_shift[state]["shift"]);
+    }
   }
+
   preprocessGDPGrowthRate(data) {
+    // console.log("Preprocess GDP Growth Rate\n Raw Data: ", data);
+    let stateGDPGrowthRates = {};
+    let [startYear, endYear] = this.yearRange;
+    
+    this.USStateNames.forEach((name) => {
+      stateGDPGrowthRates[name] = calGrowthRate(name, startYear, endYear);
+    });
+
     function calGrowthRate(stateName, startYear, endYear) {
       let startGDP = 0;
       let endGDP = 0;
@@ -138,6 +150,7 @@ export default class MapVisualzation {
       let selectedState = data.filter((obj) => {
         return obj.state === stateName;
       });
+      
       selectedState = selectedState[0];
       if (selectedState == undefined) {
         console.log("calculate growthRate: state not found: ", stateName);
@@ -157,18 +170,6 @@ export default class MapVisualzation {
       return (endGDP - startGDP) / startGDP;
     }
 
-    // console.log("Preprocess GDP Growth Rate\n Raw Data: ", data);
-    let stateGDPGrowthRates = {};
-    let [startYear, endYear] = this.yearRange;
-    this.USStates.forEach((e) => {
-      let name = e.properties.name.toLowerCase();
-      if (name.split(" ").length > 1) name = name.split(" ").join("-");
-      // stateGDPGrowthRates.push({
-      //   stateName: name,
-      //   regionalData: calGrowthRate(name, startYear, endYear),
-      // });
-      stateGDPGrowthRates[name] = calGrowthRate(name, startYear, endYear);
-    });
     return stateGDPGrowthRates;
   }
 }

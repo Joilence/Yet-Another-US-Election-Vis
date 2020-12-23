@@ -63,20 +63,21 @@ export function getGDPRate(gpd_data, beginYear, endYear) {
 
 }
 
-export function getOverallShift(election_data, beginYear, endYear) {
+export function getOverallShift(election_data, yearRange) {
     /* election_data: d3.csv(file)*/
     
     let states_election = {};
+    let [beginYear, endYear] = yearRange;
     
     // convert data into dictionary format
     election_data.forEach(function (row) {
-        if (row.year == beginYear) {
+        if (row.year == parseInt(beginYear)) {
             if (!(row.state in states_election)) {
                 states_election[row.state] = {"begin":{}, "end":{}, "direction":"", "shift":0}
             }
             states_election[row.state]["begin"] = {"rep_percent":row.rep_percent, "dem_percent":row.dem_percent}
             
-        } else if (row.year == endYear) {
+        } else if (row.year == parseInt(endYear)) {
             if (!(row.state in states_election)) {
                 states_election[row.state] = {"begin":{}, "end":{}}
             }
@@ -87,7 +88,8 @@ export function getOverallShift(election_data, beginYear, endYear) {
     // calculate shift rate
     for (let state in states_election) {
         let state_data = states_election[state];
-        let dem_change = state_data["end"]["dem_percent"] - state_data["begin"]["dem_percent"];
+        let dem_change = parseFloat(state_data["end"]["dem_percent"]) - parseFloat(state_data["begin"]["dem_percent"]);
+
         if (dem_change >= 0) {
             state_data["direction"] = "dem";
         } else {

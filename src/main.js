@@ -21,7 +21,7 @@ Promise.all(tasks).then(files => {
     const controlPane = new ControlPane(datasets);
     const auxiVis = new AuxiliaryVis();
     auxiVis.load_dataset(datasets.gdp_data, datasets.election_data);
-    const mapVis = new MapVisualization();
+    const mapVis = new MapVisualization(datasets);
     mapVis.mapVisRender();
 
     // Current Data Option
