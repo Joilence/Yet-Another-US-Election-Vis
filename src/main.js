@@ -16,7 +16,7 @@ const tasks = Array.from(filenames, fn => d3.csv(`/datasets/${fn}.csv`));
 
 Promise.all(tasks).then(files => {
     let datasets = Object.assign({}, ...datanames.map((n, i) => ({[n]: files[i]})));
-    console.log('data loaded', datasets);
+    // console.log('data loaded', datasets);
 
     // Initialize Components
     const controlPane = new ControlPane(datasets);
@@ -31,13 +31,13 @@ Promise.all(tasks).then(files => {
         First element as startYear, second as endYear.
         eg. [2004, 2008]
         */
-        yearRange: getYearRange(),
-        symbolDataName: getSymbolDataName(),
-        regionalDataName: getRegionalDataName(),
+        yearRange: [2000,2008],
+        symbolDataName: "shift-of-votes",
+        regionalDataName: "gdp-growth-rate",
         selectedStates: ["alabama", "alaska", "new-york"],
     }
 
-    mapVis.mapVisRender("shift-of-votes", dataOption.regionalDataName, [2000,2008], dataOption.selectedStates);
+    mapVis.mapVisRender(dataOption.symbolDataName, dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
 
     // Detect Data Selection
     // TODO: detect change of selected states
