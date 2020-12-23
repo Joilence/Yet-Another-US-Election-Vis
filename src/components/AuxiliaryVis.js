@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import { getRegionalDataName } from '../tools/data-manager';
+import { getGDPRate, getOverallShift, getRegionalDataName } from '../tools/data-manager';
 export default class AuxiliaryVis {
     constructor() {
         this.dataset = [];
@@ -48,9 +48,9 @@ export default class AuxiliaryVis {
         // console.log(year);
 
         // Calculate overal shift and gdp
-        const overall_gdp = Math.round(((data_points[data_points.length - 1] - data_points[0]) / data_points[0]) * 100) / 100
-        const overall_shift = Math.round(((data_points_elec_dem[data_points_elec_dem.length - 2] - data_points_elec_dem[0]) / data_points_elec_dem[0]) * 100) / 100
-
+        const overall_gdp = getGDPRate(this.dataset, this.time_range[0], this.time_range[1])[stateName].overall_growth
+        const overall_shift = getOverallShift(this.dataset_elec, this.time_range[0], this.time_range[1])[stateName].shift
+        const shift_direction = getOverallShift(this.dataset_elec, this.time_range[0], this.time_range[1])[stateName].direction
         // define SVG for auxiliary part
         const margin = {
             top: 60, right: 60, bottom: 60, left: 60,
@@ -154,8 +154,8 @@ export default class AuxiliaryVis {
                 return overall_shift
             })
             .style('fill', () => {
-                if (overall_shift > 0) {
-                    return 'green';
+                if (shift_direction == 'dem') {
+                    return 'blue';
                 }
                 else return 'red';
             });
@@ -173,7 +173,7 @@ export default class AuxiliaryVis {
             .attr("text-anchor", "middle")
             .style("font-size", "7px")
             .text(() => {
-                return 'shift'
+                return 'shift ' + shift_direction
             });
 
         // add text label for the x axis
