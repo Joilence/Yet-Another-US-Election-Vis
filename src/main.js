@@ -13,6 +13,7 @@ import AuxiliaryVis from './components/AuxiliaryVis';
 const filenames = ['election_data', 'gdp_data'];
 const datanames = ['election_data', 'gdp_data'];
 const tasks = Array.from(filenames, fn => d3.csv(`/datasets/${fn}.csv`));
+
 Promise.all(tasks).then(files => {
     let datasets = Object.assign({}, ...datanames.map((n, i) => ({[n]: files[i]})));
     console.log('data loaded', datasets);
@@ -21,8 +22,8 @@ Promise.all(tasks).then(files => {
     const controlPane = new ControlPane(datasets);
     const auxiVis = new AuxiliaryVis();
     auxiVis.load_dataset(datasets.gdp_data, datasets.election_data);
-    const mapVis = new MapVisualization();
-    mapVis.mapVisRender();
+    const mapVis = new MapVisualization(datasets);
+    
 
     // Current Data Option
     let dataOption = {
@@ -36,6 +37,8 @@ Promise.all(tasks).then(files => {
         selectedStates: ["alabama", "alaska", "new-york"],
     }
 
+    mapVis.mapVisRender("shift-of-votes", dataOption.regionalDataName, [2000,2008], dataOption.selectedStates);
+
     // Detect Data Selection
     // TODO: detect change of selected states
 
@@ -47,6 +50,7 @@ Promise.all(tasks).then(files => {
         if (dataOption.symbolDataName !== symbolDataName) {
             dataOption.symbolDataName = symbolDataName;      
             controlPane.yearSelectionRender();
+            mapVis.mapVisRender(dataOption.symbolDataName, dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
         }
     })
 
@@ -59,6 +63,7 @@ Promise.all(tasks).then(files => {
             dataOption.regionalDataName = regionalDataName;
             controlPane.yearSelectionRender();
             auxiVis.render_auxiliary(regionalDataName, getYearRange(), dataOption.selectedStates);
+            mapVis.mapVisRender(dataOption.symbolDataName, dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
         }
     })
 
@@ -69,7 +74,8 @@ Promise.all(tasks).then(files => {
         // update vis if data changed
         if (dataOption.yearRange !== yearRange) {
             dataOption.yearRange = yearRange;
-            auxiVis.render_auxiliary(getRegionalDataName(), yearRange, dataOption.selectedStates);
+            auxiVis.render_auxiliary(dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
+            mapVis.mapVisRender(dataOption.symbolDataName, dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
         }
     })
 
