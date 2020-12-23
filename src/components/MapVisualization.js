@@ -1,11 +1,5 @@
 import * as d3 from "d3";
-import {
-  getYearRange,
-  getSymbolDataName,
-  getRegionalDataName,
-  getOverallShift, 
-  getGdpRate,
-} from "../tools/data-manager";
+import { getOverallVotesShift, getGdpRate } from "../tools/data-manager";
 import ArrowVisualization from "./ArrowVisualization";
 import { UsMapGeoJson } from "./UsMapGeoJson";
 
@@ -35,6 +29,7 @@ export default class MapVisualzation {
     this.symbolDataName = "";
     this.regionalDataName = "";
     this.yearRange = [];
+    this.selectedStates = [];
 
     this.colorRange = ["white", "green"];
     
@@ -49,17 +44,13 @@ export default class MapVisualzation {
 
 
   mapVisRender(symbolDataName, regionalDataName, yearRange, selectedStates) {
-
-    console.log(symbolDataName, regionalDataName, yearRange, selectedStates)
     // update data on demand
-
-    if (regionalDataName !== this.regionalDataName || yearRange != this.yearRange) {
-      this.regionalDataName = regionalDataName;
-      this.yearRange = yearRange;
-
-      switch (this.regionalDataName) {
+    console.log(symbolDataName, yearRange)
+    if (regionalDataName !== this.regionalDataName || yearRange !== this.yearRange) {
+      // console.log("-- map randers gdp rate --")
+      switch (regionalDataName) {
         case "gdp-growth-rate":
-          let [regionalData, regionalDataYears] = getGdpRate(this.datasets["gdp_data"], this.yearRange);
+          let [regionalData, regionalDataYears] = getGdpRate(this.datasets["gdp_data"], yearRange);
           this._mapVisRegionRender(regionalData);
           break;
         case "gdp-value":
@@ -69,19 +60,21 @@ export default class MapVisualzation {
       }
     }
  
-    if (symbolDataName != this.symbolDataName || yearRange != this.yearRange) {
-      this.symbolDataName = symbolDataName;
-      this.yearRange = yearRange;
-
-      switch (this.symbolDataName) {
+    if (symbolDataName !== this.symbolDataName || yearRange !== this.yearRange) {
+      // console.log("-- map randers election arrows --")
+      switch (symbolDataName) {
         case "shift-of-votes":
-          this._mapVisSymbolRender(this.datasets["election_data"])
+          this._mapVisSymbolRender(this.datasets["election_data"], yearRange)
           break;
 
         default:
           break;
       }
     }
+
+    this.regionalDataName = regionalDataName;
+    this.symbolDataName = symbolDataName;
+    this.yearRange = yearRange;
   }
 
   _mapVisRegionRender(data) {
@@ -115,11 +108,11 @@ export default class MapVisualzation {
       });
   }
 
-  _mapVisSymbolRender(data) {
+  _mapVisSymbolRender(data, yearRange) {
     this.arrowVis.init_arrowVis();
     // draw symbol data vis
-    let [states_overall_shift, states_all_years] = getOverallShift(data, this.yearRange);
-    // console.log("data for symbol render: ", states_overall_shift);
+    let [states_overall_shift, states_all_years] = getOverallVotesShift(data, yearRange);
+    // // console.log("data for symbol render: ", states_overall_shift);
 
     for (let state in states_overall_shift) {
       // console.log(state, states_overall_shift[state]["direction"], states_overall_shift[state]["shift"], this.USStatesCoordinate_Dict[state])

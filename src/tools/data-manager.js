@@ -70,14 +70,14 @@ export function getOverallVotesShift(election_data, yearRange) {
     let states_all_years = {};
     let states_overall_shift = {};
     let [beginYear, endYear] = yearRange;
-    
+
     // convert data into dictionary format
     election_data.forEach(function (row) {
         if (!(row.state in states_all_years)) {
             states_all_years[row.state] = {"dem":[], "rep":[]};
         }
         
-        for (let i=beginYear; i<=endYear; i=i+4) {
+        for (let i=parseInt(beginYear); i<=parseInt(endYear); i=i+4) {
             if (parseInt(row.year)==i) {
                 states_all_years[row.state]["dem"].push(parseFloat(row.dem_percent));
                 states_all_years[row.state]["rep"].push(parseFloat(row.rep_percent));
