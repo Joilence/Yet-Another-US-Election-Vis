@@ -67,7 +67,7 @@ export default class AuxiliaryVis {
             top: 60 , right: 60 , bottom: 60 , left: 60 ,
         };
         const width = element.getBoundingClientRect().width - margin.left - margin.right;
-        const height = element.getBoundingClientRect().width - margin.top - margin.bottom;
+        const height = element.getBoundingClientRect().width * 0.55 - margin.top - margin.bottom;
         // calculate scale ratio
         
         
@@ -100,7 +100,7 @@ export default class AuxiliaryVis {
 
         svg.append("g")
             .attr("class", "y axis")
-            .call(d3.axisLeft(yScale)
+            .call(d3.axisLeft(yScale).ticks(5)
             )
             .selectAll("text")
             .style("text-anchor", "end")
@@ -112,7 +112,7 @@ export default class AuxiliaryVis {
         svg.append("g")
             .attr("class", "y axis")
             .attr("transform", "translate( " + width + ", 0 )")
-            .call(d3.axisRight(yScale_elec)
+            .call(d3.axisRight(yScale_elec).ticks(5)
             )
 
         // add title 
