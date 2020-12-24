@@ -27,6 +27,20 @@
             fill: red;
             cursor: pointer;
         }
+        .AuxiliaryGraph {
+            overflow-y: auto;
+            height: 50vh;
+            width: 100%;
+            overflow-x: hidden;
+        }
+        .AuxiliaryGraphLegend {
+            max-width: 80%;
+            text-overflow: ellipsis;
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+
+        }
     </style>
 </head>
 
@@ -75,28 +89,16 @@
             </div>
         </div>
         <div class="row">
-            <div class="col col-sm-4 col-lg-3">
+            <div class="col col-xs-12 col-sm-6 col-md-5 col-lg-4">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Auxiliary</h5>
-                        <div class="col-2" id="AuxiliaryArea">
-                            <!-- <div style="margin-top: 10px" class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="selected-dataset"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    select dataset
-                                </button>
-                                <div id="datasets-dropdown" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a class="dropdown-item" href="#">gdp_data</a> -->
-                                    <!-- <a class="dropdown-item" href="#">1976-2016-president_DP</a> -->
-                                <!-- </div> -->
-                            <!-- </div> -->
                             <div class="AuxiliaryGraphLegend"></div>
-                            <div class="AuxiliaryGraph"></div>
-                        </div>
+                            <div class="AuxiliaryGraph"></div>                     
                     </div>
                 </div>
             </div>
-            <div class="col col-sm-8 col-lg-9">
+            <div class="col col-xs-12 col-sm-6 col-md-7 col-lg-8">
                 <div id="map-visualization"></div>
             </div>
         </div>
