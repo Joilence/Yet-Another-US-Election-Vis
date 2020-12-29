@@ -35,8 +35,8 @@ export function getDataFilename(dataname) {
     return dataFilesDict(dataname)
 }
 
-export function getGdpRate(gpd_data, yearRange) {
-    /* gpd_data: d3.csv(file)*/
+export function getGdpRate(gdp_data, yearRange) {
+    /* gdp_data: d3.csv(file)*/
     
     let states_all_years = {};
     let states_overall_shift = {};
@@ -44,7 +44,7 @@ export function getGdpRate(gpd_data, yearRange) {
     
 
     // convert data into dictionary format
-    gpd_data.forEach(function (row) {
+    gdp_data.forEach(function (row) {
         states_all_years[row.state] = [];
 
         // extract rate from beginYear to endYear
@@ -59,6 +59,33 @@ export function getGdpRate(gpd_data, yearRange) {
         let overall_growth = parseFloat(((end_amount - begin_amount) / begin_amount).toFixed(4));
 
         states_overall_shift[row.state] = overall_growth;
+    });
+
+    return [states_overall_shift, states_all_years];
+}
+
+export function getGdpValue(gdp_data, yearRange) {
+    let states_all_years = {};
+    let states_overall_shift = {};
+    let [beginYear, endYear] = yearRange
+    
+
+    // convert data into dictionary format
+    gdp_data.forEach(function (row) {
+        states_all_years[row.state] = [];
+
+        // extract rate from beginYear to endYear
+        for (let i=beginYear; i<=endYear; i++) {
+            states_all_years[row.state].push(parseFloat(row[i].replace(" ", "").replace("(", "").replace(")", "").split(",")[1]));
+        }
+
+        // calculate overall growth rate
+        let begin_amount_str = row[parseInt(beginYear)].replace(" ", "").replace("(", "").replace(")", "").split(",")[0];
+        let end_amount_str = row[parseInt(endYear)].replace(" ", "").replace("(", "").replace(")", "").split(",")[0];
+        let [begin_amount, end_amount] = [parseFloat(begin_amount_str), parseFloat(end_amount_str)];
+        let overall_growth_value = parseFloat((end_amount - begin_amount).toFixed(4));
+
+        states_overall_shift[row.state] = overall_growth_value;
     });
 
     return [states_overall_shift, states_all_years];

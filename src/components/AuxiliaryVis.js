@@ -52,8 +52,8 @@ export default class AuxiliaryVis {
         const overall_shift = getOverallVotesShift(this.dataset_elec, this.time_range)[0][stateName].shift
         const shift_direction = getOverallVotesShift(this.dataset_elec, this.time_range)[0][stateName].direction
         var element = d3.select('.AuxiliaryGraph').node();
-        console.log(element.getBoundingClientRect().width)
-        console.log(element.getBoundingClientRect().height)
+        // console.log(element.getBoundingClientRect().width)
+        // console.log(element.getBoundingClientRect().height)
        
         let originalWidth = 300;
         let scaleRatio = element.getBoundingClientRect().width / (originalWidth);
