@@ -117,7 +117,7 @@ export default class MapVisualzation {
     ) {
       // console.log("-- map randers election arrows --")
       switch (symbolDataName) {
-        case "shift-of-votes":
+        case "shift-of-vote":
           this._mapVisSymbolRender(this.datasets["election_data"], yearRange);
           break;
 
