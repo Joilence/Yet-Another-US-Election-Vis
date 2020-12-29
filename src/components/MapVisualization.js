@@ -143,8 +143,6 @@ export default class MapVisualzation {
     Object.keys(data).forEach(state => {
       let t = d3.transition(d3.easePolyInOut).duration(500)
       // console.log('colorScale(data[state])', colorScale(data[state]));
-      if (state === 'michigan') console.log('state: ', state, data[state]);
-
       d3.select(`#${state}`)
         .transition(t)
         .attr('fill', colorScale(data[state]));
