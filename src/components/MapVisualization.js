@@ -51,6 +51,7 @@ export default class MapVisualzation {
     // Arrow
     this.arrowVis = new ArrowVisualization();
     this.arrowVis.svg = this.mapVis;
+    this.arrowVis.init_arrowVis();
   }
 
   _initMap() {
@@ -150,26 +151,19 @@ export default class MapVisualzation {
   }
 
   _mapVisSymbolRender(data, yearRange) {
-    // this.arrowVis.init_arrowVis();
-    // // draw symbol data vis
-    // let [states_overall_shift, states_all_years] = getOverallVotesShift(data, yearRange);
-    // // // console.log("data for symbol render: ", states_overall_shift);
-    // for (let state in states_overall_shift) {
-    //   // console.log(state, states_overall_shift[state]["direction"], states_overall_shift[state]["shift"], this.USStatesCoordinate_Dict[state])
-    //   this.arrowVis.create_arrow(states_overall_shift[state]["direction"], 300, 400, 20*states_overall_shift[state]["shift"]);
-    // }
     let centroids = this.USStatesData.centroids;
-    this.mapVis
-      .selectAll(".state-centroid")
-      .data(this.USStatesData.statesName)
-      .enter()
-      .append("circle")
-      .attr("cx", function (d) {
-        return centroids[d].x;
-      })
-      .attr("cy", function (d) {
-        return centroids[d].y;
-      })
-      .attr("r", 3);
+
+    // // draw symbol data vis
+    let [states_overall_shift, states_all_years] = getOverallVotesShift(data, yearRange);
+    for (let state in states_overall_shift) {
+      this.arrowVis.create_arrow(states_overall_shift[state]["direction"], centroids[state]["x"], centroids[state]["y"], 10*states_overall_shift[state]["shift"]);
+    }
+
   }
+
+  // TODO: update arrow
+  // TODO: Legend (arrows, color scale)
+  // TODO: tooltips (state name, overallShift, Overall(GDP rate/value))
+  // TODO: select states (bold, boundary)
+  // TODO: button, select top 10, 
 }
