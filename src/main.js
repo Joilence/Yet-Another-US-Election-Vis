@@ -31,7 +31,7 @@ Promise.all(tasks).then(files => {
         eg. [2004, 2008]
         */
         yearRange: [2000,2008],
-        symbolDataName: "shift-of-votes",
+        symbolDataName: "shift-of-vote",
         regionalDataName: "gdp-growth-rate",
         selectedStates: ["alabama", "alaska", "new-york"],
     }
