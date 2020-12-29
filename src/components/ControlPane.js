@@ -289,8 +289,8 @@ export default class ControlPane {
   }
 
   _yearSelectionVisUpdate(data) {
-    console.log('update year selection vis.');
-    console.log('new dataset: ', data);
+    // console.log('update year selection vis.');
+    // console.log('new dataset: ', data);
     let t = d3.transition().ease(d3.easePolyInOut).duration(400);
     let yearVis = d3.select('#year-selection');
     // update axes

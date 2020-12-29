@@ -45,9 +45,9 @@ Promise.all(tasks).then(files => {
 
         // update vis if data changed
         if (dataOption.symbolDataName !== symbolDataName) {
-            dataOption.symbolDataName = symbolDataName;      
+            dataOption.symbolDataName = symbolDataName;
+            // year selection rendering will set default brush, automatically trigger refresh of other vis  
             controlPane.yearSelectionRender();
-            mapVis.mapVisRender(dataOption.symbolDataName, dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
         }
     })
 
@@ -58,9 +58,8 @@ Promise.all(tasks).then(files => {
         // update vis if data changed
         if (dataOption.regionalDataName !== regionalDataName) {
             dataOption.regionalDataName = regionalDataName;
+            // year selection rendering will set default brush, automatically trigger refresh of other vis
             controlPane.yearSelectionRender();
-            auxiVis.render_auxiliary(dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
-            mapVis.mapVisRender(dataOption.symbolDataName, dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
         }
     })
 
