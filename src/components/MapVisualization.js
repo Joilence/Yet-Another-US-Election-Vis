@@ -3,6 +3,8 @@ import { getOverallVotesShift, getGdpRate, getGdpValue } from "../tools/data-man
 import ArrowVisualization from "./ArrowVisualization";
 import { UsMapGeoJson } from "./UsMapGeoJson";
 
+
+
 // import * as $ from 'jquery';
 
 export default class MapVisualzation {
@@ -55,35 +57,100 @@ export default class MapVisualzation {
   }
 
   _initMap() {
-    let coordinates = this.USStatesData.coordinates;
+    const self = this;
+    let current_obj = null;             
+                    
     this.mapVis
+      // add path
       .selectAll("path")
-      .data(coordinates)
+      .data(this.USStatesData.coordinates)
       .enter()
       .append("path")
       .attr("d", this.pathGenerator)
       .attr("id", function (d) {
-        let name = d.properties.name;
-        return name;
+        return d.properties.name;
       })
       .attr("class", "state")
       .attr("fill", "#F0F0F0")
-      // TODO: [not important] why stroke line not constant
-      // .attr('stroke-width', 1)
-      // .attr('stroke', '#000')
-      .attr("fill-opacity", 0.7)
+      // .attr("fill-opacity", 0.7)
+      .attr("data-selected", "false")
+
       // Hover Effect
-      .on("mouseover", function (d, i) {
-        // console.log('mouserover');
-        // var currentState = this;
-        d3.select(this).attr("fill-opacity", 1);
+      .on("mouseover", function (event, d) {
+        // highlight current state
+        d3.select(this).attr('stroke-width', 2)
+                      .attr('stroke', '#000')
+                      .attr("data-selected", "true")
+                      .attr('stroke-opacity', 1);
+
+        // d3.select(this).style("fill", "url(#circles-1)")
+
+        // display tooltips
+        d3.select("#tooltip").transition().duration(200).style("opacity", .9);
+
+        let data = {"Regional Overshift": 0.5, "Symbal Overshift":0.6} //TODO: get this data from state dom
+
+        d3.select("#tooltip").html(self._createToolTipHtml(self._reformatStateName(this.id), data)) // this is current state dom
+          .style("left", (d3.event.pageX + 15) + "px")
+          .style("top", (d3.event.pageY + 15) + "px"); 
       })
-      .on("mouseout", function (d, i) {
-        // console.log('out');
-        d3.selectAll(".state").attr("fill-opacity", 0.7);
+      .on("mouseout", function (event, d) {
+        d3.select("#tooltip").transition().duration(200).style("opacity", 0);  
+
+        d3.select(this).attr('stroke-opacity', 0)
+                      .attr("data-selected", "false");
+      
+      })
+      .on("click", function() {
+        if (d3.select(this).attr("data-selected") == "false") {
+
+          //TODO:
+          self.selectedStates.push(this.id);
+
+        } else if (d3.select(this).attr("data-selected") == "true"){
+          //TODO: 
+          self.selectedStates = self.selectedStates.filter(ele => ele !== this.id);
+        }
+
+        //TODO: transfer selectedStates to AuxVis
       });
+
+      // add text to each state
+      // this.mapVis.selectAll("text")
+      // .data(this.USStatesData.coordinates)
+      // .enter()
+      // .append("svg:text")
+      // .text((d)=>
+      //         d.properties.name_abbr
+      // )
+      // .attr("x", (d)=>
+      //     this.USStatesData.centroids[d.properties.name]["x"]
+      // )
+      // .attr("y", (d)=>
+      //     this.USStatesData.centroids[d.properties.name]["y"]+10
+      // )
+      // .attr("text-anchor","middle")
+      // .attr('font-size','8pt')
+
   }
 
+   _createToolTipHtml(state, data) {	/* function to create html content string in tooltip div. */
+    let html = "<h4>"+state+"</h4><table>";
+    Object.keys(data).forEach(key=> {
+      html += "<tr><td>" + key + ":</td><td>"+data[key]+"</td></tr>"
+    })
+		return html;
+  }
+
+  _reformatStateName(state) {
+    // make the first word uppercase
+    let state_name = "";
+    state.split("-").forEach(str=>{
+      state_name += str.charAt(0).toUpperCase() + str.slice(1) + " "
+    })
+    return state_name
+  }
+  
   mapVisRender(symbolDataName, regionalDataName, yearRange, selectedStates) {
     // update data on demand
     if (
@@ -151,19 +218,25 @@ export default class MapVisualzation {
   }
 
   _mapVisSymbolRender(data, yearRange) {
-    let centroids = this.USStatesData.centroids;
-
-    // // draw symbol data vis
+    this._removeElementsByClass("arrow"); // remove current arrows
+    // draw symbol data vis
     let [states_overall_shift, states_all_years] = getOverallVotesShift(data, yearRange);
     for (let state in states_overall_shift) {
-      this.arrowVis.create_arrow(states_overall_shift[state]["direction"], centroids[state]["x"], centroids[state]["y"], 10*states_overall_shift[state]["shift"]);
+      this.arrowVis.create_arrow(
+                                  states_overall_shift[state]["direction"]
+                                  , this.USStatesData.centroids[state]["x"]
+                                  , this.USStatesData.centroids[state]["y"]
+                                  , 10*states_overall_shift[state]["shift"]
+      );
     }
-
   }
 
-  // TODO: update arrow
+  _removeElementsByClass(className){
+    let elements = document.getElementsByClassName(className);
+    while(elements.length > 0){
+        elements[0].parentNode.removeChild(elements[0]);
+    }
+  }
   // TODO: Legend (arrows, color scale)
-  // TODO: tooltips (state name, overallShift, Overall(GDP rate/value))
-  // TODO: select states (bold, boundary)
   // TODO: button, select top 10, 
 }
