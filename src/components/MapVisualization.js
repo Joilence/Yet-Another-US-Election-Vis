@@ -88,8 +88,12 @@ export default class MapVisualzation {
         // display tooltips
         d3.select("#tooltip").transition().duration(200).style("opacity", .9);
 
-        let data = {"Regional Overshift": 0.5, "Symbal Overshift":0.6} //TODO: get this data from state dom
+        // get data from dom
+        const data = {};
+        data[self.symbolDataName] = document.getElementById(this.id).getAttribute('data-' + self.symbolDataName);
+        data[self.regionalDataName] = document.getElementById(this.id).getAttribute('data-' + self.regionalDataName);
 
+        // render tooltips
         d3.select("#tooltip").html(self._createToolTipHtml(self._reformatStateName(this.id), data)) // this is current state dom
           .style("left", (d3.event.pageX + 15) + "px")
           .style("top", (d3.event.pageY + 15) + "px"); 
@@ -106,6 +110,7 @@ export default class MapVisualzation {
 
           //TODO:
           self.selectedStates.push(this.id);
+          console.log()
 
         } else if (d3.select(this).attr("data-selected") == "true"){
           //TODO: 
@@ -176,7 +181,7 @@ export default class MapVisualzation {
         default:
           break;
       }
-      this._mapVisRegionRender(regionalData);
+      this._mapVisRegionRender(regionalData, regionalDataName);
     }
 
     if (
@@ -186,7 +191,7 @@ export default class MapVisualzation {
       // console.log("-- map randers election arrows --")
       switch (symbolDataName) {
         case "shift-of-vote":
-          this._mapVisSymbolRender(this.datasets["election_data"], yearRange);
+          this._mapVisSymbolRender(this.datasets["election_data"], yearRange, symbolDataName);
           break;
 
         default:
@@ -199,7 +204,7 @@ export default class MapVisualzation {
     this.yearRange = yearRange;
   }
 
-  _mapVisRegionRender(data) {
+  _mapVisRegionRender(data, regionalDataName) {
 
     const colorScale = d3
       .scaleLinear()
@@ -213,11 +218,12 @@ export default class MapVisualzation {
       // console.log('colorScale(data[state])', colorScale(data[state]));
       d3.select(`#${state}`)
         .transition(t)
-        .attr('fill', colorScale(data[state]));
+        .attr('fill', colorScale(data[state]))
+        .attr('data-'+ regionalDataName, data[state]);
     })
   }
 
-  _mapVisSymbolRender(data, yearRange) {
+  _mapVisSymbolRender(data, yearRange, symbolDataName) {
     this._removeElementsByClass("arrow"); // remove current arrows
     // draw symbol data vis
     let [states_overall_shift, states_all_years] = getOverallVotesShift(data, yearRange);
@@ -228,6 +234,9 @@ export default class MapVisualzation {
                                   , this.USStatesData.centroids[state]["y"]
                                   , 10*states_overall_shift[state]["shift"]
       );
+      
+      document.getElementById(state).setAttribute('data-'+ symbolDataName, [states_overall_shift[state]["direction"], states_overall_shift[state]["shift"]]);
+
     }
   }
 
