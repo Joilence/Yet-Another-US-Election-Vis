@@ -74,6 +74,10 @@ Promise.all(tasks).then(files => {
             mapVis.mapVisRender(dataOption.symbolDataName, dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
         }
     })
+    $('#auxiliary-list a').on('click', function (e) {
+        e.preventDefault()
+        $(this).tab('show')
+      })
 
     // Render Components
     // year selection rendering will set default brush, automatically trigger refresh of other vis
