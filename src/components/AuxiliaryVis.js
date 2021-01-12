@@ -325,6 +325,7 @@ export default class AuxiliaryVis {
     render_auxiliary(data_option, time_range, selected_states) {
         d3.select(".AuxiliaryGraph").html('');
         d3.select(".AuxiliaryGraphLegend").html('');
+        d3.select(".SummaryGraph").html('');
         this.render_legend(data_option);
         this.time_range = time_range;
         this.data_option = this.dataset_name.indexOf(data_option);
@@ -381,7 +382,7 @@ export default class AuxiliaryVis {
         let data_points = new Array(len).fill(0);
         let year = new Array(len).fill(0);
         let data = [];
-        let data_points_elec_dem = new Array(len * 2 / 3).fill(0);
+        let data_points_elec_dem = new Array(Math.ceil(len * 2 / 3)).fill(0);
         let data_elec_rep = [];
         let data_elec_dem = [];
 
