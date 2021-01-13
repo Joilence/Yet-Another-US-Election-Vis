@@ -74,15 +74,16 @@ export default class AuxiliaryVis {
         const svg = d3.select(".AuxiliaryGraph").append("svg")
             .attr('width', width + margin.left + margin.right)
             .attr('height', height + margin.top + margin.bottom)
+            .on("mouseover", function (event, d) {
+                d3.select(`#${stateName}`).attr('stroke-opacity', 1);
+              })
+              .on("mouseout", function (event, d) {
+                d3.select(`#${stateName}`).attr('stroke-opacity', 0);
+              })
             .append('g')
             .attr('transform',
                 `scale(${scaleRatio}) translate(${margin.left},${margin.top})`)
-                .on("mouseover", function (event, d) {
-                    d3.select(`#${stateName}`).attr('stroke-opacity', 1);
-                  })
-                  .on("mouseout", function (event, d) {
-                    d3.select(`#${stateName}`).attr('stroke-opacity', 0);
-                  })
+                
             
         // X scale will use the index of our data
         const xScale = d3.scaleLinear()
