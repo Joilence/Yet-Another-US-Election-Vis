@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Data Visualization: Advanced Topics - WS 20/21</title>
+    <title>Yet Another US Election Vis - Pratcial Data Science UniKN WS 20/21</title>
 
     <style>
         * {
@@ -50,43 +50,45 @@
 
 <body>
     <div class="container-fluid" id="main-container">
+        <div class="row" style="padding: 25px 0px 0px 28px;">
+            <h2>Yet Another US Election Vis</h2>
+
+            <body>by Junran Yang, Guangan Chen, Dang Mai</body>
+        </div>
         <div class="row h-20" style="padding: 20px;">
             <div id="control-pane" class="card w-100">
                 <div class="card-header">
-                    Yet Another US Election Vis
+                    Control Pane
                 </div>
-                <div class="card-body">
-                    <div id="data-selection-container" class="row">
-                        <div class="col col-sm-4 col-lg-4">
-                            <div class="row">
-                                Symbol Data
-                            </div>
-                            <div id='symbol-data-selection' class="btn-group btn-group-toggle" data-toggle="buttons">
-                                <label class="btn btn-outline-primary btn-sm active">
-                                    <input type="radio" name="options" value="shift-of-vote" checked> Shift of Votes
-                                </label>
-                                <label class="btn btn-outline-primary btn-sm">
-                                    <input type="radio" name="options" value="error-of-poll" disabled> Error of Poll
-                                </label>
-                            </div>
-                            <div class="row">
-                                Regional Data
-                            </div>
-                            <div id='regional-data-selection' class="btn-group btn-group-toggle" data-toggle="buttons">
-                                <label class="btn btn-outline-primary btn-sm text-nowrap active">
-                                    <input type="radio" name="options" value="gdp-growth-rate" checked> GDP Growth Rate
-                                </label>
-                                <label class="btn btn-outline-primary btn-sm text-nowrap">
-                                    <input type="radio" name="options" value="gdp-value"> GDP Value
-                                </label>
-                                <label class="btn btn-outline-primary btn-sm text-nowrap">
-                                    <input type="radio" name="options" value="income" disabled> Income
-                                </label>
-                            </div>
+                <div class="card-body row" style>
+                    <div id="data-selection-container" class="w-20">
+                        <div class="row" style="padding: 5px 18px;">
+                            Symbol Data
                         </div>
-                        <div class="col col-sm-8 col-lg-8"></div>
+                        <div id='symbol-data-selection' class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-primary btn-sm active">
+                                <input type="radio" name="options" value="shift-of-vote" checked> Shift of Votes
+                            </label>
+                            <label class="btn btn-outline-primary btn-sm">
+                                <input type="radio" name="options" value="error-of-poll" disabled> Error of Poll
+                            </label>
+                        </div>
+                        <div class="row" style="padding: 5px 18px;">
+                            Regional Data
+                        </div>
+                        <div id='regional-data-selection' class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-primary btn-sm text-nowrap active">
+                                <input type="radio" name="options" value="gdp-growth-rate" checked> GDP Growth Rate
+                            </label>
+                            <label class="btn btn-outline-primary btn-sm text-nowrap">
+                                <input type="radio" name="options" value="gdp-value"> GDP Value
+                            </label>
+                            <label class="btn btn-outline-primary btn-sm text-nowrap">
+                                <input type="radio" name="options" value="income" disabled> Income
+                            </label>
+                        </div>
                     </div>
-                    <div id="year-selection-container">
+                    <div id="year-selection-container" class="w-80">
                         <svg id="year-selection"></svg>
                     </div>
                 </div>
@@ -108,7 +110,6 @@
                         </ul>
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title">Auxiliary</h5>
                         <div class="AuxiliaryGraphLegend"></div>
                         <div class="tab-content mt-3">
                             <div class="tab-pane active" id="individual" role="tabpanel">
@@ -123,15 +124,18 @@
             </div>
             <div class="col col-xs-12 col-sm-6 col-md-7 col-lg-8">
                 <div class="card">
+                    <div class="card-header"> Map Visualization</div>
                     <div class="card-body">
                         <div id="map-visualization"></div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+    
 
 
-        <!-- <p class="dataviz-tooltip">
+    <!-- <p class="dataviz-tooltip">
             My Tooltip
         </p> -->
 
