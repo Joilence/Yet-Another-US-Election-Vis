@@ -107,13 +107,16 @@ export default class MapVisualzation {
         if (d3.select(this).attr("data-selected") == "false") {
 
           //TODO:
-          self.selectedStates.push(this.id);
-          console.log(this.id)
+          if (!self.selectedStates.includes(this.id)) {
+            self.selectedStates.push(this.id);
+          }
+          
 
         } else if (d3.select(this).attr("data-selected") == "true"){
           //TODO: 
           self.selectedStates = self.selectedStates.filter(ele => ele !== this.id);
         }
+        console.log(self.selectedStates)
 
         //TODO: transfer selectedStates to AuxVis
       });
