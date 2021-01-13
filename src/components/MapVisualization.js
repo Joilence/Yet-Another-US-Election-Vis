@@ -20,6 +20,7 @@ export default class MapVisualzation {
     // SVG Components
     this.map_width = 900;
     this.map_height = 600;
+    this.colorScale = undefined;
     this.mapVis = d3
       .select("#map-visualization")
       .append("svg")
@@ -58,7 +59,9 @@ export default class MapVisualzation {
 
   _initMap() {
     const self = this;
-    let current_obj = null;             
+    let current_obj = null;
+
+    this.mapVis.append('defs').attr('id', 'patterns');
                     
     this.mapVis
       // add path
@@ -107,6 +110,7 @@ export default class MapVisualzation {
         if (d3.select(this).attr("data-selected") == "false") {
 
           //TODO:
+          self.selectState(this.id);
           d3.select(this).attr("data-selected", "true");
           if (!self.selectedStates.includes(this.id)) {
             self.selectedStates.push(this.id);
@@ -116,6 +120,7 @@ export default class MapVisualzation {
         } else if (d3.select(this).attr("data-selected") == "true"){
           //TODO: 
           d3.select(this).attr("data-selected", "false");
+          self.deselectState(this.id);
           self.selectedStates = self.selectedStates.filter(ele => ele !== this.id);
         }
         console.log(self.selectedStates)
@@ -140,6 +145,48 @@ export default class MapVisualzation {
       // .attr("text-anchor","middle")
       // .attr('font-size','8pt')
 
+  }
+
+  selectState(stateName) {
+    const r = 4;
+    console.log(`Select ${stateName}`);
+    this.mapVis.select('#patterns')
+      .append('pattern')
+      .attr('id', `${stateName}-pattern`)
+      .attr('class', 'state-pattern')
+      .attr('x', r)
+      .attr('y', r)
+      .attr('width', r*2)
+      .attr('height', r*2)
+      .attr('patternUnits', 'userSpaceOnUse')
+      .append('circle')
+      .attr('cx', r)
+      .attr('cy', r)
+      .attr('r', r)
+      .style('stroke', 'none')
+      .style('fill', this.colorScale(self.regionalData[stateName]))
+    
+    this.mapVis.select(`#${stateName}`)
+      .style('fill', `url(#${stateName}-pattern)`);
+  }
+
+  getStateDataByName(stateName) {
+    this.USStatesData.coordinates.forEach(e => {
+      if (e.properties.name === stateName) return e;
+    })
+  }
+
+  deselectState(stateName) {
+    console.log(`Deselect ${stateName}`);
+    this.mapVis.select(`#${stateName}`)
+      .style('fill', this.colorScale(self.regionalData[stateName]));
+    this.mapVis.select(`#${stateName}-pattern`).remove();
+  }
+
+  deselectAllState() {
+    this.mapVis.selectAll('.state-pattern').remove();
+    this.selectedStates = [];
+    this._mapVisRegionRender();
   }
 
    _createToolTipHtml(state, data) {	/* function to create html content string in tooltip div. */
@@ -184,6 +231,7 @@ export default class MapVisualzation {
         default:
           break;
       }
+      self.regionalData = regionalData;
       this._mapVisRegionRender(regionalData, regionalDataName);
     }
 
@@ -209,7 +257,7 @@ export default class MapVisualzation {
 
   _mapVisRegionRender(data, regionalDataName) {
 
-    const colorScale = d3
+    this.colorScale = d3
       .scaleLinear()
       .domain(d3.extent(Object.values(data)))
       .range(["#F0F0F0", "green"]);
@@ -221,7 +269,7 @@ export default class MapVisualzation {
       // console.log('colorScale(data[state])', colorScale(data[state]));
       d3.select(`#${state}`)
         .transition(t)
-        .attr('fill', colorScale(data[state]))
+        .attr('fill', this.colorScale(data[state]))
         .attr('data-'+ regionalDataName, data[state]);
     })
   }
