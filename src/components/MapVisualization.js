@@ -107,6 +107,7 @@ export default class MapVisualzation {
         if (d3.select(this).attr("data-selected") == "false") {
 
           //TODO:
+          d3.select(this).attr("data-selected", "true");
           if (!self.selectedStates.includes(this.id)) {
             self.selectedStates.push(this.id);
           }
@@ -114,6 +115,7 @@ export default class MapVisualzation {
 
         } else if (d3.select(this).attr("data-selected") == "true"){
           //TODO: 
+          d3.select(this).attr("data-selected", "false");
           self.selectedStates = self.selectedStates.filter(ele => ele !== this.id);
         }
         console.log(self.selectedStates)
