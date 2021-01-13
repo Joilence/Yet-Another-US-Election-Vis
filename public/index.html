@@ -29,6 +29,7 @@
             height: 50vh;
             width: 100%;
             overflow-x: hidden;
+            
         }
 
         .AuxiliaryGraphLegend {
@@ -38,6 +39,22 @@
             white-space: nowrap;
             overflow: hidden;
 
+        }
+
+        .SummaryGraph {
+            overflow-y: auto;
+            height: 50vh;
+            width: 100%;
+            overflow-x: hidden;
+            position: absolute;
+            top: 180px;
+            
+        }
+        .section {
+            visibility: hidden;
+        }
+        .tab-content> .active {
+            visibility: visible;
         }
     </style>
 
@@ -93,10 +110,28 @@
         <div class="row">
             <div class="col col-xs-12 col-sm-6 col-md-5 col-lg-4">
                 <div class="card">
-                    <div class="card-header">Auxiliary Visualization</div>
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs" id="auxiliary-list" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#individual" role="tab" aria-controls="description"
+                                    aria-selected="true">Individual</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#summary" role="tab" aria-controls="history"
+                                    aria-selected="false">Summary</a>
+                            </li>
+                        </ul>
+                    </div>
                     <div class="card-body">
                         <div class="AuxiliaryGraphLegend"></div>
-                        <div class="AuxiliaryGraph"></div>
+                        <div class="tab-content mt-3">
+                            <div class="section active" id="individual" role="tabpanel">
+                                <div class="AuxiliaryGraph"></div>
+                            </div>
+                            <div class="section" id="summary" role="tabpanel" aria-labelledby="history-tab" >
+                                <div class="SummaryGraph"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -112,7 +147,7 @@
             <div id="tooltip"></div>
         </div>
     </div>
-    
+
 
 
     <!-- <p class="dataviz-tooltip">
