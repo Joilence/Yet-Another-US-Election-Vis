@@ -78,13 +78,14 @@ export default class MapVisualzation {
       .attr("fill", "#F0F0F0")
       // .attr("fill-opacity", 0.7)
       .attr("data-selected", "false")
+      .attr('stroke-width', 2)
+      .attr('stroke', '#000')
+      .attr('stroke-opacity', 0)
 
       // Hover Effect
       .on("mouseover", function (event, d) {
         // highlight current state
-        d3.select(this).attr('stroke-width', 2)
-                      .attr('stroke', '#000')
-                      .attr('stroke-opacity', 1);
+        d3.select(this).attr('stroke-opacity', 1);
 
         // d3.select(this).style("fill", "url(#circles-1)")
 
