@@ -38,15 +38,16 @@ export default class ArrowVisualization {
             x2 = x + percentage * this.arrow_max_length;
         } else if (party_name == "dem") { //left
             x2 = x - percentage * this.arrow_max_length;
-        }
+        }   
         
         this.svg.append('line')
-        .attr("marker-end", "url(#" + party_name + ")")
-        .attr("x1",x)
-        .attr("x2", x2)
-        .attr("y1", y)
-        .attr("y2", y - percentage * this.arrow_max_length)
-        .attr("stroke", this.arrow_color[party_name])
-        .attr("stroke-width", 4)
+                .attr("marker-end", "url(#" + party_name + ")")
+                .attr("x1",x)
+                .attr("x2", x2)
+                .attr("y1", y)
+                .attr("y2", y - percentage * this.arrow_max_length)
+                .attr("stroke", this.arrow_color[party_name])
+                .attr("stroke-width", 4)
+                .attr("class", "arrow")
     }
 }

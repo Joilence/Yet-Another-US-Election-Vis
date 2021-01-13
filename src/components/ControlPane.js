@@ -292,7 +292,7 @@ export default class ControlPane {
     // console.log('update year selection vis.');
     // console.log('new dataset: ', data);
     let t = d3.transition().ease(d3.easePolyInOut).duration(400);
-    let yearVis = d3.select('#year-selection');
+    let yearVis = d3.select("#year-selection");
     // update axes
     let xYearScaler = d3
       .scaleTime()
@@ -322,7 +322,7 @@ export default class ControlPane {
       .attr("class", "year-selection-circle")
       .attr("cx", (d) => {
         // console.log('updating dots: ', d);
-        return xYearScaler(d.year)
+        return xYearScaler(d.year);
       })
       .attr("cy", (d) => yRegionalDataScaler(d.regionalData))
       .attr("r", 5)
@@ -338,7 +338,7 @@ export default class ControlPane {
     d3.select("#year-selection-line")
       .transition(t)
       .attr("d", yearSelectionLine(data));
-    
+
     // TODO: right way to re-register brush
     // brush
     let brush = d3
@@ -354,7 +354,7 @@ export default class ControlPane {
       .on("end", brushed); // update vis after brushed
 
     // TODO: dynamically choose first two election periods as default extent
-    let dateParser = d3.timeParse('%Y');
+    let dateParser = d3.timeParse("%Y");
     let interval = d3.timeYear.every(4);
     let defaultExtent = [
       xYearScaler(dateParser(2000)),
@@ -362,7 +362,7 @@ export default class ControlPane {
     ];
     // console.log("default extent: ", defaultExtent);
 
-    d3.select('#year-selection-brush').remove();
+    d3.select("#year-selection-brush").remove();
 
     yearVis
       .append("g")
@@ -405,6 +405,5 @@ export default class ControlPane {
       $("#year-selection").trigger("change");
       // console.log('html range', yearVis.property('range'))
     }
-    
   }
 }

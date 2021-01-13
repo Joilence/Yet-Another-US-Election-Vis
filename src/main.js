@@ -6,7 +6,7 @@ import 'bootstrap-slider';
 import 'bootstrap-slider/dist/css/bootstrap-slider.min.css';
 // import { registerJQueryD3Click } from './tools/helpers';
 import MapVisualization from './components/MapVisualization';
-import { getRegionalDataName, getSymbolDataName, getYearRange } from './tools/data-manager';
+import { getRegionalDataName, getSelectedStates, getSymbolDataName, getYearRange } from './tools/data-manager';
 import ControlPane from './components/ControlPane'
 import AuxiliaryVis from './components/AuxiliaryVis';
 
@@ -38,6 +38,14 @@ Promise.all(tasks).then(files => {
 
     // Detect Data Selection
     // TODO: detect change of selected states
+    $('#map-visualization').on('change', e => {
+        let selectedStates = getSelectedStates();
+        console.log('main.js: current selected states:', selectedStates);
+        if (dataOption.selectedStates) {
+            dataOption.selectedStates = selectedStates;
+            auxiVis.render_auxiliary(dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
+        }
+    })
 
     $('#symbol-data-selection input:radio').on('click', e => {
         let symbolDataName = getSymbolDataName();
