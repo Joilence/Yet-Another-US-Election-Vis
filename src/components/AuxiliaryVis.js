@@ -383,7 +383,7 @@ export default class AuxiliaryVis {
         let year = new Array(len).fill(0);
         let data = [];
 
-        let data_points_elec_dem = new Array((len-1)/2).fill(0);
+        let data_points_elec_dem = new Array((((len-1)/4)+1)*2).fill(0);
         let data_elec_rep = [];
         let data_elec_dem = [];
 
