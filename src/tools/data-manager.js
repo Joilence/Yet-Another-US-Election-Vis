@@ -27,6 +27,10 @@ export function getYearRange() {
     return $("#year-selection").prop('range');
 }
 
+export function getSelectedStates() {
+    return $("#map-visualization").prop('states');
+}
+
 export function getDataFilename(dataname) {
     var dataFilesDict = {
         'gdp': 'gdp_data.csv',

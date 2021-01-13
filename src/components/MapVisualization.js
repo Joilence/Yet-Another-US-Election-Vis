@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import * as $ from "jquery";
 import { getOverallVotesShift, getGdpRate, getGdpValue } from "../tools/data-manager";
 import ArrowVisualization from "./ArrowVisualization";
 import { UsMapGeoJson } from "./UsMapGeoJson";
@@ -15,7 +16,7 @@ export default class MapVisualzation {
     this.symbolDataName = "";
     this.regionalDataName = "";
     this.yearRange = [];
-    this.selectedStates = [];
+    this.selectedStates = ["alabama", "alaska", "new-york"];
 
     // SVG Components
     this.map_width = 900;
@@ -107,44 +108,23 @@ export default class MapVisualzation {
       
       })
       .on("click", function() {
+        // console.log('click on:', this.id);
+        // console.log(this);
         if (d3.select(this).attr("data-selected") == "false") {
-
-          //TODO:
           self.selectState(this.id);
           d3.select(this).attr("data-selected", "true");
           if (!self.selectedStates.includes(this.id)) {
             self.selectedStates.push(this.id);
           }
-          
-
         } else if (d3.select(this).attr("data-selected") == "true"){
-          //TODO: 
           d3.select(this).attr("data-selected", "false");
           self.deselectState(this.id);
           self.selectedStates = self.selectedStates.filter(ele => ele !== this.id);
         }
         console.log(self.selectedStates)
-
-        //TODO: transfer selectedStates to AuxVis
+        $("#map-visualization").prop('states', self.selectedStates);;
+        $("#map-visualization").trigger("change");
       });
-
-      // add text to each state
-      // this.mapVis.selectAll("text")
-      // .data(this.USStatesData.coordinates)
-      // .enter()
-      // .append("svg:text")
-      // .text((d)=>
-      //         d.properties.name_abbr
-      // )
-      // .attr("x", (d)=>
-      //     this.USStatesData.centroids[d.properties.name]["x"]
-      // )
-      // .attr("y", (d)=>
-      //     this.USStatesData.centroids[d.properties.name]["y"]+10
-      // )
-      // .attr("text-anchor","middle")
-      // .attr('font-size','8pt')
-
   }
 
   selectState(stateName) {
@@ -272,6 +252,12 @@ export default class MapVisualzation {
         .attr('fill', this.colorScale(data[state]))
         .attr('data-'+ regionalDataName, data[state]);
     })
+
+    if (this.selectedStates.length !== 0) {
+      this.selectedStates.forEach(e => {
+        this.mapVis.select(`#${e}`).dispatch('click');
+      })
+    }
   }
 
   _mapVisSymbolRender(data, yearRange, symbolDataName) {
