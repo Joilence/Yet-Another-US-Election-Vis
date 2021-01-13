@@ -382,7 +382,8 @@ export default class AuxiliaryVis {
         let data_points = new Array(len).fill(0);
         let year = new Array(len).fill(0);
         let data = [];
-        let data_points_elec_dem = new Array(Math.ceil(len * 2 / 3)).fill(0);
+
+        let data_points_elec_dem = new Array((len-1)/2).fill(0);
         let data_elec_rep = [];
         let data_elec_dem = [];
 
@@ -432,7 +433,7 @@ export default class AuxiliaryVis {
         else {
             shift_direction = 'rep'
         }
-        
+        console.log(data_points_elec_dem)
 
         var element = d3.select('.SummaryGraph').node();
         // console.log(element.getBoundingClientRect())
