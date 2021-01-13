@@ -80,7 +80,6 @@ export default class MapVisualzation {
         // highlight current state
         d3.select(this).attr('stroke-width', 2)
                       .attr('stroke', '#000')
-                      .attr("data-selected", "true")
                       .attr('stroke-opacity', 1);
 
         // d3.select(this).style("fill", "url(#circles-1)")
@@ -95,14 +94,13 @@ export default class MapVisualzation {
 
         // render tooltips
         d3.select("#tooltip").html(self._createToolTipHtml(self._reformatStateName(this.id), data)) // this is current state dom
-          .style("left", (d3.event.pageX + 15) + "px")
-          .style("top", (d3.event.pageY + 15) + "px"); 
+          .style("left", (d3.event.pageX ) + "px")
+          .style("top", (d3.event.pageY) + "px"); 
       })
       .on("mouseout", function (event, d) {
         d3.select("#tooltip").transition().duration(200).style("opacity", 0);  
 
-        d3.select(this).attr('stroke-opacity', 0)
-                      .attr("data-selected", "false");
+        d3.select(this).attr('stroke-opacity', 0);
       
       })
       .on("click", function() {
@@ -110,7 +108,7 @@ export default class MapVisualzation {
 
           //TODO:
           self.selectedStates.push(this.id);
-          console.log()
+          console.log(this.id)
 
         } else if (d3.select(this).attr("data-selected") == "true"){
           //TODO: 
