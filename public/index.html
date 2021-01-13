@@ -28,6 +28,7 @@
             height: 50vh;
             width: 100%;
             overflow-x: hidden;
+            
         }
 
         .AuxiliaryGraphLegend {
@@ -44,6 +45,15 @@
             height: 50vh;
             width: 100%;
             overflow-x: hidden;
+            position: absolute;
+            top: 180px;
+            
+        }
+        .section {
+            visibility: hidden;
+        }
+        .tab-content> .active {
+            visibility: visible;
         }
     </style>
 </head>
@@ -112,10 +122,10 @@
                     <div class="card-body">
                         <div class="AuxiliaryGraphLegend"></div>
                         <div class="tab-content mt-3">
-                            <div class="tab-pane active" id="individual" role="tabpanel">
+                            <div class="section active" id="individual" role="tabpanel">
                                 <div class="AuxiliaryGraph"></div>
                             </div>
-                            <div class="tab-pane active" id="summary" role="tabpanel" aria-labelledby="history-tab">
+                            <div class="section" id="summary" role="tabpanel" aria-labelledby="history-tab" >
                                 <div class="SummaryGraph"></div>
                             </div>
                         </div>
@@ -132,7 +142,7 @@
             </div>
         </div>
     </div>
-    
+
 
 
     <!-- <p class="dataviz-tooltip">

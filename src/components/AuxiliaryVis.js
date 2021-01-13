@@ -325,13 +325,13 @@ export default class AuxiliaryVis {
     render_auxiliary(data_option, time_range, selected_states) {
         d3.select(".AuxiliaryGraph").html('');
         d3.select(".AuxiliaryGraphLegend").html('');
-        d3.select(".SummaryGraph").html('');
         this.render_legend(data_option);
         this.time_range = time_range;
         this.data_option = this.dataset_name.indexOf(data_option);
         selected_states.forEach(element => {
             this.render(data_option, element);
         });
+        d3.select(".SummaryGraph").html('');
         this.render_summary(data_option, selected_states);
         // this.render(data_option, "new-york");
         // this.render(data_option, "ohio");
@@ -402,7 +402,6 @@ export default class AuxiliaryVis {
             overall_gdp = overall_gdp + getGdpRate(this.dataset, this.time_range)[0][ele]
             overall_shift = overall_shift + parseFloat(getOverallVotesShift(this.dataset_elec, this.time_range)[0][ele].shift)
             shift_direction.push(getOverallVotesShift(this.dataset_elec, this.time_range)[0][ele].direction)
-            console.log(getOverallVotesShift(this.dataset_elec, this.time_range)[0][ele].direction)
             
         })
         data_points = data_points.map(function (num, idx) {
@@ -415,7 +414,6 @@ export default class AuxiliaryVis {
             data.push({ 'y': data_points[va], 'x': year[va] })
             
         }
-        console.log(data);
         for(let va = 0; va < data_points_elec_dem.length / 2; va++){
             data_elec_dem.push({ 'y': data_points_elec_dem[va*2], 'x': year[va*4] })
             data_elec_rep.push({ 'y': data_points_elec_dem[va*2 + 1], 'x': year[va*4] })
@@ -437,7 +435,7 @@ export default class AuxiliaryVis {
         
 
         var element = d3.select('.SummaryGraph').node();
-        // console.log(element.getBoundingClientRect().width)
+        // console.log(element.getBoundingClientRect())
         // console.log(element.getBoundingClientRect().height)
 
         let originalWidth = 300;

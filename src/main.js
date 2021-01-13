@@ -75,7 +75,7 @@ Promise.all(tasks).then(files => {
         }
     })
     $('#auxiliary-list a').on('click', function (e) {
-        e.preventDefault()
+        e.preventDefault() 
         $(this).tab('show')
       })
 
