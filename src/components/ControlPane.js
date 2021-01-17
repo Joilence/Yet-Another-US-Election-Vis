@@ -1,11 +1,17 @@
 import * as d3 from "d3";
-import { transition } from "d3";
 import * as $ from "jquery";
 import { getSymbolDataName, getRegionalDataName } from "../tools/data-manager";
 
 export default class ControlPane {
   constructor(datasets) {
     this.datasets = datasets;
+    this.electionResult = [
+      { year: 2000, party: "rep" },
+      { year: 2004, party: "rep" },
+      { year: 2008, party: "dem" },
+      { year: 2012, party: "dem" },
+      // { year: 2016, party: "rep" },
+    ];
     // processed data
     this.yearlyGDPGrowthRate = undefined;
     this.yearlyGDPValue = undefined;
@@ -177,6 +183,47 @@ export default class ControlPane {
       .domain(d3.extent(data, (d) => d.regionalData))
       .range([this.viewHeight - this.margins.bottom, this.margins.top]);
 
+    // draw election result bar
+    yearVis
+      .append("g")
+      .attr("id", "rect-container")
+      .selectAll("rect.election-result-rect")
+      .data(this.electionResult)
+      .enter()
+      .append("rect")
+      .attr("class", "election-result-rect")
+      .attr("x", (d) => {
+        console.log("d in x:", d);
+        console.log("rect year:", d.year);
+        const dateParser = d3.timeParse("%Y");
+        console.log("year x:", xYearScaler(dateParser(d.year)));
+        return xYearScaler(dateParser(d.year));
+      })
+      .attr("y", (d) => {
+        console.log(
+          "y:",
+          yRegionalDataScaler(d3.extent(data, (d) => d.regionalData)[1])
+        );
+        // return yRegionalDataScaler(yRegionalDataScaler.range[0]);
+        return this.margins.top;
+      })
+      .attr("width", (d) => {
+        const dateParser = d3.timeParse("%Y");
+        const width =
+          xYearScaler(dateParser(2004)) - xYearScaler(dateParser(2000));
+        // console.log("bar width:", width);
+        return width;
+      })
+      .attr("height", (d) => {
+        const height = this.viewHeight - this.margins.top - this.margins.bottom;
+        // console.log("bar height:", height);
+        return height;
+      })
+      .style("fill", (d) => {
+        return d.party === "rep" ? "red" : "blue";
+      })
+      .style("opacity", 0.3);
+
     // add axes
     yearVis
       .append("g")
@@ -186,7 +233,21 @@ export default class ControlPane {
         "transform",
         `translate(0,${this.viewHeight - this.margins.bottom})`
       )
-      .call(d3.axisBottom(xYearScaler));
+      .call(
+        d3
+          .axisBottom(xYearScaler)
+          .ticks(interval)
+          .tickSize(-this.viewHeight + this.margins.top + this.margins.bottom)
+      )
+      .call((g) =>
+        g
+          .selectAll(".tick line")
+          .attr("stroke", "#fff")
+          .attr("stroke-opacity", (d) => {
+            console.log("draw tickline:", d);
+            return d <= d3.timeYear(d) ? 1 : 0.5;
+          })
+      );
 
     yearVis
       .append("g")
@@ -305,7 +366,22 @@ export default class ControlPane {
 
     d3.select("#year-selection-x-axis")
       .transition(t)
-      .call(d3.axisBottom(xYearScaler));
+      .call(d3.axisBottom(xYearScaler))
+      .call(
+        d3
+          .axisBottom(xYearScaler)
+          .ticks(d3.timeYear.every(4))
+          .tickSize(-this.viewHeight + this.margins.top + this.margins.bottom)
+      )
+      .call((g) =>
+        g
+          .selectAll(".tick line")
+          .attr("stroke", "#fff")
+          .attr("stroke-opacity", (d) => {
+            console.log("draw tickline:", d);
+            return d <= d3.timeYear(d) ? 1 : 0.5;
+          })
+      );
 
     d3.select("#year-selection-y-axis")
       .transition(t)
