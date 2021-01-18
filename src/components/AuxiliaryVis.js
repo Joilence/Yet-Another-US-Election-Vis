@@ -348,8 +348,8 @@ export default class AuxiliaryVis {
     // load datasets to the component
     load_dataset(dataset, dataset_elec) {
         if (dataset === undefined || dataset_elec === undefined) {
-            console.log('dataset:', dataset);
-            console.log('dataset_elect:', dataset_elec);
+            // console.log('dataset:', dataset);
+            // console.log('dataset_elect:', dataset_elec);
         }
         this.dataset = dataset;
         this.dataset_elec = dataset_elec;
@@ -441,7 +441,7 @@ export default class AuxiliaryVis {
         else {
             shift_direction = 'rep'
         }
-        console.log(data_points_elec_dem)
+        // console.log(data_points_elec_dem)
 
         var element = d3.select('.SummaryGraph').node();
         // console.log(element.getBoundingClientRect())
