@@ -6,7 +6,7 @@ import 'bootstrap-slider';
 import 'bootstrap-slider/dist/css/bootstrap-slider.min.css';
 // import { registerJQueryD3Click } from './tools/helpers';
 import MapVisualization from './components/MapVisualization';
-import { getRegionalDataName, getSymbolDataName, getYearRange } from './tools/data-manager';
+import { getRegionalDataName, getSelectedStates, getSymbolDataName, getYearRange } from './tools/data-manager';
 import ControlPane from './components/ControlPane'
 import AuxiliaryVis from './components/AuxiliaryVis';
 import ScatterplotVis from './components/ScatterplotVis';
@@ -14,17 +14,17 @@ import ScatterplotVis from './components/ScatterplotVis';
 const filenames = ['election_data', 'gdp_data'];
 const datanames = ['election_data', 'gdp_data'];
 const tasks = Array.from(filenames, fn => d3.csv(`/datasets/${fn}.csv`));
+
 Promise.all(tasks).then(files => {
     let datasets = Object.assign({}, ...datanames.map((n, i) => ({[n]: files[i]})));
-    console.log('data loaded', datasets);
+    // console.log('data loaded', datasets);
 
     // Initialize Components
     const controlPane = new ControlPane(datasets);
     const auxiVis = new AuxiliaryVis();
     auxiVis.load_dataset(datasets.gdp_data, datasets.election_data);
-    const mapVis = new MapVisualization();
-    // TODO: render map visualization
-    const scatterplotVis = new ScatterplotVis(datasets);
+    const mapVis = new MapVisualization(datasets);
+    const scatterVis = new ScatterplotVis(datasets);
 
     // Current Data Option
     let dataOption = {
@@ -32,14 +32,23 @@ Promise.all(tasks).then(files => {
         First element as startYear, second as endYear.
         eg. [2004, 2008]
         */
-        yearRange: getYearRange(),
-        symbolDataName: getSymbolDataName(),
-        regionalDataName: getRegionalDataName(),
+        yearRange: [2000,2008],
+        symbolDataName: "shift-of-vote",
+        regionalDataName: "gdp-growth-rate",
         selectedStates: ["alabama", "alaska", "new-york"],
     }
 
     // Detect Data Selection
     // TODO: detect change of selected states
+    $('#map-visualization').on('change', e => {
+        let selectedStates = getSelectedStates();
+        console.log('main.js: current selected states:', selectedStates);
+        if (dataOption.selectedStates) {
+            dataOption.selectedStates = selectedStates;
+            auxiVis.render_auxiliary(dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
+            scatterVis.scatterplotVisRender(dataOption.symbolDataName, dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
+        }
+    })
 
     $('#symbol-data-selection input:radio').on('click', e => {
         let symbolDataName = getSymbolDataName();
@@ -47,7 +56,8 @@ Promise.all(tasks).then(files => {
 
         // update vis if data changed
         if (dataOption.symbolDataName !== symbolDataName) {
-            dataOption.symbolDataName = symbolDataName;      
+            dataOption.symbolDataName = symbolDataName;
+            // year selection rendering will set default brush, automatically trigger refresh of other vis  
             controlPane.yearSelectionRender();
         }
     })
@@ -59,9 +69,8 @@ Promise.all(tasks).then(files => {
         // update vis if data changed
         if (dataOption.regionalDataName !== regionalDataName) {
             dataOption.regionalDataName = regionalDataName;
+            // year selection rendering will set default brush, automatically trigger refresh of other vis
             controlPane.yearSelectionRender();
-            auxiVis.render_auxiliary(regionalDataName, getYearRange(), dataOption.selectedStates);
-            scatterplotVis.scatterplotVisRender();
         }
     })
 
@@ -72,10 +81,15 @@ Promise.all(tasks).then(files => {
         // update vis if data changed
         if (dataOption.yearRange !== yearRange) {
             dataOption.yearRange = yearRange;
-            auxiVis.render_auxiliary(getRegionalDataName(), yearRange, dataOption.selectedStates);
-            scatterplotVis.scatterplotVisRender();
+            auxiVis.render_auxiliary(dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
+            mapVis.mapVisRender(dataOption.symbolDataName, dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
+            scatterVis.scatterplotVisRender(dataOption.symbolDataName, dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
         }
     })
+    $('#auxiliary-list a').on('click', function (e) {
+        e.preventDefault() 
+        $(this).tab('show')
+      })
 
     // Render Components
     // year selection rendering will set default brush, automatically trigger refresh of other vis

@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Data Visualization: Advanced Topics - WS 20/21</title>
+    <title>Yet Another US Election Vis - Pratcial Data Science UniKN WS 20/21</title>
+    <link rel="stylesheet" href="../static/css/tooltip.css">
 
     <style>
         * {
@@ -23,95 +24,134 @@
             display: none;
         }
 
-        .state:hover {
-            fill: red;
-            cursor: pointer;
+        .AuxiliaryGraph {
+            overflow-y: auto;
+            height: 50vh;
+            width: 100%;
+            overflow-x: hidden;
+            
+        }
+
+        .AuxiliaryGraphLegend {
+            max-width: 80%;
+            text-overflow: ellipsis;
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+
+        }
+
+        .SummaryGraph {
+            overflow-y: auto;
+            height: 50vh;
+            width: 100%;
+            overflow-x: hidden;
+            position: absolute;
+            top: 180px;
+            
+        }
+        .section {
+            visibility: hidden;
+        }
+        .tab-content> .active {
+            visibility: visible;
         }
     </style>
+
+
 </head>
 
 <body>
     <div class="container-fluid" id="main-container">
+        <div class="row" style="padding: 25px 0px 0px 28px;">
+            <h2>Yet Another US Election Vis</h2>
+
+            <body>by Junran Yang, Guangan Chen, Dang Mai</body>
+        </div>
         <div class="row h-20" style="padding: 20px;">
             <div id="control-pane" class="card w-100">
                 <div class="card-header">
-                    Yet Another US Election Vis
+                    Control Pane
                 </div>
-                <div class="card-body">
-                    <div id="data-selection-container" class="row">
-                        <div class="col col-sm-4 col-lg-4">
-                            <div class="row">
-                                Symbol Data
-                            </div>
-                            <div id='symbol-data-selection' class="btn-group btn-group-toggle" data-toggle="buttons">
-                                <label class="btn btn-outline-primary btn-sm active">
-                                    <input type="radio" name="options" value="shift-of-votes" checked> Shift of Votes
-                                </label>
-                                <label class="btn btn-outline-primary btn-sm">
-                                    <input type="radio" name="options" value="error-of-poll" disabled> Error of Poll
-                                </label>
-                            </div>
-                            <div class="row">
-                                Regional Data
-                            </div>
-                            <div id='regional-data-selection' class="btn-group btn-group-toggle" data-toggle="buttons">
-                                <label class="btn btn-outline-primary btn-sm text-nowrap active">
-                                    <input type="radio" name="options" value="gdp-growth-rate" checked> GDP Growth Rate
-                                </label>
-                                <label class="btn btn-outline-primary btn-sm text-nowrap">
-                                    <input type="radio" name="options" value="gdp-value"> GDP Value
-                                </label>
-                                <label class="btn btn-outline-primary btn-sm text-nowrap">
-                                    <input type="radio" name="options" value="income" disabled> Income
-                                </label>
-                            </div>
+                <div class="card-body row" style>
+                    <div id="data-selection-container" class="w-20">
+                        <div class="row" style="padding: 5px 18px;">
+                            Symbol Data
                         </div>
-                        <div class="col col-sm-8 col-lg-8"></div>
+                        <div id='symbol-data-selection' class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-primary btn-sm active">
+                                <input type="radio" name="options" value="shift-of-vote" checked> Shift of Votes
+                            </label>
+                            <label class="btn btn-outline-primary btn-sm">
+                                <input type="radio" name="options" value="error-of-poll" disabled> Error of Poll
+                            </label>
+                        </div>
+                        <div class="row" style="padding: 5px 18px;">
+                            Regional Data
+                        </div>
+                        <div id='regional-data-selection' class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-primary btn-sm text-nowrap active">
+                                <input type="radio" name="options" value="gdp-growth-rate" checked> GDP Growth Rate
+                            </label>
+                            <label class="btn btn-outline-primary btn-sm text-nowrap">
+                                <input type="radio" name="options" value="gdp-value"> GDP Value
+                            </label>
+                            <label class="btn btn-outline-primary btn-sm text-nowrap">
+                                <input type="radio" name="options" value="income" disabled> Income
+                            </label>
+                        </div>
                     </div>
-                    <div id="year-selection-container">
+                    <div id="year-selection-container" class="w-80">
                         <svg id="year-selection"></svg>
                     </div>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col col-sm-4 col-lg-3">
+            <div class="col col-xs-12 col-sm-6 col-md-5 col-lg-4">
                 <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs" id="auxiliary-list" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#individual" role="tab" aria-controls="description"
+                                    aria-selected="true">Individual</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#summary" role="tab" aria-controls="history"
+                                    aria-selected="false">Summary</a>
+                            </li>
+                        </ul>
+                    </div>
                     <div class="card-body">
-                        <h5 class="card-title">Auxiliary</h5>
-                        <div class="col-2" id="AuxiliaryArea">
-                            <!-- <div style="margin-top: 10px" class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="selected-dataset"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    select dataset
-                                </button>
-                                <div id="datasets-dropdown" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a class="dropdown-item" href="#">gdp_data</a> -->
-                            <!-- <a class="dropdown-item" href="#">1976-2016-president_DP</a> -->
-                            <!-- </div> -->
-                            <!-- </div> -->
-                            <div class="AuxiliaryGraphLegend"></div>
-                            <div class="AuxiliaryGraph"></div>
+                        <div class="AuxiliaryGraphLegend"></div>
+                        <div class="tab-content mt-3">
+                            <div class="section active" id="individual" role="tabpanel">
+                                <div class="AuxiliaryGraph"></div>
+                            </div>
+                            <div class="section" id="summary" role="tabpanel" aria-labelledby="history-tab" >
+                                <div class="SummaryGraph"></div>
+                                <div id="scatterplot-container"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col col-sm-8 col-lg-9">
-                <div class="MapVisualization"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div id="scatterplot-tooltip" width='800' height='800'></div>
-            <div id="scatterplot-vis" class="card w-100">
-                <div class="card-body">
-                    <div id="scatterplot-container" class="row">
+            <div class="col col-xs-12 col-sm-6 col-md-7 col-lg-8">
+                <div class="card">
+                    <div class="card-header"> Map Visualization</div>
+                    <div class="card-body">
+                        <div id="map-visualization"></div>
                     </div>
                 </div>
             </div>
+            <svg height="10" width="10" xmlns="http://www.w3.org/2000/svg" version="1.1"> <defs> <pattern id="circles-1" patternUnits="userSpaceOnUse" width="10" height="10"> <image xlink:href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSJ3aGl0ZSIgLz4KICA8Y2lyY2xlIGN4PSIxIiBjeT0iMSIgcj0iMSIgZmlsbD0iYmxhY2siLz4KPC9zdmc+" x="0" y="0" width="10" height="10"> </image> </pattern> </defs> </svg>
+            <div id="tooltip"></div>
         </div>
+    </div>
 
 
-        <!-- <p class="dataviz-tooltip">
+
+    <!-- <p class="dataviz-tooltip">
             My Tooltip
         </p> -->
 

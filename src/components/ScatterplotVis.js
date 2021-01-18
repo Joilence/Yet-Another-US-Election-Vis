@@ -9,47 +9,51 @@ import {
 export default class ScatterplotVis {
   constructor(datasets) {
     this.datasets = datasets;
-    // current data name
-    this.symbolDataName = undefined;
-    this.regionalDataName = undefined;
-    this.yearRange = undefined;
+
+    // Data Option
+    this.symbolDataName = "";
+    this.regionalDataName = "";
+    this.yearRange = [];
+    this.selectedStates = ["alabama", "alaska", "new-york"];
+
     // processed data
     this.regionalData = {};
     this.symbolData = {};
   }
-  scatterplotVisRender() {
-    console.log('current: ', getRegionalDataName(), getSymbolDataName());
+  scatterplotVisRender(symbolDataName, regionalDataName, yearRange, selectedStates) {
+    console.log('scatterplot current: ', regionalDataName, symbolDataName, yearRange, selectedStates);
     // update data on demand
-    if (getRegionalDataName() !== this.regionalDataName) {
-      this.regionalDataName = getRegionalDataName();
+    if (regionalDataName !== this.regionalDataName) {
+      this.regionalDataName = regionalDataName;
       switch (this.regionalDataName) {
         case "gdp-growth-rate":
           this.regionalData = this.preprocessGDPGrowthRate(this.datasets.gdp_data);
           break;
         case "gdp-value":
-          break;
+          this.regionalData = this.preprocessGDPValue(this.datasets.gdp_data);
         default:
+          this.regionalData = {};
           break;
       }
     }
 
-    if (getSymbolDataName() !== this.symbolDataName) {
-      this.symbolDataName = getSymbolDataName();
-      console.log('this symbol data name', this.symbolDataName);
-      switch (this.symbolDataName) {
-        case "shift-of-votes":
-          this.symbolData = this.preprocessShiftOfVotes(this.election_data);
-          break;
-        default:
-          break;
-      }
-    }
-    // TODO: fix symbol data problem
+    // if (symbolDataName !== this.symbolDataName) {
+    //   this.symbolDataName = symbolDataName;
+    //   console.log('this symbol data name', this.symbolDataName);
+    //   switch (this.symbolDataName) {
+    //     case "shift-of-votes":
+    //       this.symbolData = this.preprocessShiftOfVotes(this.election_data);
+    //       break;
+    //     default:
+    //       break;
+    //   }
+    // }
     this.symbolData = this.preprocessShiftOfVotes(this.election_data);
 
     this._scatterplotVisRender();
   }
   preprocessGDPGrowthRate(data) {
+    
     return {
       alabama: 0.38,
       new_york: 0.1,
@@ -68,8 +72,8 @@ export default class ScatterplotVis {
     let dateParser = d3.timeParse("%Y");
 
     // init vis size and margin
-    this.viewHeight = 800;
-    this.viewWidth = 800;
+    this.viewHeight = 400;
+    this.viewWidth = 400;
 
     this.margins = {
       top: 50,
@@ -140,13 +144,13 @@ export default class ScatterplotVis {
       .attr("cy", (d) => yRegionalDataScaler(d.regionalData))
       .attr("r", 4)
       .style("fill", "#69b3a2")
-      .on("mouseover", (d) => {
-        console.log('mouse over');
-        $('#scatterplot-tooltip').text(`StateName: ${d.stateName}, GDP Growth Rate: ${d.regionalData}, ShiftOfVotes: Towards Republicans by ${d.symbolData}`);
-      })
-      .on("mouseout", (d) => {
-        console.log('mouse out');
-        // $('#scatterplot-tooltip').text('');
-      });
+      // .on("mouseover", (d) => {
+      //   console.log('mouse over');
+      //   $('#scatterplot-tooltip').text(`StateName: ${d.stateName}, GDP Growth Rate: ${d.regionalData}, ShiftOfVotes: Towards Republicans by ${d.symbolData}`);
+      // })
+      // .on("mouseout", (d) => {
+      //   console.log('mouse out');
+      //   // $('#scatterplot-tooltip').text('');
+      // });
   }
 }
