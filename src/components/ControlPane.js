@@ -193,20 +193,13 @@ export default class ControlPane {
       .append("rect")
       .attr("class", "election-result-rect")
       .attr("x", (d) => {
-        console.log("d in x:", d);
-        console.log("rect year:", d.year);
+        // console.log("d in x:", d);
+        // console.log("rect year:", d.year);
         const dateParser = d3.timeParse("%Y");
-        console.log("year x:", xYearScaler(dateParser(d.year)));
+        // console.log("year x:", xYearScaler(dateParser(d.year)));
         return xYearScaler(dateParser(d.year));
       })
-      .attr("y", (d) => {
-        console.log(
-          "y:",
-          yRegionalDataScaler(d3.extent(data, (d) => d.regionalData)[1])
-        );
-        // return yRegionalDataScaler(yRegionalDataScaler.range[0]);
-        return this.margins.top;
-      })
+      .attr("y", this.margins.top)
       .attr("width", (d) => {
         const dateParser = d3.timeParse("%Y");
         const width =
@@ -244,7 +237,7 @@ export default class ControlPane {
           .selectAll(".tick line")
           .attr("stroke", "#fff")
           .attr("stroke-opacity", (d) => {
-            console.log("draw tickline:", d);
+            // console.log("draw tickline:", d);
             return d <= d3.timeYear(d) ? 1 : 0.5;
           })
       );
