@@ -11,6 +11,8 @@ export function loadDatasets() {
         });
     }
 
+    console.log(datasets[election_data])
+
     return datasets;
 }
 
@@ -105,33 +107,39 @@ export function getOverallVotesShift(election_data, yearRange) {
     // convert data into dictionary format
     election_data.forEach(function (row) {
         if (!(row.state in states_all_years)) {
-            states_all_years[row.state] = {"dem":[], "rep":[]};
+            states_all_years[row.state] = {"dem":[], "rep":[], "vote-amount":[]};
         }
         
         for (let i=parseInt(beginYear); i<=parseInt(endYear); i=i+4) {
             if (parseInt(row.year)==i) {
                 states_all_years[row.state]["dem"].push(parseFloat(row.dem_percent));
                 states_all_years[row.state]["rep"].push(parseFloat(row.rep_percent));
+                states_all_years[row.state]["vote-amount"].push(parseInt(row.total_vote));
             }
         }
     });
 
-    // calculate shift rate
+    
     for (let state in states_all_years) {
         if (!(state in states_overall_shift)) {
-            states_overall_shift[state] = {"direction":"", "shift":0.0}
+            states_overall_shift[state] = {"direction":"", "shift":0.0, "vote-amount":0}
         }
-        
-        let dem_precent = states_all_years[state]["dem"];
 
+        // calculate average voting amount among these years
+        let average = arr => arr.reduce( ( p, c ) => p + c, 0 ) / arr.length;
+        states_overall_shift[state]["avg-vote-amount"] = average(states_all_years[state]["vote-amount"]).toFixed(0);;
+        
+        // calculate the shift rate, dem_rate + rep_rate = 1.0, abs(change) = the shift of the winner
+        let dem_precent = states_all_years[state]["dem"];
         let dem_change = parseFloat(dem_precent[dem_precent.length-1]) - parseFloat(dem_precent[0]);
         states_overall_shift[state]["shift"] = Math.abs(dem_change).toFixed(4);
 
+        // decide the direction
         if (dem_change >= 0) {
             states_overall_shift[state]["direction"] = "dem";
         } else {
             states_overall_shift[state]["direction"] = "rep";
-        }    
+        }
     }
 
     return [states_overall_shift, states_all_years];

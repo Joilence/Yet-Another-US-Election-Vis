@@ -24,6 +24,7 @@ Promise.all(tasks).then(files => {
     auxiVis.load_dataset(datasets.gdp_data, datasets.election_data);
     const mapVis = new MapVisualization(datasets);
 
+
     // Current Data Option
     let dataOption = {
         /* Year Range: [ , ]
