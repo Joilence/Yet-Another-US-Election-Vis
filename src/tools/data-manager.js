@@ -109,12 +109,6 @@ export function getOverallVotesShift(election_data, yearRange) {
         if (!(row.state in states_all_years)) {
             states_all_years[row.state] = {"dem":[], "rep":[], "vote-amount":[]};
         }
-
-
-        if (row.state=="hawaii") {
-            console.log("-----")
-            console.log(row)
-        }
         
         for (let i=parseInt(beginYear); i<=parseInt(endYear); i=i+4) {
             if (parseInt(row.year)==i) {
@@ -139,11 +133,6 @@ export function getOverallVotesShift(election_data, yearRange) {
         let dem_precent = states_all_years[state]["dem"];
         let dem_change = parseFloat(dem_precent[dem_precent.length-1]) - parseFloat(dem_precent[0]);
         states_overall_shift[state]["shift"] = Math.abs(dem_change).toFixed(4);
-
-        if (state=="hawaii") {
-            console.log("-----")
-            console.log(dem_precent, "++", dem_change)
-        }
 
         // decide the direction
         if (dem_change >= 0) {
