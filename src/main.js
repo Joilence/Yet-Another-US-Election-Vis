@@ -35,7 +35,7 @@ Promise.all(tasks).then(files => {
         yearRange: [2000,2008],
         symbolDataName: "shift-of-vote",
         regionalDataName: "gdp-growth-rate",
-        selectedStates: ["alabama", "alaska", "new-york"],
+        selectedStates: [],
     }
 
     // Detect Data Selection
@@ -46,7 +46,7 @@ Promise.all(tasks).then(files => {
         if (dataOption.selectedStates) {
             dataOption.selectedStates = selectedStates;
             auxiVis.render_auxiliary(dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
-            scatterVis.scatterplotVisRender(dataOption.symbolDataName, dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
+            scatterVis.scatterplotVisRender(dataOption);
         }
     })
 
@@ -83,7 +83,7 @@ Promise.all(tasks).then(files => {
             dataOption.yearRange = yearRange;
             auxiVis.render_auxiliary(dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
             mapVis.mapVisRender(dataOption.symbolDataName, dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
-            scatterVis.scatterplotVisRender(dataOption.symbolDataName, dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
+            scatterVis.scatterplotVisRender(dataOption);
         }
     })
     $('#auxiliary-list a').on('click', function (e) {

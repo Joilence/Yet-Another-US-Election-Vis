@@ -122,7 +122,7 @@ export default class MapVisualzation {
           self.deselectState(this.id);
           self.selectedStates = self.selectedStates.filter(ele => ele !== this.id);
         }
-        console.log(self.selectedStates)
+        // console.log(self.selectedStates)
         $("#map-visualization").prop('states', self.selectedStates);;
         $("#map-visualization").trigger("change");
       });
@@ -130,7 +130,7 @@ export default class MapVisualzation {
 
   selectState(stateName) {
     const r = 4;
-    console.log(`Select ${stateName}`);
+    // console.log(`Select ${stateName}`);
     this.mapVis.select('#patterns')
       .append('pattern')
       .attr('id', `${stateName}-pattern`)
@@ -158,7 +158,7 @@ export default class MapVisualzation {
   }
 
   deselectState(stateName) {
-    console.log(`Deselect ${stateName}`);
+    // console.log(`Deselect ${stateName}`);
     this.mapVis.select(`#${stateName}`)
       .style('fill', this.colorScale(self.regionalData[stateName]));
     this.mapVis.select(`#${stateName}-pattern`).remove();

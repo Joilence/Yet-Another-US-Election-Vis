@@ -1,9 +1,9 @@
 import * as d3 from "d3";
 import * as $ from "jquery";
 import {
-  getSymbolDataName,
-  getRegionalDataName,
-  getYearRange,
+  getOverallVotesShift,
+  getGdpRate,
+  getGdpValue,
 } from "../tools/data-manager";
 
 export default class ScatterplotVis {
@@ -14,20 +14,114 @@ export default class ScatterplotVis {
     this.symbolDataName = "";
     this.regionalDataName = "";
     this.yearRange = [];
-    this.selectedStates = ["alabama", "alaska", "new-york"];
+    this.periods = [];
+    this.selectedStates = [];
 
     // processed data
     this.regionalData = {};
     this.symbolData = {};
   }
-  scatterplotVisRender(symbolDataName, regionalDataName, yearRange, selectedStates) {
-    console.log('scatterplot current: ', regionalDataName, symbolDataName, yearRange, selectedStates);
+
+  /**
+   *  #######################################################################
+   *  ######################### Data Processing #############################
+   *  #######################################################################
+   */
+
+  getPeriods(yearRange) {
+    // console.log('getPeriods:', yearRange);
+    const startYear = parseInt(yearRange[0]);
+    const endYear = parseInt(yearRange[1]);
+    let periods = [];
+    for (let i = startYear; i < endYear; i += 4) {
+      // console.log('sp: year range:', i, i+4);
+      periods.push([String(i), String(i + 4)]);
+    }
+    // console.log('sp: get periods:', periods);
+    return periods;
+  }
+
+  preprocessGDPValue(data) {
+    const regionalDataPerPeriods = {};
+    this.periods.forEach((yearRange) => {
+      // console.log(`sp: proc votes shift of ${yearRange}`, getGDPValue(data, yearRange)[0]);
+      const regionalDataPeriod = getGdpValue(data, yearRange)[0];
+      Object.keys(regionalDataPeriod).forEach((state) => {
+        if (!this.selectedStates.includes(state)) return;
+        // console.log(`${state} (${String(yearRange)}):`, regionalDataPeriod[state]);
+        regionalDataPerPeriods[`${state} (${String(yearRange)})`] =
+          regionalDataPeriod[state];
+      });
+    });
+
+    // console.log('proc regionalDataPerPeriods:', regionalDataPerPeriods);
+
+    return regionalDataPerPeriods;
+  }
+
+  preprocessGDPGrowthRate(data) {
+    const regionalDataPerPeriods = {};
+    this.periods.forEach((yearRange) => {
+      // console.log(`sp: proc votes shift of ${yearRange}`, getGdpRate(data, yearRange)[0]);
+      const regionalDataPeriod = getGdpRate(data, yearRange)[0];
+      Object.keys(regionalDataPeriod).forEach((state) => {
+        if (!this.selectedStates.includes(state)) return;
+        // console.log(`${state} (${String(yearRange)}):`, regionalDataPeriod[state]);
+        regionalDataPerPeriods[`${state} (${String(yearRange)})`] =
+          regionalDataPeriod[state];
+      });
+    });
+
+    // console.log('proc regionalDataPerPeriods:', regionalDataPerPeriods);
+
+    return regionalDataPerPeriods;
+  }
+
+  preprocessShiftOfVotes(data) {
+    const symbolDataPerPeriods = {};
+    this.periods.forEach((yearRange) => {
+      // console.log(`sp: proc votes shift of ${yearRange}`, getOverallVotesShift(data, yearRange)[0]);
+      const symbolDataPeriod = getOverallVotesShift(data, yearRange)[0];
+      Object.keys(symbolDataPeriod).forEach((state) => {
+        // console.log('shift votes: this.selectedStates:', this.selectedStates);
+        if (!this.selectedStates.includes(state)) return;
+        // console.log(`${state} (${String(yearRange)}):`, symbolDataPeriod[state]);
+        // symbolDataPerPeriods[`${state} (${String(yearRange)})`] = symbolDataPeriod[state];
+        symbolDataPerPeriods[`${state} (${String(yearRange)})`] =
+          symbolDataPeriod[state].direction === "rep"
+            ? -parseFloat(symbolDataPeriod[state].shift)
+            : parseFloat(symbolDataPeriod[state].shift);
+      });
+    });
+
+    // console.log('proc symbolDataPerPeriods:', symbolDataPerPeriods);
+
+    return symbolDataPerPeriods;
+  }
+
+  /**
+   *  #######################################################################
+   *  ########################### Vis Render ################################
+   *  #######################################################################
+   */
+
+  scatterplotVisRender(dataOption) {
+    console.log("before:", this.yearRange, this.selectedStates);
+    console.log("current: ", dataOption.yearRange, dataOption.selectedStates);
     // update data on demand
-    if (regionalDataName !== this.regionalDataName) {
-      this.regionalDataName = regionalDataName;
+
+    this.yearRange = dataOption.yearRange;
+    this.periods = this.getPeriods(this.yearRange);
+    this.selectedStates = dataOption.selectedStates;
+
+    if (true || dataOption.regionalDataName !== this.regionalDataName) {
+      console.log("re proc regional data");
+      this.regionalDataName = dataOption.regionalDataName;
       switch (this.regionalDataName) {
         case "gdp-growth-rate":
-          this.regionalData = this.preprocessGDPGrowthRate(this.datasets.gdp_data);
+          this.regionalData = this.preprocessGDPGrowthRate(
+            this.datasets.gdp_data
+          );
           break;
         case "gdp-value":
           this.regionalData = this.preprocessGDPValue(this.datasets.gdp_data);
@@ -37,36 +131,25 @@ export default class ScatterplotVis {
       }
     }
 
-    // if (symbolDataName !== this.symbolDataName) {
-    //   this.symbolDataName = symbolDataName;
-    //   console.log('this symbol data name', this.symbolDataName);
-    //   switch (this.symbolDataName) {
-    //     case "shift-of-votes":
-    //       this.symbolData = this.preprocessShiftOfVotes(this.election_data);
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    // }
-    this.symbolData = this.preprocessShiftOfVotes(this.election_data);
+    if (true || dataOption.symbolDataName !== this.symbolDataName) {
+      console.log("re proc symbol data");
+      this.symbolDataName = dataOption.symbolDataName;
+      console.log("this symbol data name", this.symbolDataName);
+      switch (this.symbolDataName) {
+        case "shift-of-vote":
+          this.symbolData = this.preprocessShiftOfVotes(
+            this.datasets.election_data
+          );
+          break;
+        default:
+          this.symbolData = {};
+          break;
+      }
+    }
 
     this._scatterplotVisRender();
   }
-  preprocessGDPGrowthRate(data) {
-    
-    return {
-      alabama: 0.38,
-      new_york: 0.1,
-      washington_dc: 0.5,
-    }
-  }
-  preprocessShiftOfVotes(data) {
-    return {
-      alabama: 0.23,
-      new_york: 0.1,
-      washington_dc: 0.44,
-    }
-  }
+
   _scatterplotVisRender() {
     // console.log("scatterplot vis data:", data);
     let dateParser = d3.timeParse("%Y");
@@ -92,6 +175,9 @@ export default class ScatterplotVis {
       .attr("height", this.viewHeight)
       .attr("viewbox", [0, 0, this.viewWidth, this.viewHeight]);
 
+    // console.log('render: regional:', this.regionalData);
+    // console.log('render: symbol:', this.symbolData);
+    // console.log('render: this.selectedStates:', this.selectedStates);
     // data axis scaler
     let xSymbolDataScaler = d3
       .scaleLinear()
@@ -120,20 +206,19 @@ export default class ScatterplotVis {
       .call(d3.axisLeft(yRegionalDataScaler));
 
     // draw dot
-    let data = []
-    console.log("this.symbolData: ", this.symbolData);
-    console.log("this.regionalData: ", this.regionalData);
-    console.log(Object.keys(this.symbolData));
-    Object.keys(this.symbolData).forEach(stateName => {
+    let data = [];
+    // console.log("this.symbolData: ", this.symbolData);
+    // console.log("this.regionalData: ", this.regionalData);
+    // console.log(Object.keys(this.symbolData));
+    Object.keys(this.symbolData).forEach((stateName) => {
       data.push({
         stateName: stateName,
         regionalData: this.regionalData[stateName],
         symbolData: this.symbolData[stateName],
-        period: "2004-2008",
-      })
-    })
+      });
+    });
     // let data = this.symbolData.map((item, i) => Object.assign({}, item, this.regionalData[i]));
-    console.log(data);
+    // console.log(data);
     sctVis
       .append("g")
       .selectAll("dot")
@@ -143,14 +228,14 @@ export default class ScatterplotVis {
       .attr("cx", (d) => xSymbolDataScaler(d.symbolData))
       .attr("cy", (d) => yRegionalDataScaler(d.regionalData))
       .attr("r", 4)
-      .style("fill", "#69b3a2")
-      // .on("mouseover", (d) => {
-      //   console.log('mouse over');
-      //   $('#scatterplot-tooltip').text(`StateName: ${d.stateName}, GDP Growth Rate: ${d.regionalData}, ShiftOfVotes: Towards Republicans by ${d.symbolData}`);
-      // })
-      // .on("mouseout", (d) => {
-      //   console.log('mouse out');
-      //   // $('#scatterplot-tooltip').text('');
-      // });
+      .style("fill", "#69b3a2");
+    // .on("mouseover", (d) => {
+    //   console.log('mouse over');
+    //   $('#scatterplot-tooltip').text(`StateName: ${d.stateName}, GDP Growth Rate: ${d.regionalData}, ShiftOfVotes: Towards Republicans by ${d.symbolData}`);
+    // })
+    // .on("mouseout", (d) => {
+    //   console.log('mouse out');
+    //   // $('#scatterplot-tooltip').text('');
+    // });
   }
 }
