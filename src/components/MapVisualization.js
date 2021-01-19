@@ -280,6 +280,7 @@ export default class MapVisualzation {
       this_dom.setAttribute('data-avg-vote-amount', states_overall_shift[state]["avg-vote-amount"]);
 
     }
+
   }
 
   _removeElementsByClass(className){
@@ -290,7 +291,5 @@ export default class MapVisualzation {
   }
   // TODO: Legend (arrows, color scale)
   // TODO: button, select top 10, 
-  // TODO: add the voting amount into the tooltip, (done)
-  // TODO: normalize the shift rate, 
-  // TODO: and auto select the states
+  // TODO: and auto select the states ()
 }
