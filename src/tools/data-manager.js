@@ -105,13 +105,14 @@ export function getOverallVotesShift(election_data, yearRange) {
     // convert data into dictionary format
     election_data.forEach(function (row) {
         if (!(row.state in states_all_years)) {
-            states_all_years[row.state] = {"dem":[], "rep":[]};
+            states_all_years[row.state] = {"dem":[], "rep":[], "vote-amount":[]};
         }
         
         for (let i=parseInt(beginYear); i<=parseInt(endYear); i=i+4) {
             if (parseInt(row.year)==i) {
                 states_all_years[row.state]["dem"].push(parseFloat(row.dem_percent));
                 states_all_years[row.state]["rep"].push(parseFloat(row.rep_percent));
+                states_all_years[row.state]["vote-amount"].push(parseInt(row.total_vote));
             }
         }
     });
@@ -119,8 +120,11 @@ export function getOverallVotesShift(election_data, yearRange) {
     // calculate shift rate
     for (let state in states_all_years) {
         if (!(state in states_overall_shift)) {
-            states_overall_shift[state] = {"direction":"", "shift":0.0}
+            states_overall_shift[state] = {"direction":"", "shift":0.0, "vote-amount":0}
         }
+
+        let average = arr => arr.reduce( ( p, c ) => p + c, 0 ) / arr.length;
+        states_overall_shift[state]["vote-amount"] = average(states_all_years[state]["vote-amount"]).toFixed(0);;
         
         let dem_precent = states_all_years[state]["dem"];
 
@@ -131,7 +135,7 @@ export function getOverallVotesShift(election_data, yearRange) {
             states_overall_shift[state]["direction"] = "dem";
         } else {
             states_overall_shift[state]["direction"] = "rep";
-        }    
+        }
     }
 
     return [states_overall_shift, states_all_years];
