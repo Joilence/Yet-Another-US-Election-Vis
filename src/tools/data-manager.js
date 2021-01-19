@@ -11,6 +11,8 @@ export function loadDatasets() {
         });
     }
 
+    console.log(datasets[election_data])
+
     return datasets;
 }
 
@@ -107,6 +109,12 @@ export function getOverallVotesShift(election_data, yearRange) {
         if (!(row.state in states_all_years)) {
             states_all_years[row.state] = {"dem":[], "rep":[], "vote-amount":[]};
         }
+
+
+        if (row.state=="hawaii") {
+            console.log("-----")
+            console.log(row)
+        }
         
         for (let i=parseInt(beginYear); i<=parseInt(endYear); i=i+4) {
             if (parseInt(row.year)==i) {
@@ -117,20 +125,27 @@ export function getOverallVotesShift(election_data, yearRange) {
         }
     });
 
-    // calculate shift rate
+    
     for (let state in states_all_years) {
         if (!(state in states_overall_shift)) {
             states_overall_shift[state] = {"direction":"", "shift":0.0, "vote-amount":0}
         }
 
+        // calculate average voting amount among these years
         let average = arr => arr.reduce( ( p, c ) => p + c, 0 ) / arr.length;
-        states_overall_shift[state]["vote-amount"] = average(states_all_years[state]["vote-amount"]).toFixed(0);;
+        states_overall_shift[state]["avg-vote-amount"] = average(states_all_years[state]["vote-amount"]).toFixed(0);;
         
+        // calculate the shift rate, dem_rate + rep_rate = 1.0, abs(change) = the shift of the winner
         let dem_precent = states_all_years[state]["dem"];
-
         let dem_change = parseFloat(dem_precent[dem_precent.length-1]) - parseFloat(dem_precent[0]);
         states_overall_shift[state]["shift"] = Math.abs(dem_change).toFixed(4);
 
+        if (state=="hawaii") {
+            console.log("-----")
+            console.log(dem_precent, "++", dem_change)
+        }
+
+        // decide the direction
         if (dem_change >= 0) {
             states_overall_shift[state]["direction"] = "dem";
         } else {

@@ -97,7 +97,7 @@ export default class MapVisualzation {
         let this_dom = document.getElementById(this.id);
         data[self.symbolDataName] = this_dom.getAttribute('data-' + self.symbolDataName);
         data[self.regionalDataName] = this_dom.getAttribute('data-' + self.regionalDataName);
-        data["avg-vote-amount"] = this_dom.getAttribute('data-vote-amount');        
+        data["avg-vote-amount"] = this_dom.getAttribute('data-avg-vote-amount');        
 
         // render tooltips
         d3.select("#tooltip").html(self._createToolTipHtml(self._reformatStateName(this.id), data)) // this is current state dom
@@ -277,7 +277,7 @@ export default class MapVisualzation {
       
       let this_dom = document.getElementById(state);
       this_dom.setAttribute('data-'+ symbolDataName, [states_overall_shift[state]["direction"], states_overall_shift[state]["shift"]]);
-      this_dom.setAttribute('data-vote-amount', states_overall_shift[state]["vote-amount"]);
+      this_dom.setAttribute('data-avg-vote-amount', states_overall_shift[state]["avg-vote-amount"]);
 
     }
   }
