@@ -78,8 +78,12 @@
             z-index: 300;
             visibility: hidden;
         }
-
-        #
+        
+        rect.selection {
+            stroke: #111111;
+            stroke-width: 4;
+            fill: none;
+        }
     </style>
 
 
@@ -106,9 +110,9 @@
                             <label class="btn btn-outline-primary btn-sm active">
                                 <input type="radio" name="options" value="shift-of-vote" checked> Shift of Votes
                             </label>
-                            <label class="btn btn-outline-primary btn-sm">
+                            <!-- <label class="btn btn-outline-primary btn-sm">
                                 <input type="radio" name="options" value="error-of-poll" disabled> Error of Poll
-                            </label>
+                            </label> -->
                         </div>
                         <div class="row" style="padding: 5px 18px;">
                             Regional Data
@@ -120,9 +124,9 @@
                             <label class="btn btn-outline-primary btn-sm text-nowrap">
                                 <input type="radio" name="options" value="gdp-value"> GDP Value
                             </label>
-                            <label class="btn btn-outline-primary btn-sm text-nowrap">
+                            <!-- <label class="btn btn-outline-primary btn-sm text-nowrap">
                                 <input type="radio" name="options" value="income" disabled> Income
-                            </label>
+                            </label> -->
                         </div>
                     </div>
                     <div id="year-selection-container" class="w-80">

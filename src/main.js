@@ -26,6 +26,7 @@ Promise.all(tasks).then(files => {
     const mapVis = new MapVisualization(datasets);
     const scatterVis = new ScatterplotVis(datasets);
 
+
     // Current Data Option
     let dataOption = {
         /* Year Range: [ , ]

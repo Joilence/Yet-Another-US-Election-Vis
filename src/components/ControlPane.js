@@ -6,6 +6,11 @@ export default class ControlPane {
   constructor(datasets) {
     this.datasets = datasets;
     this.electionResult = [
+      { year: 1980, party: "rep" },
+      { year: 1984, party: "rep" },
+      { year: 1988, party: "rep" },
+      { year: 1992, party: "dem" },
+      { year: 1996, party: "dem" },
       { year: 2000, party: "rep" },
       { year: 2004, party: "rep" },
       { year: 2008, party: "dem" },
@@ -15,6 +20,9 @@ export default class ControlPane {
     // processed data
     this.yearlyGDPGrowthRate = undefined;
     this.yearlyGDPValue = undefined;
+    //TODO: dynamically choose first and last election year
+    this.firstElectionYear = "1980";
+    this.lastElectionYear = "2016";
     // TODO: better structure for update vis
     this.rendered = false;
   }
@@ -41,16 +49,12 @@ export default class ControlPane {
     // console.log(data.columns);
     // console.log(years);
 
-    //TODO: dynamically choose first and last election year
-    let firstElectionYear = "2000";
-    let lastElectionYear = "2016";
-
     let dateParser = d3.timeParse("%Y");
 
     // get GDP value
     let yearlyGDPValue = [];
-    let startIndex = years.indexOf(firstElectionYear) - 1;
-    let endIndex = years.indexOf(lastElectionYear);
+    let startIndex = years.indexOf(this.firstElectionYear) - 1;
+    let endIndex = years.indexOf(this.lastElectionYear);
     for (let i = startIndex; i <= endIndex; ++i) {
       let year = years[i];
       let yearValue = d3.sum(data, (d) => {
@@ -91,17 +95,13 @@ export default class ControlPane {
     // console.log(data.columns);
     // console.log(years);
 
-    // TODO: dynamically choose first and last election year
-    let firstElectionYear = "2000";
-    let lastElectionYear = "2016";
-
     let dateParser = d3.timeParse("%Y");
 
     // TODO: integrate GDP Value function and GDP Growth Rate function; notice the first election year problem
     // get GDP value
     let yearlyGDPValue = [];
-    let startIndex = years.indexOf(firstElectionYear);
-    let endIndex = years.indexOf(lastElectionYear);
+    let startIndex = years.indexOf(this.firstElectionYear);
+    let endIndex = years.indexOf(this.lastElectionYear);
     for (let i = startIndex; i <= endIndex; ++i) {
       let year = years[i];
       let yearValue = d3.sum(data, (d) => {
@@ -229,7 +229,7 @@ export default class ControlPane {
       .call(
         d3
           .axisBottom(xYearScaler)
-          .ticks(interval)
+          .ticks(d3.timeYear.every(4))
           .tickSize(-this.viewHeight + this.margins.top + this.margins.bottom)
       )
       .call((g) =>
@@ -357,24 +357,24 @@ export default class ControlPane {
       .domain(d3.extent(data, (d) => d.regionalData))
       .range([this.viewHeight - this.margins.bottom, this.margins.top]);
 
-    d3.select("#year-selection-x-axis")
-      .transition(t)
-      .call(d3.axisBottom(xYearScaler))
-      .call(
-        d3
-          .axisBottom(xYearScaler)
-          .ticks(d3.timeYear.every(4))
-          .tickSize(-this.viewHeight + this.margins.top + this.margins.bottom)
-      )
-      .call((g) =>
-        g
-          .selectAll(".tick line")
-          .attr("stroke", "#fff")
-          .attr("stroke-opacity", (d) => {
-            console.log("draw tickline:", d);
-            return d <= d3.timeYear(d) ? 1 : 0.5;
-          })
-      );
+    // d3.select("#year-selection-x-axis")
+    //   .transition(t)
+    //   .call(d3.axisBottom(xYearScaler))
+    //   .call(
+    //     d3
+    //       .axisBottom(xYearScaler)
+    //       .ticks(d3.timeYear.every(4))
+    //       .tickSize(-this.viewHeight + this.margins.top + this.margins.bottom)
+    //   )
+    //   .call((g) =>
+    //     g
+    //       .selectAll(".tick line")
+    //       .attr("stroke", "#fff")
+    //       .attr("stroke-opacity", (d) => {
+    //         console.log("draw tickline:", d);
+    //         return d <= d3.timeYear(d) ? 1 : 0.5;
+    //       })
+    //   );
 
     d3.select("#year-selection-y-axis")
       .transition(t)
