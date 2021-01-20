@@ -219,6 +219,12 @@ export default class ScatterplotVis {
     });
     // let data = this.symbolData.map((item, i) => Object.assign({}, item, this.regionalData[i]));
     // console.log(data);
+
+    let tooltip = d3
+      .select("#sct-tooltip")
+      .style("position", "absolute")
+      .style("visibility", "hidden");
+
     sctVis
       .append("g")
       .selectAll("dot")
@@ -228,14 +234,17 @@ export default class ScatterplotVis {
       .attr("cx", (d) => xSymbolDataScaler(d.symbolData))
       .attr("cy", (d) => yRegionalDataScaler(d.regionalData))
       .attr("r", 4)
-      .style("fill", "#69b3a2");
-    // .on("mouseover", (d) => {
-    //   console.log('mouse over');
-    //   $('#scatterplot-tooltip').text(`StateName: ${d.stateName}, GDP Growth Rate: ${d.regionalData}, ShiftOfVotes: Towards Republicans by ${d.symbolData}`);
-    // })
-    // .on("mouseout", (d) => {
-    //   console.log('mouse out');
-    //   // $('#scatterplot-tooltip').text('');
-    // });
+      .style("fill", "#69b3a2")
+      .on("mouseover mousemove", (d) => {
+        console.log("mouse over");
+        tooltip
+          .style("visibility", "visible")
+          .style("top", (d3.event.pageY + 10)+"px").style("left",(d3.event.pageX + 10)+"px")
+          .text(`State: ${d.stateName}\nGDP Growth Rate: ${d.regionalData}\nShift Of Votes: Towards Republicans by ${d.symbolData}`);
+      })
+      .on("mouseout", (d) => {
+        // console.log("mouse out");
+        tooltip.style("visibility", "hidden");
+      });
   }
 }
