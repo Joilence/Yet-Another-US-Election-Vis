@@ -248,5 +248,26 @@ export default class ScatterplotVis {
         // console.log("mouse out");
         tooltip.style("visibility", "hidden");
       });
+
+    d3.select('#sctplt-x-label').remove();
+    d3.select('#sctplt-y-label').remove();
+    d3.select('#scatter-plot')
+      .append("text")
+      .attr('id', 'sctplt-x-label')
+      .attr("transform",
+            "translate(" + (this.viewWidth/2) + " ," + 
+                           (this.viewHeight) + ")")
+      .style("text-anchor", "middle")
+      .text("Shift of Votes");
+
+    const yLableX = 10;
+    const yLableY = this.viewHeight / 2;
+    sctVis.append("text")
+      .attr('id', 'sctplt-y-label')
+      .attr('x', yLableX)
+      .attr('y', yLableY)
+      .attr('transform', `rotate(270  ${yLableX}, ${yLableY})`)
+      .style("text-anchor", "middle")
+      .text(this.regionalDataName);
   }
 }
