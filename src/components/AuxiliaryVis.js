@@ -76,15 +76,15 @@ export default class AuxiliaryVis {
             .attr('height', height + margin.top + margin.bottom)
             .on("mouseover", function (event, d) {
                 d3.select(`#${stateName}`).attr('stroke-opacity', 1);
-              })
-              .on("mouseout", function (event, d) {
+            })
+            .on("mouseout", function (event, d) {
                 d3.select(`#${stateName}`).attr('stroke-opacity', 0);
-              })
+            })
             .append('g')
             .attr('transform',
                 `scale(${scaleRatio}) translate(${margin.left},${margin.top})`)
-                
-            
+
+
         // X scale will use the index of our data
         const xScale = d3.scaleLinear()
             .domain(d3.extent(year))
@@ -329,6 +329,40 @@ export default class AuxiliaryVis {
             .attr("width", 10).attr("height", 10);
 
     }
+
+    render_legend2(axis_name) {
+        // define SVG for auxiliary part
+        const margin = {
+            top: 10, right: 10, bottom: 0, left: 10,
+        };
+        const width = 300 - margin.left - margin.right;
+        const height = 100 - margin.top - margin.bottom;
+        const svg = d3.select(".SummaryGraph").append("svg")
+            .attr('width', width + margin.left + margin.right)
+            .attr('height', height + margin.top + margin.bottom)
+            .append('g')
+            .attr('transform',
+                `translate(${margin.left},${margin.top})`);
+        // Add legend for the graph
+        var legend_keys = [axis_name, "democratic-percentages", "republicant-percentages"]
+        var legend_colors = ["green", "blue", "red"]
+
+        var lineLegend = svg.selectAll(".lineLegend").data(legend_keys)
+            .enter().append("g")
+            .attr("class", "lineLegend")
+            .attr("transform", function (d, i) {
+                return "translate(" + 0 + "," + ((i + 2) * 20) + ")";
+            });
+
+        lineLegend.append("text").text(function (d) { return d; })
+            .style("font-size", "12px")
+            .attr("transform", "translate(15,9)"); //align texts with boxes
+
+        lineLegend.append("rect")
+            .attr("fill", function (d, i) { return legend_colors[i] })
+            .attr("width", 10).attr("height", 10);
+
+    }
     // render auxiliary graphs
     render_auxiliary(data_option, time_range, selected_states) {
         d3.select(".AuxiliaryGraph").html('');
@@ -345,6 +379,7 @@ export default class AuxiliaryVis {
         // this.render(data_option, "ohio");
         // this.render(data_option, "texas");
     }
+
     // load datasets to the component
     load_dataset(dataset, dataset_elec) {
         if (dataset === undefined || dataset_elec === undefined) {
@@ -385,13 +420,15 @@ export default class AuxiliaryVis {
 
     }
     render_summary(axis_name, stateName) {
+
+        this.render_legend2(axis_name)
         // load data
         const len = this.time_range[1] - this.time_range[0] + 1
         let data_points = new Array(len).fill(0);
         let year = new Array(len).fill(0);
         let data = [];
 
-        let data_points_elec_dem = new Array((((len-1)/4)+1)*2).fill(0);
+        let data_points_elec_dem = new Array((((len - 1) / 4) + 1) * 2).fill(0);
         let data_elec_rep = [];
         let data_elec_dem = [];
 
@@ -411,7 +448,7 @@ export default class AuxiliaryVis {
             overall_gdp = overall_gdp + getGdpRate(this.dataset, this.time_range)[0][ele]
             overall_shift = overall_shift + parseFloat(getOverallVotesShift(this.dataset_elec, this.time_range)[0][ele].shift)
             shift_direction.push(getOverallVotesShift(this.dataset_elec, this.time_range)[0][ele].direction)
-            
+
         })
         data_points = data_points.map(function (num, idx) {
             return num / 3;
@@ -421,21 +458,21 @@ export default class AuxiliaryVis {
         });
         for (let va in data_points) {
             data.push({ 'y': data_points[va], 'x': year[va] })
-            
+
         }
-        for(let va = 0; va < data_points_elec_dem.length / 2; va++){
-            data_elec_dem.push({ 'y': data_points_elec_dem[va*2], 'x': year[va*4] })
-            data_elec_rep.push({ 'y': data_points_elec_dem[va*2 + 1], 'x': year[va*4] })
+        for (let va = 0; va < data_points_elec_dem.length / 2; va++) {
+            data_elec_dem.push({ 'y': data_points_elec_dem[va * 2], 'x': year[va * 4] })
+            data_elec_rep.push({ 'y': data_points_elec_dem[va * 2 + 1], 'x': year[va * 4] })
         }
         overall_gdp = Math.round(overall_gdp / 3 * 100) / 100
         overall_shift = Math.round(overall_shift / 3 * 100) / 100
         let count_dem = 0
         shift_direction.forEach(ele => {
-            if (ele == 'dem') { 
+            if (ele == 'dem') {
                 count_dem = count_dem + 1;
             }
         })
-        if (count_dem > data_points_elec_dem.length / 4){
+        if (count_dem > data_points_elec_dem.length / 4) {
             shift_direction = 'dem'
         }
         else {
@@ -456,7 +493,7 @@ export default class AuxiliaryVis {
 
         // define SVG for auxiliary part
         const margin = {
-            top: 60 , right: 60 , bottom: 60 , left: 60 ,
+            top: 60, right: 60, bottom: 60, left: 60,
         };
         const width = element.getBoundingClientRect().width - margin.left - margin.right;
         const height = element.getBoundingClientRect().width * 0.55 - margin.top - margin.bottom;
@@ -466,9 +503,11 @@ export default class AuxiliaryVis {
         const svg = d3.select(".SummaryGraph").append("svg")
             .attr('width', width + margin.left + margin.right)
             .attr('height', height + margin.top + margin.bottom)
+            // .attr('transform', 'translate(0,-30)')
             .append('g')
             .attr('transform',
                 `scale(${scaleRatio}) translate(${margin.left},${margin.top})`);
+
         // X scale will use the index of our data
         const xScale = d3.scaleLinear()
             .domain(d3.extent(year))
@@ -677,6 +716,8 @@ export default class AuxiliaryVis {
             .attr("cy", function (d) { return yScale_elec(d.y) })
             .attr("r", 2)
             .style('fill', 'red');
+
+
     }
 
 }
