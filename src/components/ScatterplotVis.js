@@ -106,8 +106,8 @@ export default class ScatterplotVis {
    */
 
   scatterplotVisRender(dataOption) {
-    console.log("before:", this.yearRange, this.selectedStates);
-    console.log("current: ", dataOption.yearRange, dataOption.selectedStates);
+    // console.log("before:", this.yearRange, this.selectedStates);
+    // console.log("current: ", dataOption.yearRange, dataOption.selectedStates);
     // update data on demand
 
     this.yearRange = dataOption.yearRange;
@@ -115,7 +115,7 @@ export default class ScatterplotVis {
     this.selectedStates = dataOption.selectedStates;
 
     if (true || dataOption.regionalDataName !== this.regionalDataName) {
-      console.log("re proc regional data");
+      // console.log("re proc regional data");
       this.regionalDataName = dataOption.regionalDataName;
       switch (this.regionalDataName) {
         case "gdp-growth-rate":
@@ -132,9 +132,9 @@ export default class ScatterplotVis {
     }
 
     if (true || dataOption.symbolDataName !== this.symbolDataName) {
-      console.log("re proc symbol data");
+      // console.log("re proc symbol data");
       this.symbolDataName = dataOption.symbolDataName;
-      console.log("this symbol data name", this.symbolDataName);
+      // console.log("this symbol data name", this.symbolDataName);
       switch (this.symbolDataName) {
         case "shift-of-vote":
           this.symbolData = this.preprocessShiftOfVotes(
