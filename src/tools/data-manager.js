@@ -11,7 +11,7 @@ export function loadDatasets() {
         });
     }
 
-    console.log(datasets[election_data])
+    // console.log(datasets[election_data])
 
     return datasets;
 }
@@ -103,8 +103,8 @@ export function getOverallVotesShift(election_data, yearRange) {
     let states_all_years = {};
     let states_overall_shift = {};
     let [beginYear, endYear] = yearRange;
-    console.log("+++")
-    console.log(yearRange, parseInt(beginYear), parseInt(endYear))
+    // console.log("+++")
+    // console.log(yearRange, parseInt(beginYear), parseInt(endYear))
 
     // convert data into dictionary format
     election_data.forEach(function (row) {
@@ -113,8 +113,8 @@ export function getOverallVotesShift(election_data, yearRange) {
         }
 
         if (row.state == "oregon") {
-            console.log("------")
-            console.log(yearRange, parseInt(beginYear), parseInt(endYear))
+            // console.log("------")
+            // console.log(yearRange, parseInt(beginYear), parseInt(endYear))
         }
         
         
@@ -132,12 +132,12 @@ export function getOverallVotesShift(election_data, yearRange) {
                 if (parseInt(row.year)==parseInt(beginYear) || parseInt(row.year)==parseInt(endYear)) {
                     if (parseInt(row.dem_vote) > parseInt(row.rep_vote)) {
                         if (row.state == "oregon") {
-                            console.log(row.year, "dem")
+                            // console.log(row.year, "dem")
                         }
                         states_all_years[row.state]["elect-result"].push("dem");
                     } else {
                         if (row.state == "oregon") {
-                            console.log(row.year, "rep")
+                            // console.log(row.year, "rep")
                         }
                         states_all_years[row.state]["elect-result"].push("rep");
                     }
