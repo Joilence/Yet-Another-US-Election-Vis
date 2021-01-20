@@ -266,6 +266,7 @@ export default class MapVisualzation {
 
   _mapVisSymbolRender(data, yearRange, symbolDataName) {
     this._removeElementsByClass("arrow"); // remove current arrows
+    this.mapVis.selectAll('rect.state-election-result').remove();
     // draw symbol data vis
     let [states_overall_shift, states_all_years] = getOverallVotesShift(data, yearRange);
 
@@ -287,8 +288,42 @@ export default class MapVisualzation {
       this_dom.setAttribute('data-'+ symbolDataName, [states_overall_shift[state]["direction"], states_overall_shift[state]["shift"]]);
       this_dom.setAttribute('data-avg-vote-amount', states_overall_shift[state]["avg-vote-amount"]);
 
-    }
 
+      const result = 'dem-rep';
+      const resultColor = {'dem': 'blue', 'rep': 'red'};
+      const sqWidth = 10;
+      this.mapVis
+        .append('rect')
+        .attr('class', 'state-election-result')
+        .attr('x', this.USStatesData.centroids[state]["x"] + sqWidth/2)
+        .attr('y', this.USStatesData.centroids[state]["y"] + 3)
+        .attr('width', sqWidth)
+        .attr('height', sqWidth)
+        .style('fill', resultColor[result.split('-')[0]]);
+      this.mapVis
+        .append('rect')
+        .attr('class', 'state-election-result')
+        .attr('x', this.USStatesData.centroids[state]["x"] - sqWidth/2)
+        .attr('y', this.USStatesData.centroids[state]["y"] + 3)
+        .attr('width', sqWidth)
+        .attr('height', sqWidth)
+        .style('fill', resultColor[result.split('-')[1]]);
+    }
+    
+    // this.mapVis
+    //   .selectAll('.state-election-result')
+    //   .data(states_overall_shift)
+    //   .enter()
+    //   .append('rect')
+    //   .attr('class', 'state-election-result')
+    //   .attr('x', d => {
+    //     console.log('draw rect');
+    //     return this.USStatesData.centroids[d]["x"];
+    //   })
+    //   .attr('y', d => this.USStatesData.centroids[d]["x"])
+    //   .attr('width', 10)
+    //   .attr('height', 10)
+    //   .style('fill', '#69b3a2');
   }
 
   _removeElementsByClass(className){
