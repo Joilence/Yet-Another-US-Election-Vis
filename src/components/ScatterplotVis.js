@@ -242,7 +242,7 @@ export default class ScatterplotVis {
         tooltip
           .style("visibility", "visible")
           .style("top", (d3.event.pageY + 10)+"px").style("left",(d3.event.pageX + 10)+"px")
-          .text(`State: ${d.stateName}\nGDP Growth Rate: ${d.regionalData}\nShift Of Votes: Towards ${d.symbolData > 0 ? "republicans" : "democrates"} by ${Math.abs(d.symbolData)}`);
+          .text(`State:\n  ${d.stateName}\nGDP Growth Rate:\n  ${d.regionalData}\nShift Of Votes:\n  Towards ${d.symbolData > 0 ? "republicans" : "democrates"} by ${Math.abs(d.symbolData)}`);
       })
       .on("mouseout", (d) => {
         // console.log("mouse out");
