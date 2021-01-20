@@ -103,27 +103,49 @@ export function getOverallVotesShift(election_data, yearRange) {
     let states_all_years = {};
     let states_overall_shift = {};
     let [beginYear, endYear] = yearRange;
+    console.log("+++")
+    console.log(yearRange, parseInt(beginYear), parseInt(endYear))
 
     // convert data into dictionary format
     election_data.forEach(function (row) {
         if (!(row.state in states_all_years)) {
             states_all_years[row.state] = {"dem":[], "rep":[], "vote-amount":[], "elect-result":[]};
         }
+
+        if (row.state == "oregon") {
+            console.log("------")
+            console.log(yearRange, parseInt(beginYear), parseInt(endYear))
+        }
+        
         
         for (let i=parseInt(beginYear); i<=parseInt(endYear); i=i+4) {
             if (parseInt(row.year)==i) {
                 states_all_years[row.state]["dem"].push(parseFloat(row.dem_percent));
                 states_all_years[row.state]["rep"].push(parseFloat(row.rep_percent));
                 states_all_years[row.state]["vote-amount"].push(parseInt(row.total_vote));
+
+
+
+
                 
                 // decide the election result
-                if (row.dem_vote > row.rep_vote) {
-                    states_all_years[row.state]["elect-result"].push("dem");
-                } else {
-                    states_all_years[row.state]["elect-result"].push("rep");
+                if (parseInt(row.year)==parseInt(beginYear) || parseInt(row.year)==parseInt(endYear)) {
+                    if (parseInt(row.dem_vote) > parseInt(row.rep_vote)) {
+                        if (row.state == "oregon") {
+                            console.log(row.year, "dem")
+                        }
+                        states_all_years[row.state]["elect-result"].push("dem");
+                    } else {
+                        if (row.state == "oregon") {
+                            console.log(row.year, "rep")
+                        }
+                        states_all_years[row.state]["elect-result"].push("rep");
+                    }
                 }
             }
         }
+
+
     });
 
     
@@ -137,6 +159,10 @@ export function getOverallVotesShift(election_data, yearRange) {
         states_overall_shift[state]["avg-vote-amount"] = average(states_all_years[state]["vote-amount"]).toFixed(0);
 
         // get the election result changing
+        // if (state == "oregon") {
+        //     console.log(states_all_years[state]["elect-result"])
+        // }
+
         states_overall_shift[state]["elect-result-change"] = states_all_years[state]["elect-result"][0] 
                                                             + "-" 
                                                             + states_all_years[state]["elect-result"][states_all_years[state]["elect-result"].length-1];
