@@ -89,8 +89,8 @@ export default class ScatterplotVis {
         // symbolDataPerPeriods[`${state} (${String(yearRange)})`] = symbolDataPeriod[state];
         symbolDataPerPeriods[`${state} (${String(yearRange)})`] =
           symbolDataPeriod[state].direction === "rep"
-            ? -parseFloat(symbolDataPeriod[state].shift)
-            : parseFloat(symbolDataPeriod[state].shift);
+            ? parseFloat(symbolDataPeriod[state].shift)
+            : -parseFloat(symbolDataPeriod[state].shift);
       });
     });
 
@@ -235,14 +235,14 @@ export default class ScatterplotVis {
       .attr("cy", (d) => yRegionalDataScaler(d.regionalData))
       .attr("r", 4)
       .style("fill", (d) => {
-        return d.symbolData < 0 ? 'red' : 'blue';
+        return d.symbolData > 0 ? 'red' : 'blue';
       })
       .on("mouseover mousemove", (d) => {
         console.log("mouse over");
         tooltip
           .style("visibility", "visible")
           .style("top", (d3.event.pageY + 10)+"px").style("left",(d3.event.pageX + 10)+"px")
-          .text(`State: ${d.stateName}\nGDP Growth Rate: ${d.regionalData}\nShift Of Votes: Towards ${d.symbolData < 0 ? "republicans" : "democrates"} by ${Math.abs(d.symbolData)}`);
+          .text(`State: ${d.stateName}\nGDP Growth Rate: ${d.regionalData}\nShift Of Votes: Towards ${d.symbolData > 0 ? "republicans" : "democrates"} by ${Math.abs(d.symbolData)}`);
       })
       .on("mouseout", (d) => {
         // console.log("mouse out");
