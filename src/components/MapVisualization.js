@@ -294,7 +294,7 @@ export default class MapVisualzation {
       this.mapVis
         .append('rect')
         .attr('class', 'state-election-result')
-        .attr('x', this.USStatesData.centroids[state]["x"] + sqWidth/2)
+        .attr('x', this.USStatesData.centroids[state]["x"] - sqWidth/2)
         .attr('y', this.USStatesData.centroids[state]["y"] + 3)
         .attr('width', sqWidth)
         .attr('height', sqWidth)
@@ -302,7 +302,7 @@ export default class MapVisualzation {
       this.mapVis
         .append('rect')
         .attr('class', 'state-election-result')
-        .attr('x', this.USStatesData.centroids[state]["x"] - sqWidth/2)
+        .attr('x', this.USStatesData.centroids[state]["x"] + sqWidth/2)
         .attr('y', this.USStatesData.centroids[state]["y"] + 3)
         .attr('width', sqWidth)
         .attr('height', sqWidth)
