@@ -131,6 +131,7 @@ export default class MapVisualzation {
   }
 
   selectState(stateName) {
+    d3.select(`#${stateName}-pattern`).remove();
     const r = 4;
     // console.log(`Select ${stateName}`);
     this.mapVis.select('#patterns')
@@ -258,7 +259,7 @@ export default class MapVisualzation {
 
     if (this.selectedStates.length !== 0) {
       this.selectedStates.forEach(e => {
-        this.mapVis.select(`#${e}`).dispatch('click');
+        this.selectState(e);
       })
     }
   }
