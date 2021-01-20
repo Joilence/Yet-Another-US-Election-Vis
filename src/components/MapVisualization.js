@@ -268,12 +268,19 @@ export default class MapVisualzation {
     this._removeElementsByClass("arrow"); // remove current arrows
     // draw symbol data vis
     let [states_overall_shift, states_all_years] = getOverallVotesShift(data, yearRange);
+
+    const shiftsValue = Array.from(Object.values(states_overall_shift), e => parseFloat(e["shift"]));
+    console.log('shiftValues:', shiftsValue);
+    const arrowLengthScaler = d3.scaleLinear()
+      .domain(d3.extent(shiftsValue))
+      .range([5, 50]);
+
     for (let state in states_overall_shift) {
       this.arrowVis.create_arrow(
-                                  states_overall_shift[state]["direction"]
-                                  , this.USStatesData.centroids[state]["x"]
-                                  , this.USStatesData.centroids[state]["y"]
-                                  , 10*states_overall_shift[state]["shift"]
+        states_overall_shift[state]["direction"]
+        , this.USStatesData.centroids[state]["x"]
+        , this.USStatesData.centroids[state]["y"]
+        , arrowLengthScaler(states_overall_shift[state]["shift"])
       );
       
       let this_dom = document.getElementById(state);
