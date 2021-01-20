@@ -287,10 +287,8 @@ export default class MapVisualzation {
       let this_dom = document.getElementById(state);
       this_dom.setAttribute('data-'+ symbolDataName, [states_overall_shift[state]["direction"], states_overall_shift[state]["shift"]]);
       this_dom.setAttribute('data-avg-vote-amount', states_overall_shift[state]["avg-vote-amount"]);
-      this_dom.setAttribute('data-elect-result-change', states_overall_shift[state]["elect-result-change"]);
 
-
-      const result = 'dem-rep';
+      const result = states_overall_shift[state]["elect-result-change"];
       const resultColor = {'dem': 'blue', 'rep': 'red'};
       const sqWidth = 10;
       this.mapVis
