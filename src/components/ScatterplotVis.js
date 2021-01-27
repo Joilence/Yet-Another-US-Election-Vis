@@ -89,8 +89,8 @@ export default class ScatterplotVis {
         // symbolDataPerPeriods[`${state} (${String(yearRange)})`] = symbolDataPeriod[state];
         symbolDataPerPeriods[`${state} (${String(yearRange)})`] =
           symbolDataPeriod[state].direction === "rep"
-            ? -parseFloat(symbolDataPeriod[state].shift)
-            : parseFloat(symbolDataPeriod[state].shift);
+            ? parseFloat(symbolDataPeriod[state].shift)
+            : -parseFloat(symbolDataPeriod[state].shift);
       });
     });
 
@@ -106,8 +106,8 @@ export default class ScatterplotVis {
    */
 
   scatterplotVisRender(dataOption) {
-    console.log("before:", this.yearRange, this.selectedStates);
-    console.log("current: ", dataOption.yearRange, dataOption.selectedStates);
+    // console.log("before:", this.yearRange, this.selectedStates);
+    // console.log("current: ", dataOption.yearRange, dataOption.selectedStates);
     // update data on demand
 
     this.yearRange = dataOption.yearRange;
@@ -115,7 +115,7 @@ export default class ScatterplotVis {
     this.selectedStates = dataOption.selectedStates;
 
     if (true || dataOption.regionalDataName !== this.regionalDataName) {
-      console.log("re proc regional data");
+      // console.log("re proc regional data");
       this.regionalDataName = dataOption.regionalDataName;
       switch (this.regionalDataName) {
         case "gdp-growth-rate":
@@ -132,9 +132,9 @@ export default class ScatterplotVis {
     }
 
     if (true || dataOption.symbolDataName !== this.symbolDataName) {
-      console.log("re proc symbol data");
+      // console.log("re proc symbol data");
       this.symbolDataName = dataOption.symbolDataName;
-      console.log("this symbol data name", this.symbolDataName);
+      // console.log("this symbol data name", this.symbolDataName);
       switch (this.symbolDataName) {
         case "shift-of-vote":
           this.symbolData = this.preprocessShiftOfVotes(
@@ -234,17 +234,54 @@ export default class ScatterplotVis {
       .attr("cx", (d) => xSymbolDataScaler(d.symbolData))
       .attr("cy", (d) => yRegionalDataScaler(d.regionalData))
       .attr("r", 4)
-      .style("fill", "#69b3a2")
+      .style("fill", (d) => {
+        return d.symbolData > 0 ? "red" : "blue";
+      })
       .on("mouseover mousemove", (d) => {
-        console.log("mouse over");
+        // console.log("mouse over");
+        // console.log(d.stateName.split(' ')[0]);
+        d3.select(`#${d.stateName.split(' ')[0]}`)
+          .attr("stroke-opacity", 1);
         tooltip
           .style("visibility", "visible")
-          .style("top", (d3.event.pageY + 10)+"px").style("left",(d3.event.pageX + 10)+"px")
-          .text(`State: ${d.stateName}\nGDP Growth Rate: ${d.regionalData}\nShift Of Votes: Towards Republicans by ${d.symbolData}`);
+          .style("top", d3.event.pageY + 10 + "px")
+          .style("left", d3.event.pageX + 10 + "px")
+          .text(
+            `State:\n  ${d.stateName}\nGDP Growth Rate:\n  ${
+              d.regionalData
+            }\nShift Of Votes:\n  Towards ${
+              d.symbolData > 0 ? "republicans" : "democrates"
+            } by ${Math.abs(d.symbolData)}`
+          );
       })
       .on("mouseout", (d) => {
         // console.log("mouse out");
+        d3.select(`#${d.stateName.split(' ')[0]}`)
+          .attr("stroke-opacity", 0);
         tooltip.style("visibility", "hidden");
       });
+
+    d3.select("#sctplt-x-label").remove();
+    d3.select("#sctplt-y-label").remove();
+    d3.select("#scatter-plot")
+      .append("text")
+      .attr("id", "sctplt-x-label")
+      .attr(
+        "transform",
+        "translate(" + this.viewWidth / 2 + " ," + this.viewHeight + ")"
+      )
+      .style("text-anchor", "middle")
+      .text("Shift of Votes");
+
+    const yLableX = 10;
+    const yLableY = this.viewHeight / 2;
+    sctVis
+      .append("text")
+      .attr("id", "sctplt-y-label")
+      .attr("x", yLableX)
+      .attr("y", yLableY)
+      .attr("transform", `rotate(270  ${yLableX}, ${yLableY})`)
+      .style("text-anchor", "middle")
+      .text(this.regionalDataName);
   }
 }

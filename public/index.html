@@ -78,7 +78,7 @@
             z-index: 300;
             visibility: hidden;
         }
-        
+
         rect.selection {
             stroke: #111111;
             stroke-width: 4;
@@ -132,6 +132,14 @@
                     <div id="year-selection-container" class="w-80">
                         <svg id="year-selection"></svg>
                     </div>
+                    <div id="selected-states-display-container" class="card" style="
+                    width: 400px;">
+                        <div class="card-header">
+                            Selected States
+                        </div>
+                        <div id="selected-states-display" style="padding: 5px 20px;">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -149,8 +157,8 @@
                                     aria-selected="false">Summary</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#sctplot" role="tab" aria-controls="sct"
-                                    aria-selected="false">Scatterplot</a>
+                                <a class="nav-link" id="sctplot-tab"" href=" #sctplot" role="tab" aria-controls="sct"
+                                    aria-selected="false">Break into Periods</a>
                             </li>
                         </ul>
                     </div>
@@ -173,6 +181,15 @@
             <div class="col col-xs-12 col-sm-6 col-md-7 col-lg-8">
                 <div class="card">
                     <div class="card-header"> Map Visualization</div>
+                    <div id="select-states-panel" style="visibility: hidden;">
+                        <h5>&nbsp;Select Top 10 Sattes</h5>&nbsp;
+                        <button type="button" class="select-btn btn btn-warning" id="top-clear">Clear All</button>
+                        <button type="button" class="select-btn btn btn-danger" id="top-rep-shift">by Rep Shift</button>
+                        <button type="button" class="select-btn btn btn-primary" id="top-dem-shift">by Dem
+                            Shift</button>
+                        <button type="button" class="select-btn btn btn-info" id="top-regional"></button>
+                    </div>
+
                     <div class="card-body">
                         <div id="map-visualization"></div>
                     </div>
@@ -187,7 +204,7 @@
                     </pattern>
                 </defs>
             </svg>
-            <div id="tooltip"></div>
+            <div id="map-tooltip"></div>
         </div>
     </div>
 

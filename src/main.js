@@ -36,25 +36,33 @@ Promise.all(tasks).then(files => {
         yearRange: [2000,2008],
         symbolDataName: "shift-of-vote",
         regionalDataName: "gdp-growth-rate",
-        selectedStates: [],
+        selectedStates: ["alabama", "alaska", "new-york"],
     }
+    $('#selected-states-display').text(Array.from(dataOption.selectedStates, (e) => {
+        return ' ' + e.charAt(0).toUpperCase() + e.slice(1).replace('-', ' ');
+    }));
+
+    $('#top-regional').html("by " + dataOption.regionalDataName);
 
     // Detect Data Selection
     // TODO: detect change of selected states
     $('#map-visualization').on('change', e => {
         let selectedStates = getSelectedStates();
-        console.log('main.js: current selected states:', selectedStates);
+        // console.log('main.js: current selected states:', selectedStates);
         if (dataOption.selectedStates) {
             dataOption.selectedStates = selectedStates;
-            auxiVis.render_auxiliary(dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
-            scatterVis.scatterplotVisRender(dataOption);
+            if (!$("#sctplot-tab").hasClass("active")) auxiVis.render_auxiliary(dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
+            if ($("#sctplot-tab").hasClass("active")) scatterVis.scatterplotVisRender(dataOption);
+            $('#selected-states-display').text(Array.from(dataOption.selectedStates, (e) => {
+                return ' ' + e.charAt(0).toUpperCase() + e.slice(1).replace('-', ' ');
+            }));
         }
     })
 
     $('#symbol-data-selection input:radio').on('click', e => {
         let symbolDataName = getSymbolDataName();
         console.log('current symbol data name:', symbolDataName);
-
+        
         // update vis if data changed
         if (dataOption.symbolDataName !== symbolDataName) {
             dataOption.symbolDataName = symbolDataName;
@@ -66,6 +74,8 @@ Promise.all(tasks).then(files => {
     $('#regional-data-selection input:radio').on('click', e => {
         let regionalDataName = getRegionalDataName();
         console.log('current regional data name:', regionalDataName);
+        $('#top-regional').html("by " + regionalDataName);
+        $('#top-regional').attr("disabled", false);
 
         // update vis if data changed
         if (dataOption.regionalDataName !== regionalDataName) {
@@ -82,18 +92,25 @@ Promise.all(tasks).then(files => {
         // update vis if data changed
         if (dataOption.yearRange !== yearRange) {
             dataOption.yearRange = yearRange;
-            auxiVis.render_auxiliary(dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
+            if (!$("#sctplot-tab").hasClass("active")) auxiVis.render_auxiliary(dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
             mapVis.mapVisRender(dataOption.symbolDataName, dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
-            scatterVis.scatterplotVisRender(dataOption);
+            if ($("#sctplot-tab").hasClass("active")) scatterVis.scatterplotVisRender(dataOption);
         }
     })
     $('#auxiliary-list a').on('click', function (e) {
         e.preventDefault() 
         $(this).tab('show')
       })
+      $("#sctplot-tab").on('click', e => {
+        if ($("#sctplot-tab").hasClass("active")) scatterVis.scatterplotVisRender(dataOption);
+      })
 
     // Render Components
     // year selection rendering will set default brush, automatically trigger refresh of other vis
     controlPane.yearSelectionRender();
+
+
+    mapVis.selectTopStatesInit();
+    $("#select-states-panel").css('visibility', 'visible');
 
 }).catch(err => console.log(err));

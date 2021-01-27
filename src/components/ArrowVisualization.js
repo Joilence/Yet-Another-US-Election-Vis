@@ -31,13 +31,13 @@ export default class ArrowVisualization {
         this.init_marker("dem");
     }
 
-    create_arrow(party_name, x, y, percentage) {
+    create_arrow(party_name, x, y, length) {
         /* (x,y) is the coordination of the state */
         let x2;
         if (party_name == "rep") {// right
-            x2 = x + percentage * this.arrow_max_length;
+            x2 = x + length;
         } else if (party_name == "dem") { //left
-            x2 = x - percentage * this.arrow_max_length;
+            x2 = x - length;
         }   
         
         this.svg.append('line')
@@ -45,7 +45,7 @@ export default class ArrowVisualization {
                 .attr("x1",x)
                 .attr("x2", x2)
                 .attr("y1", y)
-                .attr("y2", y - percentage * this.arrow_max_length)
+                .attr("y2", y - length)
                 .attr("stroke", this.arrow_color[party_name])
                 .attr("stroke-width", 4)
                 .attr("class", "arrow")
