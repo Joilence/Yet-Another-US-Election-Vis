@@ -47,7 +47,7 @@
             width: 100%;
             overflow-x: hidden;
             position: absolute;
-            top: 180px;
+            top: 80px;
         }
 
         .section {
@@ -149,15 +149,15 @@
                                     aria-selected="false">Summary</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#sctplot" role="tab" aria-controls="sct"
-                                    aria-selected="false">Scatterplot</a>
+                                <a class="nav-link" id="sctplot-tab"" href="#sctplot" role="tab" aria-controls="sct"
+                                    aria-selected="false">Break into Periods</a>
                             </li>
                         </ul>
                     </div>
                     <div class="card-body">
-                        <div class="AuxiliaryGraphLegend"></div>
                         <div class="tab-content mt-3">
                             <div class="section active" id="individual" role="tabpanel">
+                                <div class="AuxiliaryGraphLegend"></div>
                                 <div class="AuxiliaryGraph"></div>
                             </div>
                             <div class="section" id="summary" role="tabpanel" aria-labelledby="history-tab">

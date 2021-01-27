@@ -36,7 +36,7 @@ Promise.all(tasks).then(files => {
         yearRange: [2000,2008],
         symbolDataName: "shift-of-vote",
         regionalDataName: "gdp-growth-rate",
-        selectedStates: [],
+        selectedStates: ["alabama", "alaska", "new-york"],
     }
 
     // Detect Data Selection
@@ -46,8 +46,8 @@ Promise.all(tasks).then(files => {
         console.log('main.js: current selected states:', selectedStates);
         if (dataOption.selectedStates) {
             dataOption.selectedStates = selectedStates;
-            auxiVis.render_auxiliary(dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
-            scatterVis.scatterplotVisRender(dataOption);
+            if (!$("#sctplot-tab").hasClass("active")) auxiVis.render_auxiliary(dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
+            if ($("#sctplot-tab").hasClass("active")) scatterVis.scatterplotVisRender(dataOption);
         }
     })
 
@@ -82,14 +82,17 @@ Promise.all(tasks).then(files => {
         // update vis if data changed
         if (dataOption.yearRange !== yearRange) {
             dataOption.yearRange = yearRange;
-            auxiVis.render_auxiliary(dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
+            if (!$("#sctplot-tab").hasClass("active")) auxiVis.render_auxiliary(dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
             mapVis.mapVisRender(dataOption.symbolDataName, dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
-            scatterVis.scatterplotVisRender(dataOption);
+            if ($("#sctplot-tab").hasClass("active")) scatterVis.scatterplotVisRender(dataOption);
         }
     })
     $('#auxiliary-list a').on('click', function (e) {
         e.preventDefault() 
         $(this).tab('show')
+      })
+      $("#sctplot-tab").on('click', e => {
+        if ($("#sctplot-tab").hasClass("active")) scatterVis.scatterplotVisRender(dataOption);
       })
 
     // Render Components

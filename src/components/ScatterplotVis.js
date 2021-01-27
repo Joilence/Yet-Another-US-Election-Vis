@@ -89,8 +89,8 @@ export default class ScatterplotVis {
         // symbolDataPerPeriods[`${state} (${String(yearRange)})`] = symbolDataPeriod[state];
         symbolDataPerPeriods[`${state} (${String(yearRange)})`] =
           symbolDataPeriod[state].direction === "rep"
-            ? -parseFloat(symbolDataPeriod[state].shift)
-            : parseFloat(symbolDataPeriod[state].shift);
+            ? parseFloat(symbolDataPeriod[state].shift)
+            : -parseFloat(symbolDataPeriod[state].shift);
       });
     });
 
@@ -234,17 +234,40 @@ export default class ScatterplotVis {
       .attr("cx", (d) => xSymbolDataScaler(d.symbolData))
       .attr("cy", (d) => yRegionalDataScaler(d.regionalData))
       .attr("r", 4)
-      .style("fill", "#69b3a2")
+      .style("fill", (d) => {
+        return d.symbolData > 0 ? 'red' : 'blue';
+      })
       .on("mouseover mousemove", (d) => {
         console.log("mouse over");
         tooltip
           .style("visibility", "visible")
           .style("top", (d3.event.pageY + 10)+"px").style("left",(d3.event.pageX + 10)+"px")
-          .text(`State: ${d.stateName}\nGDP Growth Rate: ${d.regionalData}\nShift Of Votes: Towards Republicans by ${d.symbolData}`);
+          .text(`State: ${d.stateName}\nGDP Growth Rate: ${d.regionalData}\nShift Of Votes: Towards ${d.symbolData > 0 ? "republicans" : "democrates"} by ${Math.abs(d.symbolData)}`);
       })
       .on("mouseout", (d) => {
         // console.log("mouse out");
         tooltip.style("visibility", "hidden");
       });
+
+    d3.select('#sctplt-x-label').remove();
+    d3.select('#sctplt-y-label').remove();
+    d3.select('#scatter-plot')
+      .append("text")
+      .attr('id', 'sctplt-x-label')
+      .attr("transform",
+            "translate(" + (this.viewWidth/2) + " ," + 
+                           (this.viewHeight) + ")")
+      .style("text-anchor", "middle")
+      .text("Shift of Votes");
+
+    const yLableX = 10;
+    const yLableY = this.viewHeight / 2;
+    sctVis.append("text")
+      .attr('id', 'sctplt-y-label')
+      .attr('x', yLableX)
+      .attr('y', yLableY)
+      .attr('transform', `rotate(270  ${yLableX}, ${yLableY})`)
+      .style("text-anchor", "middle")
+      .text(this.regionalDataName);
   }
 }
