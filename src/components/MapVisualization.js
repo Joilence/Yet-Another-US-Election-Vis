@@ -133,8 +133,8 @@ export default class MapVisualzation {
           self.deselectState(this.id);
         }
         // console.log(self.selectedStates)
-        // $("#map-visualization").prop("states", self.selectedStates);
-        // $("#map-visualization").trigger("change");
+        $("#map-visualization").prop("states", self.selectedStates);
+        $("#map-visualization").trigger("change");
       });
   }
 
@@ -168,8 +168,8 @@ export default class MapVisualzation {
       this.selectedStates.push(stateName);
     }
 
-    $("#map-visualization").prop("states", this.selectedStates);
-    $("#map-visualization").trigger("change");
+    // $("#map-visualization").prop("states", this.selectedStates);
+    // $("#map-visualization").trigger("change");
   }
 
   // getStateDataByName(stateName) {
@@ -190,8 +190,8 @@ export default class MapVisualzation {
       (ele) => ele !== stateName
     );
 
-    $("#map-visualization").prop("states", this.selectedStates);
-    $("#map-visualization").trigger("change");
+    // $("#map-visualization").prop("states", this.selectedStates);
+    // $("#map-visualization").trigger("change");
   }
 
   _deselectAllState() {
@@ -203,6 +203,8 @@ export default class MapVisualzation {
     this.selectedStates = [];
 
     // this._mapVisRegionRender(self.regionalData, this.regionalDataName);
+    $("#map-visualization").prop("states", this.selectedStates);
+    $("#map-visualization").trigger("change");
   }
 
   _createToolTipHtml(state, data) {
@@ -301,6 +303,8 @@ export default class MapVisualzation {
         this.selectState(e);
       });
     }
+    $("#map-visualization").prop("states", this.selectedStates);
+    // $("#map-visualization").trigger("change");
   }
 
   _mapVisSymbolRender(data, yearRange, symbolDataName) {
@@ -393,6 +397,8 @@ export default class MapVisualzation {
       $('#top-regional').attr("disabled", true);
       this.selectedStates = self.regionalDataDesendOrder.slice(0,10);
       this.selectedStates.forEach(state=>{this.selectState(state)});
+      $("#map-visualization").prop("states", this.selectedStates);
+      $("#map-visualization").trigger("change");
     });
 
     // select top states based on rep shift rate
@@ -401,6 +407,8 @@ export default class MapVisualzation {
       $('#top-rep-shift').attr("disabled", true);
       this.selectedStates = self.symbalDataDirRep
       this.selectedStates.forEach(state=>{this.selectState(state)});
+      $("#map-visualization").prop("states", this.selectedStates);
+      $("#map-visualization").trigger("change");
     });
 
     // select top states based on dem shift rate
@@ -409,10 +417,16 @@ export default class MapVisualzation {
       $('#top-dem-shift').attr("disabled", true);
       this.selectedStates = self.symbalDataDirDem
       this.selectedStates.forEach(state=>{this.selectState(state)});
+      $("#map-visualization").prop("states", this.selectedStates);
+      $("#map-visualization").trigger("change");
     });
 
     // clear selected states
-    $('#top-clear').on('click', ()=>this._deselectAllState());
+    $('#top-clear').on('click', ()=>{
+      this._deselectAllState()
+      $("#map-visualization").prop("states", this.selectedStates);
+      $("#map-visualization").trigger("change");
+    });
   }
 
   // TODO: Legend (arrows, color scale)
