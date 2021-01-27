@@ -121,15 +121,15 @@ export default class MapVisualzation {
         // console.log(this);
         if (d3.select(this).attr("data-selected") == "false") {
           // d3.select(this).attr("data-selected", "true");
-          if (!self.selectedStates.includes(this.id)) {
-            self.selectedStates.push(this.id);
-          }
+          // if (!self.selectedStates.includes(this.id)) {
+          //   self.selectedStates.push(this.id);
+          // }
           self.selectState(this.id);
         } else if (d3.select(this).attr("data-selected") == "true") {
           // d3.select(this).attr("data-selected", "false");
-          self.selectedStates = self.selectedStates.filter(
-            (ele) => ele !== this.id
-          );
+          // self.selectedStates = self.selectedStates.filter(
+          //   (ele) => ele !== this.id
+          // );
           self.deselectState(this.id);
         }
         // console.log(self.selectedStates)
@@ -164,6 +164,10 @@ export default class MapVisualzation {
       .style("fill", `url(#${stateName}-pattern)`)
       .attr("data-selected", "true");
 
+    if (!this.selectedStates.includes(stateName)) {
+      this.selectedStates.push(stateName);
+    }
+
     $("#map-visualization").prop("states", this.selectedStates);
     $("#map-visualization").trigger("change");
   }
@@ -181,6 +185,10 @@ export default class MapVisualzation {
       .style("fill", this.colorScale(self.regionalData[stateName]))
       .attr("data-selected", "false");
     this.mapVis.select(`#${stateName}-pattern`).remove();
+
+    this.selectedStates = this.selectedStates.filter(
+      (ele) => ele !== stateName
+    );
 
     $("#map-visualization").prop("states", this.selectedStates);
     $("#map-visualization").trigger("change");
