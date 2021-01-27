@@ -383,14 +383,16 @@ export default class MapVisualzation {
     $('#top-rep-shift').on('click', ()=> {
       this._deselectAllState();
       $('#top-rep-shift').attr("disabled", true);
-      self.symbalDataDirRep.forEach(state=>{this.selectState(state)});
+      this.selectedStates = self.symbalDataDirRep
+      this.selectedStates.forEach(state=>{this.selectState(state)});
     });
 
     // select top states based on dem shift rate
     $('#top-dem-shift').on('click', ()=> {
       this._deselectAllState();
       $('#top-dem-shift').attr("disabled", true);
-      self.symbalDataDirDem.forEach(state=>{this.selectState(state)});
+      this.selectedStates = self.symbalDataDirDem
+      this.selectedStates.forEach(state=>{this.selectState(state)});
     });
 
     // clear selected states
