@@ -440,6 +440,22 @@ export default class AuxiliaryVis {
     }
     // render auxiliary graphs
     render_auxiliary(data_option, time_range, selected_states) {
+        
+        if ( time_range[0] === this.time_range[0] && time_range[1] === this.time_range[1]
+             && selected_states.length === this.state_selection.length
+             && data_option == this.data_option_cache
+            ) {
+            let same_state_count = 0;
+            for (let i = 0; i < selected_states.length; ++i) {
+                const state = selected_states[i];
+                if (this.state_selection.indexOf(state) >= 0)
+                    same_state_count++;
+            }
+            if (same_state_count === selected_states.length) return;
+        }
+
+        this.data_option_cache = data_option;
+        
         this.render_legend(data_option, 'AuxiliaryGraph', 'legendauxiliarygraphsvg');
         this.time_range = time_range;
         this.data_option = this.dataset_name.indexOf(data_option);
@@ -452,8 +468,8 @@ export default class AuxiliaryVis {
             this.render(data_option, element);
         });
         this.state_selection = selected_states;
-        console.log(this.state_selection)
-        console.log(this.state_selection.length)
+        // console.log(this.state_selection)
+        // console.log(this.state_selection.length)
         if(this.state_selection.length < 1){
             d3.select('#summarygraphsvg').remove();
         }else {
