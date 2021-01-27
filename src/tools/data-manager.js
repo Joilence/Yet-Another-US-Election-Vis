@@ -67,7 +67,11 @@ export function getGdpRate(gdp_data, yearRange) {
         states_overall_shift[row.state] = overall_growth_rate;
     });
 
-    return [states_overall_shift, states_all_years];
+
+    let descending_order=Object.keys(states_overall_shift)
+                                .sort(function(a,b){return states_overall_shift[b]-states_overall_shift[a]});
+
+    return [states_overall_shift, states_all_years, descending_order];
 }
 
 export function getGdpValue(gdp_data, yearRange) {
@@ -94,7 +98,10 @@ export function getGdpValue(gdp_data, yearRange) {
         states_overall_shift[row.state] = overall_growth_value;
     });
 
-    return [states_overall_shift, states_all_years];
+    let descending_order=Object.keys(states_overall_shift)
+                                .sort(function(a,b){return states_overall_shift[b]-states_overall_shift[a]});
+                                
+    return [states_overall_shift, states_all_years, descending_order];
 }
 
 export function getOverallVotesShift(election_data, yearRange) {
@@ -103,6 +110,8 @@ export function getOverallVotesShift(election_data, yearRange) {
     let states_all_years = {};
     let states_overall_shift = {};
     let [beginYear, endYear] = yearRange;
+    let dir_rep_states = [];
+    let dir_dem_states = [];
     // console.log("+++")
     // console.log(yearRange, parseInt(beginYear), parseInt(endYear))
 
@@ -176,10 +185,12 @@ export function getOverallVotesShift(election_data, yearRange) {
         // decide the direction
         if (dem_change >= 0) {
             states_overall_shift[state]["direction"] = "dem";
+            dir_dem_states.push(state);
         } else {
             states_overall_shift[state]["direction"] = "rep";
+            dir_rep_states.push(state);
         }
     }
 
-    return [states_overall_shift, states_all_years];
+    return [states_overall_shift, states_all_years, dir_dem_states, dir_rep_states];
 }
