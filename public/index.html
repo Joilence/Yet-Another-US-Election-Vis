@@ -78,7 +78,7 @@
             z-index: 300;
             visibility: hidden;
         }
-        
+
         rect.selection {
             stroke: #111111;
             stroke-width: 4;
@@ -132,6 +132,14 @@
                     <div id="year-selection-container" class="w-80">
                         <svg id="year-selection"></svg>
                     </div>
+                    <div id="selected-states-display-container" class="card" style="
+                    width: 400px;">
+                        <div class="card-header">
+                            Selected States
+                        </div>
+                        <div id="selected-states-display" style="padding: 5px 20px;">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -149,7 +157,7 @@
                                     aria-selected="false">Summary</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="sctplot-tab"" href="#sctplot" role="tab" aria-controls="sct"
+                                <a class="nav-link" id="sctplot-tab"" href=" #sctplot" role="tab" aria-controls="sct"
                                     aria-selected="false">Break into Periods</a>
                             </li>
                         </ul>

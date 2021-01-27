@@ -235,38 +235,52 @@ export default class ScatterplotVis {
       .attr("cy", (d) => yRegionalDataScaler(d.regionalData))
       .attr("r", 4)
       .style("fill", (d) => {
-        return d.symbolData > 0 ? 'red' : 'blue';
+        return d.symbolData > 0 ? "red" : "blue";
       })
       .on("mouseover mousemove", (d) => {
-        console.log("mouse over");
+        // console.log("mouse over");
+        // console.log(d.stateName.split(' ')[0]);
+        d3.select(`#${d.stateName.split(' ')[0]}`)
+          .attr("stroke-opacity", 1);
         tooltip
           .style("visibility", "visible")
-          .style("top", (d3.event.pageY + 10)+"px").style("left",(d3.event.pageX + 10)+"px")
-          .text(`State: ${d.stateName}\nGDP Growth Rate: ${d.regionalData}\nShift Of Votes: Towards ${d.symbolData > 0 ? "republicans" : "democrates"} by ${Math.abs(d.symbolData)}`);
+          .style("top", d3.event.pageY + 10 + "px")
+          .style("left", d3.event.pageX + 10 + "px")
+          .text(
+            `State:\n  ${d.stateName}\nGDP Growth Rate:\n  ${
+              d.regionalData
+            }\nShift Of Votes:\n  Towards ${
+              d.symbolData > 0 ? "republicans" : "democrates"
+            } by ${Math.abs(d.symbolData)}`
+          );
       })
       .on("mouseout", (d) => {
         // console.log("mouse out");
+        d3.select(`#${d.stateName.split(' ')[0]}`)
+          .attr("stroke-opacity", 0);
         tooltip.style("visibility", "hidden");
       });
 
-    d3.select('#sctplt-x-label').remove();
-    d3.select('#sctplt-y-label').remove();
-    d3.select('#scatter-plot')
+    d3.select("#sctplt-x-label").remove();
+    d3.select("#sctplt-y-label").remove();
+    d3.select("#scatter-plot")
       .append("text")
-      .attr('id', 'sctplt-x-label')
-      .attr("transform",
-            "translate(" + (this.viewWidth/2) + " ," + 
-                           (this.viewHeight) + ")")
+      .attr("id", "sctplt-x-label")
+      .attr(
+        "transform",
+        "translate(" + this.viewWidth / 2 + " ," + this.viewHeight + ")"
+      )
       .style("text-anchor", "middle")
       .text("Shift of Votes");
 
     const yLableX = 10;
     const yLableY = this.viewHeight / 2;
-    sctVis.append("text")
-      .attr('id', 'sctplt-y-label')
-      .attr('x', yLableX)
-      .attr('y', yLableY)
-      .attr('transform', `rotate(270  ${yLableX}, ${yLableY})`)
+    sctVis
+      .append("text")
+      .attr("id", "sctplt-y-label")
+      .attr("x", yLableX)
+      .attr("y", yLableY)
+      .attr("transform", `rotate(270  ${yLableX}, ${yLableY})`)
       .style("text-anchor", "middle")
       .text(this.regionalDataName);
   }

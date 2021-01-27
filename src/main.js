@@ -38,6 +38,9 @@ Promise.all(tasks).then(files => {
         regionalDataName: "gdp-growth-rate",
         selectedStates: ["alabama", "alaska", "new-york"],
     }
+    $('#selected-states-display').text(Array.from(dataOption.selectedStates, (e) => {
+        return ' ' + e.charAt(0).toUpperCase() + e.slice(1).replace('-', ' ');
+    }));
 
     $('#top-regional').html("Top 10 " + dataOption.regionalDataName);
 
@@ -50,6 +53,9 @@ Promise.all(tasks).then(files => {
             dataOption.selectedStates = selectedStates;
             if (!$("#sctplot-tab").hasClass("active")) auxiVis.render_auxiliary(dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
             if ($("#sctplot-tab").hasClass("active")) scatterVis.scatterplotVisRender(dataOption);
+            $('#selected-states-display').text(Array.from(dataOption.selectedStates, (e) => {
+                return ' ' + e.charAt(0).toUpperCase() + e.slice(1).replace('-', ' ');
+            }));
         }
     })
 
