@@ -173,6 +173,14 @@
             <div class="col col-xs-12 col-sm-6 col-md-7 col-lg-8">
                 <div class="card">
                     <div class="card-header"> Map Visualization</div>
+                    <div id="select-states-panel" style="visibility: hidden;">
+                        <h5>&nbsp;Select Top 10 Sattes</h5>&nbsp;
+                        <button type="button" class="select-btn btn btn-warning" id="top-clear">Clear All</button>
+                        <button type="button" class="select-btn btn btn-danger" id="top-rep-shift">by Rep Shift</button>
+                        <button type="button" class="select-btn btn btn-primary" id="top-dem-shift">by Dem Shift</button>
+                        <button type="button" class="select-btn btn btn-info" id="top-regional"></button>
+                    </div>
+
                     <div class="card-body">
                         <div id="map-visualization"></div>
                     </div>
@@ -187,7 +195,7 @@
                     </pattern>
                 </defs>
             </svg>
-            <div id="tooltip"></div>
+            <div id="map-tooltip"></div>
         </div>
     </div>
 

@@ -39,6 +39,8 @@ Promise.all(tasks).then(files => {
         selectedStates: ["alabama", "alaska", "new-york"],
     }
 
+    $('#top-regional').html("by " + dataOption.regionalDataName);
+
     // Detect Data Selection
     // TODO: detect change of selected states
     $('#map-visualization').on('change', e => {
@@ -54,7 +56,7 @@ Promise.all(tasks).then(files => {
     $('#symbol-data-selection input:radio').on('click', e => {
         let symbolDataName = getSymbolDataName();
         console.log('current symbol data name:', symbolDataName);
-
+        
         // update vis if data changed
         if (dataOption.symbolDataName !== symbolDataName) {
             dataOption.symbolDataName = symbolDataName;
@@ -66,7 +68,8 @@ Promise.all(tasks).then(files => {
     $('#regional-data-selection input:radio').on('click', e => {
         let regionalDataName = getRegionalDataName();
         console.log('current regional data name:', regionalDataName);
-
+        $('#top-regional').html("by " + regionalDataName);
+        
         // update vis if data changed
         if (dataOption.regionalDataName !== regionalDataName) {
             dataOption.regionalDataName = regionalDataName;
@@ -98,5 +101,9 @@ Promise.all(tasks).then(files => {
     // Render Components
     // year selection rendering will set default brush, automatically trigger refresh of other vis
     controlPane.yearSelectionRender();
+
+
+    mapVis.selectTopStatesInit();
+    $("#select-states-panel").css('visibility', 'visible');
 
 }).catch(err => console.log(err));

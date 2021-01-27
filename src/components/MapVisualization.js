@@ -92,7 +92,7 @@ export default class MapVisualzation {
         // d3.select(this).style("fill", "url(#circles-1)")
 
         // display tooltips
-        d3.select("#tooltip").transition().duration(200).style("opacity", 0.9);
+        d3.select("#map-tooltip").transition().duration(200).style("opacity", 0.9);
 
         // get data from dom
         const data = {};
@@ -106,13 +106,13 @@ export default class MapVisualzation {
         data["avg-vote-amount"] = this_dom.getAttribute("data-avg-vote-amount");
 
         // render tooltips
-        d3.select("#tooltip")
+        d3.select("#map-tooltip")
           .html(self._createToolTipHtml(self._reformatStateName(this.id), data)) // this is current state dom
           .style("left", d3.event.pageX + "px")
           .style("top", d3.event.pageY + "px");
       })
       .on("mouseout", function (event, d) {
-        d3.select("#tooltip").transition().duration(200).style("opacity", 0);
+        d3.select("#map-tooltip").transition().duration(200).style("opacity", 0);
 
         d3.select(this).attr("stroke-opacity", 0);
       })
@@ -178,10 +178,15 @@ export default class MapVisualzation {
     this.mapVis.select(`#${stateName}-pattern`).remove();
   }
 
-  deselectAllState() {
-    this.mapVis.selectAll(".state-pattern").remove();
+  _deselectAllState() {
+    $('.select-btn').attr("disabled", false);
+    this.mapVis.selectAll('.state-pattern').remove();
+    this.selectedStates.forEach(state=>{
+      this.deselectState(state);
+    })
     this.selectedStates = [];
-    this._mapVisRegionRender();
+
+    // this._mapVisRegionRender(self.regionalData, this.regionalDataName);
   }
 
   _createToolTipHtml(state, data) {
@@ -210,17 +215,18 @@ export default class MapVisualzation {
     ) {
       // console.log("-- map randers gdp rate --")
       let regionalData = {},
-        regionalDataYears = [];
+        regionalDataYears = [],
+        descending_order = [];
       switch (regionalDataName) {
         case "gdp-growth-rate":
-          [regionalData, regionalDataYears] = getGdpRate(
+          [regionalData, regionalDataYears, descending_order] = getGdpRate(
             this.datasets["gdp_data"],
             yearRange
           );
 
           break;
         case "gdp-value":
-          [regionalData, regionalDataYears] = getGdpValue(
+          [regionalData, regionalDataYears, descending_order] = getGdpValue(
             this.datasets["gdp_data"],
             yearRange
           );
@@ -229,6 +235,7 @@ export default class MapVisualzation {
           break;
       }
       self.regionalData = regionalData;
+      self.regionalDataDesendOrder = descending_order;
       this._mapVisRegionRender(regionalData, regionalDataName);
     }
 
@@ -284,15 +291,18 @@ export default class MapVisualzation {
     this._removeElementsByClass("arrow"); // remove current arrows
     this.mapVis.selectAll("rect.state-election-result").remove();
     // draw symbol data vis
-    let [states_overall_shift, states_all_years] = getOverallVotesShift(
+    let [states_overall_shift, states_all_years, dir_dem_states, dir_rep_states] = getOverallVotesShift(
       data,
       yearRange
     );
 
+    self.symbalDataDirDem = dir_dem_states;
+    self.symbalDataDirRep = dir_rep_states;
+
     const shiftsValue = Array.from(Object.values(states_overall_shift), (e) =>
       parseFloat(e["shift"])
     );
-    console.log("shiftValues:", shiftsValue);
+    // console.log("shiftValues:", shiftsValue);
     const arrowLengthScaler = d3
       .scaleLinear()
       .domain(d3.extent(shiftsValue))
@@ -359,7 +369,34 @@ export default class MapVisualzation {
       elements[0].parentNode.removeChild(elements[0]);
     }
   }
+
+  selectTopStatesInit() {
+    // select top states based on regional data
+    $('#top-regional').on('click', ()=> {
+      this._deselectAllState();
+      $('#top-regional').attr("disabled", true);
+      this.selectedStates = self.regionalDataDesendOrder.slice(0,10);
+      this.selectedStates.forEach(state=>{this.selectState(state)});
+    });
+
+    // select top states based on rep shift rate
+    $('#top-rep-shift').on('click', ()=> {
+      this._deselectAllState();
+      $('#top-rep-shift').attr("disabled", true);
+      self.symbalDataDirRep.forEach(state=>{this.selectState(state)});
+    });
+
+    // select top states based on dem shift rate
+    $('#top-dem-shift').on('click', ()=> {
+      this._deselectAllState();
+      $('#top-dem-shift').attr("disabled", true);
+      self.symbalDataDirDem.forEach(state=>{this.selectState(state)});
+    });
+
+    // clear selected states
+    $('#top-clear').on('click', ()=>this._deselectAllState());
+  }
+
   // TODO: Legend (arrows, color scale)
-  // TODO: button, select top 10,
-  // TODO: and auto select the states ()
+
 }
