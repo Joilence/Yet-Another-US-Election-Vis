@@ -238,7 +238,10 @@ export default class ScatterplotVis {
         return d.symbolData > 0 ? "red" : "blue";
       })
       .on("mouseover mousemove", (d) => {
-        console.log("mouse over");
+        // console.log("mouse over");
+        // console.log(d.stateName.split(' ')[0]);
+        d3.select(`#${d.stateName.split(' ')[0]}`)
+          .attr("stroke-opacity", 1);
         tooltip
           .style("visibility", "visible")
           .style("top", d3.event.pageY + 10 + "px")
@@ -253,6 +256,8 @@ export default class ScatterplotVis {
       })
       .on("mouseout", (d) => {
         // console.log("mouse out");
+        d3.select(`#${d.stateName.split(' ')[0]}`)
+          .attr("stroke-opacity", 0);
         tooltip.style("visibility", "hidden");
       });
 
