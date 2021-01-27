@@ -1,4 +1,4 @@
-#tooltip {   
+#map-tooltip {   
     position: fixed;           
     text-align: left;
     padding: 20px;             
@@ -12,11 +12,11 @@
     height:80px;
     margin:5px;
 }
-#tooltip h4{
+#map-tooltip h4{
     margin:0;
     font-size:20px;
 }
-#tooltip{
+#map-tooltip{
     background:rgba(0,0,0,0.9);
     border:1px solid grey;
     border-radius:5px;
@@ -26,16 +26,16 @@
     color:white;
     opacity:0;
 }
-#tooltip table{
+#map-tooltip table{
     table-layout:fixed;
 }
-#tooltip tr td{
+#map-tooltip tr td{
     padding:0;
     margin:0;
 }
-#tooltip tr td:nth-child(1){
+#map-tooltip tr td:nth-child(1){
     width:120px;
 }
-#tooltip tr td:nth-child(2){
+#map-tooltip tr td:nth-child(2){
     text-align:center;
 }

@@ -109,7 +109,7 @@ export default class MapVisualzation {
         d3.select("#map-tooltip")
           .html(self._createToolTipHtml(self._reformatStateName(this.id), data)) // this is current state dom
           .style("left", d3.event.pageX + "px")
-          .style("top", d3.event.pageY + "px");
+          .style("top", (d3.event.pageY-200) + "px");
       })
       .on("mouseout", function (event, d) {
         d3.select("#map-tooltip").transition().duration(200).style("opacity", 0);
