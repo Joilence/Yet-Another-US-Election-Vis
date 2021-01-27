@@ -45,7 +45,7 @@ Promise.all(tasks).then(files => {
     // TODO: detect change of selected states
     $('#map-visualization').on('change', e => {
         let selectedStates = getSelectedStates();
-        console.log('main.js: current selected states:', selectedStates);
+        // console.log('main.js: current selected states:', selectedStates);
         if (dataOption.selectedStates) {
             dataOption.selectedStates = selectedStates;
             if (!$("#sctplot-tab").hasClass("active")) auxiVis.render_auxiliary(dataOption.regionalDataName, dataOption.yearRange, dataOption.selectedStates);
@@ -69,7 +69,8 @@ Promise.all(tasks).then(files => {
         let regionalDataName = getRegionalDataName();
         console.log('current regional data name:', regionalDataName);
         $('#top-regional').html("by " + regionalDataName);
-        
+        $('#top-regional').attr("disabled", false);
+
         // update vis if data changed
         if (dataOption.regionalDataName !== regionalDataName) {
             dataOption.regionalDataName = regionalDataName;
