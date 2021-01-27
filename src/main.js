@@ -39,7 +39,7 @@ Promise.all(tasks).then(files => {
         selectedStates: ["alabama", "alaska", "new-york"],
     }
 
-    $('#top-regional').html("by " + dataOption.regionalDataName);
+    $('#top-regional').html("Top 10 " + dataOption.regionalDataName);
 
     // Detect Data Selection
     // TODO: detect change of selected states
@@ -68,7 +68,7 @@ Promise.all(tasks).then(files => {
     $('#regional-data-selection input:radio').on('click', e => {
         let regionalDataName = getRegionalDataName();
         console.log('current regional data name:', regionalDataName);
-        $('#top-regional').html("by " + regionalDataName);
+        $('#top-regional').html("Top 10 " + regionalDataName);
         $('#top-regional').attr("disabled", false);
 
         // update vis if data changed
