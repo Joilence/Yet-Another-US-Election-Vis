@@ -8,8 +8,6 @@ import {
 import ArrowVisualization from "./ArrowVisualization";
 import { UsMapGeoJson } from "./UsMapGeoJson";
 
-// import * as $ from 'jquery';
-
 export default class MapVisualzation {
   constructor(datasets) {
     this.datasets = datasets;
@@ -120,16 +118,8 @@ export default class MapVisualzation {
         // console.log('click on:', this.id);
         // console.log(this);
         if (d3.select(this).attr("data-selected") == "false") {
-          // d3.select(this).attr("data-selected", "true");
-          // if (!self.selectedStates.includes(this.id)) {
-          //   self.selectedStates.push(this.id);
-          // }
           self.selectState(this.id);
         } else if (d3.select(this).attr("data-selected") == "true") {
-          // d3.select(this).attr("data-selected", "false");
-          // self.selectedStates = self.selectedStates.filter(
-          //   (ele) => ele !== this.id
-          // );
           self.deselectState(this.id);
         }
         // console.log(self.selectedStates)
@@ -171,12 +161,6 @@ export default class MapVisualzation {
     // $("#map-visualization").prop("states", this.selectedStates);
     // $("#map-visualization").trigger("change");
   }
-
-  // getStateDataByName(stateName) {
-  //   this.USStatesData.coordinates.forEach(e => {
-  //     if (e.properties.name === stateName) return e;
-  //   })
-  // }
 
   deselectState(stateName) {
     // console.log(`Deselect ${stateName}`);
@@ -304,6 +288,8 @@ export default class MapVisualzation {
       });
     }
     $("#map-visualization").prop("states", this.selectedStates);
+
+    mapColorLegend(this.colorScale);
     // $("#map-visualization").trigger("change");
   }
 

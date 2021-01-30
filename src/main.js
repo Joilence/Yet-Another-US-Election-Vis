@@ -112,5 +112,5 @@ Promise.all(tasks).then(files => {
 
     mapVis.selectTopStatesInit();
     $("#select-states-panel").css('visibility', 'visible');
-
+    $("#arrow_legend").css('visibility', 'visible');
 }).catch(err => console.log(err));

@@ -4,6 +4,8 @@
 <head>
     <meta charset="utf-8">
     <title>Yet Another US Election Vis - Pratcial Data Science UniKN WS 20/21</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.5.0/d3.min.js" integrity="sha512-0XfwGD1nxplHpehcSVI7lY+m/5L37PNHDt+DOc7aLFckwPXjnjeA1oeNbru7YeI4VLs9i+ADnnHEhP69C9CqTA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js" integrity="sha512-wNH6xsp2n8CfB91nrBtfc4sfLwYPBMjSWVUwQOp60AYYXH6i8yCwuKFZ4rgK2i6pQek/b+bSyR7b01/922IBzQ==" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../static/css/tooltip.css">
 
     <style>
@@ -190,8 +192,13 @@
                     </div>
 
                     <div class="card-body">
-                        <div id="map-visualization"></div>
+                        <div id="map-visualization" style="display:inline-block"></div>
+                        <img id="arrow_legend" src="../static/images/arrow_legend.png" alt="arrow legend" width="290" height="220" style="visibility: hidden;">
+                        <svg id="map-legend" style="width: 800;"></svg>
                     </div>
+
+
+                    
                 </div>
             </div>
             <svg height="10" width="10" xmlns="http://www.w3.org/2000/svg" version="1.1">
@@ -216,5 +223,24 @@
     </div>
     <div id="sct-tooltip"></div>
 </body>
+
+<script>
+    function mapColorLegend(colorScale) {
+        // https://d3-legend.susielu.com/
+        let svg = d3.select("#map-legend");
+        svg.append("g")
+            .attr("class", "legendLinear")
+            .attr("transform", "translate(20,20)");
+
+        let legendLinear = d3.legendColor()
+                            .shapeWidth(50)
+                            .cells(10)
+                            .orient('horizontal')
+                            .scale(colorScale);
+
+        svg.select(".legendLinear")
+            .call(legendLinear);
+    }
+</script>
 
 </html>
