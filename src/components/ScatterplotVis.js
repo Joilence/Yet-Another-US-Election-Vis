@@ -125,6 +125,7 @@ export default class ScatterplotVis {
           break;
         case "gdp-value":
           this.regionalData = this.preprocessGDPValue(this.datasets.gdp_data);
+          break;
         default:
           this.regionalData = {};
           break;
