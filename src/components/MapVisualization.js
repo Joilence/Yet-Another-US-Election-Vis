@@ -98,9 +98,17 @@ export default class MapVisualzation {
         data[self.symbolDataName] = this_dom.getAttribute(
           "data-" + self.symbolDataName
         );
+
+        let unit_name = "";
+        if (self.regionalDataName=="gdp-growth-rate") {
+          unit_name = " %";
+        } else if (self.regionalDataName=="gdp-value") {
+          unit_name = " billion USD";
+        }
+
         data[self.regionalDataName] = this_dom.getAttribute(
           "data-" + self.regionalDataName
-        );
+        ) + unit_name;
         data["avg-vote-amount"] = this_dom.getAttribute("data-avg-vote-amount");
 
         // render tooltips
@@ -289,7 +297,17 @@ export default class MapVisualzation {
     }
     $("#map-visualization").prop("states", this.selectedStates);
 
+    let unit_name = "";
+    if (regionalDataName=="gdp-growth-rate") {
+      unit_name = " %";
+    } else if (regionalDataName=="gdp-value") {
+      unit_name = " billion USD";
+    }
+
+
+    $("#legend-unit").html(unit_name);
     mapColorLegend(this.colorScale);
+
     // $("#map-visualization").trigger("change");
   }
 
@@ -414,7 +432,4 @@ export default class MapVisualzation {
       $("#map-visualization").trigger("change");
     });
   }
-
-  // TODO: Legend (arrows, color scale)
-
 }
