@@ -441,20 +441,22 @@ export default class AuxiliaryVis {
     // render auxiliary graphs
     render_auxiliary(data_option, time_range, selected_states) {
         
-        if ( time_range[0] === this.time_range[0] && time_range[1] === this.time_range[1]
-             && selected_states.length === this.state_selection.length
-             && data_option == this.data_option_cache
-            ) {
-            let same_state_count = 0;
-            for (let i = 0; i < selected_states.length; ++i) {
-                const state = selected_states[i];
-                if (this.state_selection.indexOf(state) >= 0)
-                    same_state_count++;
-            }
-            if (same_state_count === selected_states.length) return;
-        }
+        // if ( time_range[0] === this.time_range[0] && time_range[1] === this.time_range[1]
+        //      && selected_states.length === this.state_selection.length
+        //      && data_option == this.data_option_cache
+        //     ) {
+        //     let same_state_count = 0;
+        //     for (let i = 0; i < selected_states.length; ++i) {
+        //         const state = selected_states[i];
+        //         if (this.state_selection.indexOf(state) >= 0)
+        //             same_state_count++;
+        //     }
+        //     if (same_state_count === selected_states.length) return;
+        // }
 
-        this.data_option_cache = data_option;
+        // this.data_option_cache = data_option;
+
+        // console.log('render_aux', data_option, selected_states)
         
         this.render_legend(data_option, 'AuxiliaryGraph', 'legendauxiliarygraphsvg');
         this.time_range = time_range;
