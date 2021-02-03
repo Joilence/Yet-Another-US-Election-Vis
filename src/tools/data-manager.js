@@ -163,15 +163,11 @@ export function getOverallVotesShift(election_data, yearRange) {
             states_overall_shift[state] = {"direction":"", "shift":0.0, "vote-amount":0}
         }
 
-        // calculate average voting amount among these years
+        // calculate average total voting amount among these years
         let average = arr => arr.reduce( ( p, c ) => p + c, 0 ) / arr.length;
         states_overall_shift[state]["avg-vote-amount"] = average(states_all_years[state]["vote-amount"]).toFixed(0);
 
         // get the election result changing
-        // if (state == "oregon") {
-        //     console.log(states_all_years[state]["elect-result"])
-        // }
-
         states_overall_shift[state]["elect-result-change"] = states_all_years[state]["elect-result"][0] 
                                                             + "-" 
                                                             + states_all_years[state]["elect-result"][states_all_years[state]["elect-result"].length-1];
