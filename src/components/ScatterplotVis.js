@@ -125,6 +125,7 @@ export default class ScatterplotVis {
           break;
         case "gdp-value":
           this.regionalData = this.preprocessGDPValue(this.datasets.gdp_data);
+          break;
         default:
           this.regionalData = {};
           break;
@@ -197,7 +198,7 @@ export default class ScatterplotVis {
         "transform",
         `translate(0,${this.viewHeight - this.margins.bottom})`
       )
-      .call(d3.axisBottom(xSymbolDataScaler));
+      .call(d3.axisBottom(xSymbolDataScaler).ticks(10));
 
     sctVis
       .append("g")
@@ -240,8 +241,7 @@ export default class ScatterplotVis {
       .on("mouseover mousemove", (d) => {
         // console.log("mouse over");
         // console.log(d.stateName.split(' ')[0]);
-        d3.select(`#${d.stateName.split(' ')[0]}`)
-          .attr("stroke-opacity", 1);
+        d3.select(`#${d.stateName.split(" ")[0]}`).attr("stroke-opacity", 1);
         tooltip
           .style("visibility", "visible")
           .style("top", d3.event.pageY + 10 + "px")
@@ -256,22 +256,52 @@ export default class ScatterplotVis {
       })
       .on("mouseout", (d) => {
         // console.log("mouse out");
-        d3.select(`#${d.stateName.split(' ')[0]}`)
-          .attr("stroke-opacity", 0);
+        d3.select(`#${d.stateName.split(" ")[0]}`).attr("stroke-opacity", 0);
         tooltip.style("visibility", "hidden");
       });
+
+    // draw line
+    const GDPGrowthLine = d3
+      .line()
+      .x((d) => xSymbolDataScaler(d.symbolData))
+      .y((d) => yRegionalDataScaler(d.regionalData));
+
+    let lineData = [
+      {
+        symbolData: 0,
+        regionalData: Math.max(...Object.values(this.regionalData)),
+      },
+      {
+        symbolData: 0,
+        regionalData: Math.min(...Object.values(this.regionalData)),
+      },
+    ];
+
+    console.log("line border:", lineData);
+
+    sctVis
+      .append("path")
+      .datum(lineData)
+      .attr("class", "line") // TODO: Necessity of class for line?
+      .attr("id", "border-line")
+      .attr("fill", "none")
+      .attr("stroke", "black")
+      .style("stroke-dasharray", "3, 3")
+      .attr("stroke-width", 1)
+      .attr("d", GDPGrowthLine);
 
     d3.select("#sctplt-x-label").remove();
     d3.select("#sctplt-y-label").remove();
     d3.select("#scatter-plot")
       .append("text")
       .attr("id", "sctplt-x-label")
+      .style("font-size", 13)
       .attr(
         "transform",
         "translate(" + this.viewWidth / 2 + " ," + this.viewHeight + ")"
       )
       .style("text-anchor", "middle")
-      .text("Shift of Votes");
+      .text("Shift of Votes (%)");
 
     const yLableX = 10;
     const yLableY = this.viewHeight / 2;
@@ -281,7 +311,15 @@ export default class ScatterplotVis {
       .attr("x", yLableX)
       .attr("y", yLableY)
       .attr("transform", `rotate(270  ${yLableX}, ${yLableY})`)
+      .style("font-size", 13)
       .style("text-anchor", "middle")
-      .text(this.regionalDataName);
+      .text(() => {
+        if (this.regionalDataName === "gdp-growth-rate") {
+          return "GDP Growth Rate (%)";
+        } else if (this.regionalData === "gdp-value") {
+          return "GDP Value (bn dollars)";
+        }
+        return "none";
+      });
   }
 }
