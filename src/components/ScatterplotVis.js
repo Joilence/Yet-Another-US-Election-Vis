@@ -247,7 +247,7 @@ export default class ScatterplotVis {
           .style("top", d3.event.pageY + 10 + "px")
           .style("left", d3.event.pageX + 10 + "px")
           .text(
-            `State:\n  ${d.stateName}\nGDP Growth Rate:\n  ${
+            `State:\n  ${d.stateName}\n${this.regionalDataName}:\n  ${
               d.regionalData
             }\nShift Of Votes:\n  Towards ${
               d.symbolData > 0 ? "republicans" : "democrates"
@@ -316,7 +316,7 @@ export default class ScatterplotVis {
       .text(() => {
         if (this.regionalDataName === "gdp-growth-rate") {
           return "GDP Growth Rate (%)";
-        } else if (this.regionalData === "gdp-value") {
+        } else if (this.regionalDataName === "gdp-value") {
           return "GDP Value (bn dollars)";
         }
         return "none";
