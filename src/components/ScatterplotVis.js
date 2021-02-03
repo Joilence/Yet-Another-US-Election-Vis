@@ -295,12 +295,13 @@ export default class ScatterplotVis {
     d3.select("#scatter-plot")
       .append("text")
       .attr("id", "sctplt-x-label")
+      .style("font-size", 13)
       .attr(
         "transform",
         "translate(" + this.viewWidth / 2 + " ," + this.viewHeight + ")"
       )
       .style("text-anchor", "middle")
-      .text("Shift of Votes");
+      .text("Shift of Votes (%)");
 
     const yLableX = 10;
     const yLableY = this.viewHeight / 2;
@@ -310,7 +311,15 @@ export default class ScatterplotVis {
       .attr("x", yLableX)
       .attr("y", yLableY)
       .attr("transform", `rotate(270  ${yLableX}, ${yLableY})`)
+      .style("font-size", 13)
       .style("text-anchor", "middle")
-      .text(this.regionalDataName);
+      .text(() => {
+        if (this.regionalDataName === "gdp-growth-rate") {
+          return "GDP Growth Rate (%)";
+        } else if (this.regionalData === "gdp-value") {
+          return "GDP Value (bn dollars)";
+        }
+        return "none";
+      });
   }
 }
