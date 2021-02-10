@@ -109,7 +109,10 @@ export default class MapVisualzation {
         data[self.regionalDataName] = this_dom.getAttribute(
           "data-" + self.regionalDataName
         ) + unit_name;
-        data["avg-vote-amount"] = this_dom.getAttribute("data-avg-vote-amount");
+        
+        data["start-year"] = this_dom.getAttribute("data-start-year");
+        data["end-year"] = this_dom.getAttribute("data-end-year");
+        data["avg-total-vote-years"] = this_dom.getAttribute("data-avg-vote-amount");
 
         // render tooltips
         d3.select("#map-tooltip")
@@ -341,14 +344,26 @@ export default class MapVisualzation {
       );
 
       let this_dom = document.getElementById(state);
+
       this_dom.setAttribute("data-" + symbolDataName, [
         states_overall_shift[state]["direction"],
         states_overall_shift[state]["shift"],
-      ]);
+      ])
+
       this_dom.setAttribute(
         "data-avg-vote-amount",
         states_overall_shift[state]["avg-vote-amount"]
-      );
+      )
+
+      this_dom.setAttribute(
+        "data-start-year",
+        "dem " + states_overall_shift[state]["dem-vote"][0] + ", rep " + states_overall_shift[state]["rep-vote"][0]
+      )
+
+      this_dom.setAttribute(
+        "data-end-year",
+        "dem " + states_overall_shift[state]["dem-vote"][1] + ", rep " + states_overall_shift[state]["rep-vote"][1]
+      )
 
       const result = states_overall_shift[state]["elect-result-change"];
       const resultColor = { dem: "blue", rep: "red" };
