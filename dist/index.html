@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Yet Another US Election Vis - Pratcial Data Science UniKN WS 20/21</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.5.0/d3.min.js" integrity="sha512-0XfwGD1nxplHpehcSVI7lY+m/5L37PNHDt+DOc7aLFckwPXjnjeA1oeNbru7YeI4VLs9i+ADnnHEhP69C9CqTA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js" integrity="sha512-wNH6xsp2n8CfB91nrBtfc4sfLwYPBMjSWVUwQOp60AYYXH6i8yCwuKFZ4rgK2i6pQek/b+bSyR7b01/922IBzQ==" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../static/css/tooltip.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+        }
+
+        .dataviz-tooltip {
+            border: 1px solid black;
+            border-radius: 10px;
+            padding: 5px;
+            background: white;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+        }
+
+        .AuxiliaryGraph {
+            overflow-y: auto;
+            /* height: 66vh; */
+            height: 710px;
+            width: 100%;
+            overflow-x: hidden;
+
+        }
+        /* .mapVis {
+            height: 61vh;
+        } */
+
+        .AuxiliaryGraphLegend {
+            max-width: 80%;
+            text-overflow: ellipsis;
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+
+        }
+
+        .SummaryGraph {
+            overflow-y: auto;
+            height: 50vh;
+            width: 100%;
+            overflow-x: hidden;
+            position: absolute;
+            top: 80px;
+        }
+
+        .section {
+            visibility: hidden;
+        }
+
+        .tab-content>.active {
+            visibility: visible;
+        }
+
+        #scatterplot-container {
+            position: absolute;
+            top: 180px;
+            left: 50px;
+        }
+
+        #scatterplot-description {
+            position: absolute;
+            top: 80px;
+            left: 50px;
+        }
+
+        #sct-tooltip {
+            background: rgba(69, 77, 93, .9);
+            border-radius: .1rem;
+            color: #fff;
+            display: block;
+            font-size: 11px;
+            max-width: 320px;
+            padding: .2rem .4rem;
+            position: absolute;
+            text-overflow: ellipsis;
+            white-space: pre;
+            z-index: 300;
+            visibility: hidden;
+        }
+
+        rect.selection {
+            stroke: #111111;
+            stroke-width: 4;
+            fill: none;
+        }
+
+        #map-panel {
+            width: 1250px;
+            height: 700px;
+        }
+
+    </style>
+
+
+</head>
+
+<body>
+    <div class="container-fluid" id="main-container">
+        <div class="row" style="padding: 25px 0px 0px 28px;">
+            <h2>Yet Another US Election Vis</h2>
+
+            <body>by Junran Yang, Guangan Chen, Dang Mai<script type="text/javascript" src="bundle.js"></script></body>
+        </div>
+        <div class="row h-20" style="padding: 20px;">
+            <div id="control-pane" class="card w-100">
+                <div class="card-header">
+                    Control Pane
+                </div>
+                <div class="card-body row" style>
+                    <div id="data-selection-container" class="w-20">
+                        <div class="row" style="padding: 5px 18px;">
+                            Symbol Data
+                        </div>
+                        <div id='symbol-data-selection' class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-primary btn-sm active">
+                                <input type="radio" name="options" value="shift-of-vote" checked> Shift of Votes
+                            </label>
+                            <!-- <label class="btn btn-outline-primary btn-sm">
+                                <input type="radio" name="options" value="error-of-poll" disabled> Error of Poll
+                            </label> -->
+                        </div>
+                        <div class="row" style="padding: 5px 18px;">
+                            Regional Data
+                        </div>
+                        <div id='regional-data-selection' class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-primary btn-sm text-nowrap active">
+                                <input type="radio" name="options" value="gdp-growth-rate" checked> GDP Growth Rate
+                            </label>
+                            <label class="btn btn-outline-primary btn-sm text-nowrap">
+                                <input type="radio" name="options" value="gdp-value"> GDP Value
+                            </label>
+                            <!-- <label class="btn btn-outline-primary btn-sm text-nowrap">
+                                <input type="radio" name="options" value="income" disabled> Income
+                            </label> -->
+                        </div>
+                    </div>
+                    <div id="year-selection-container" class="w-80">
+                        <svg id="year-selection"></svg>
+                    </div>
+                    <div id="selected-states-display-container" class="card" style="
+                    width: 400px;">
+                        <div class="card-header">
+                            Selected States
+                        </div>
+                        <div id="selected-states-display" class="overflow-auto" style="padding: 5px 20px;height: 80px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col col-xs-12 col-sm-6 col-md-5 col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs" id="auxiliary-list" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#individual" role="tab" aria-controls="description"
+                                    aria-selected="true">Individual</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#summary" role="tab" aria-controls="history"
+                                    aria-selected="false">Summary</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="sctplot-tab" href=" #sctplot" role="tab" aria-controls="sct"
+                                    aria-selected="false">Break into Periods</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content mt-3">
+                            <div class="section active" id="individual" role="tabpanel">
+                                <!-- <div class="AuxiliaryGraphLegend"></div> -->
+                                <div class="AuxiliaryGraph"></div>
+                            </div>
+                            <div class="section" id="summary" role="tabpanel" aria-labelledby="history-tab">
+                                <div class="SummaryGraph row"></div>
+                            </div>
+                            <div class="section" id="sctplot" role="tabpanel" aria-labelledby="sct-tab">
+                                <div id="scatterplot-description">Present each state of each periods as one data point, which brings more comparison.</div>
+                                <div id="scatterplot-container"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col col-xs-12 col-sm-6 col-md-7 col-lg-8">
+                <div class="card">
+                    <div class="card-header"> Map Visualization</div>
+                    <div id="select-states-panel" style="visibility: hidden;">
+                        <h5>&nbsp;Select states by</h5>&nbsp;
+                        <button type="button" class="select-btn btn btn-warning" id="top-clear">Clear All</button>
+                        <button type="button" class="select-btn btn btn-danger" id="top-rep-shift">Shifting towards republicans</button>
+                        <button type="button" class="select-btn btn btn-primary" id="top-dem-shift">Shifting towards democratic</button>
+                        <button type="button" class="select-btn btn btn-info" id="top-regional"></button>
+                    </div>
+
+                    <div id="map-panel" class="card-body">
+                        <div id="map-visualization" style="display:inline-block"></div>
+                        <img id="arrow_legend" src="../static/images/arrow_legend.png" alt="arrow legend" width="290" height="270" style="visibility: hidden;">
+                        <div style="display:inline-block" id="legend-unit"></div>
+                        <div style="display:inline-block"><svg id="map-legend" style="width: 800; height:60"></svg></div>
+                    </div>
+
+
+                    
+                </div>
+            </div>
+            <svg height="10" width="10" xmlns="http://www.w3.org/2000/svg" version="1.1">
+                <defs>
+                    <pattern id="circles-1" patternUnits="userSpaceOnUse" width="10" height="10">
+                        <image
+                            xlink:href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSJ3aGl0ZSIgLz4KICA8Y2lyY2xlIGN4PSIxIiBjeT0iMSIgcj0iMSIgZmlsbD0iYmxhY2siLz4KPC9zdmc+"
+                            x="0" y="0" width="10" height="10"> </image>
+                    </pattern>
+                </defs>
+            </svg>
+            <div id="map-tooltip"></div>
+        </div>
+    </div>
+
+
+
+    <!-- <p class="dataviz-tooltip">
+            My Tooltip
+        </p> -->
+
+    </div>
+    <div id="sct-tooltip"></div>
+</body>
+
+<script>
+    function mapColorLegend(colorScale) {
+        // https://d3-legend.susielu.com/
+        let svg = d3.select("#map-legend");
+        svg.append("g")
+            .attr("class", "legendLinear")
+            .attr("transform", "translate(20,20)");
+
+        let legendLinear = d3.legendColor()
+                            .shapeWidth(50)
+                            .cells(10)
+                            .orient('horizontal')
+                            .scale(colorScale);
+
+        svg.select(".legendLinear")
+            .call(legendLinear);
+    }
+</script>
+
+</html>
