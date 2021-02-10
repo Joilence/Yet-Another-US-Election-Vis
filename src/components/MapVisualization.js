@@ -106,9 +106,9 @@ export default class MapVisualzation {
           unit_name = " billion USD";
         }
 
-        data[self.regionalDataName] = this_dom.getAttribute(
+        data[self.regionalDataName] = parseFloat(this_dom.getAttribute(
           "data-" + self.regionalDataName
-        ) + unit_name;
+        )).toFixed(2) + unit_name;
         
         data["start-year"] = this_dom.getAttribute("data-start-year");
         data["end-year"] = this_dom.getAttribute("data-end-year");

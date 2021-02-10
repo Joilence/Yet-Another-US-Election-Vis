@@ -62,7 +62,7 @@ export function getGdpRate(gdp_data, yearRange) {
         let begin_amount_str = row[parseInt(beginYear)].replace(" ", "").replace("(", "").replace(")", "").split(",")[0];
         let end_amount_str = row[parseInt(endYear)].replace(" ", "").replace("(", "").replace(")", "").split(",")[0];
         let [begin_amount, end_amount] = [parseFloat(begin_amount_str), parseFloat(end_amount_str)];
-        let overall_growth_rate = (100*parseFloat(((end_amount - begin_amount) / begin_amount)).toFixed(4));
+        let overall_growth_rate = 100*parseFloat(((end_amount - begin_amount) / begin_amount)).toFixed(4);
 
         states_overall_shift[row.state] = overall_growth_rate;
     });
