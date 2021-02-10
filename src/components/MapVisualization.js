@@ -420,6 +420,15 @@ export default class MapVisualzation {
       $("#map-visualization").trigger("change");
     });
 
+    $('#select-all-states').on('click', ()=> {
+      this._deselectAllState();
+      $('#select-all-states').attr("disabled", true);
+      this.selectedStates = self.regionalDataDesendOrder;
+      this.selectedStates.forEach(state=>{this.selectState(state)});
+      $("#map-visualization").prop("states", this.selectedStates);
+      $("#map-visualization").trigger("change");
+    });
+
     // select top states based on rep shift rate
     $('#top-rep-shift').on('click', ()=> {
       this._deselectAllState();
